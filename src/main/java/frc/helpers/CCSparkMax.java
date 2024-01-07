@@ -2,7 +2,6 @@ package frc.helpers;
 
 import com.revrobotics.RelativeEncoder;
 //import com.revrobotics.*;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 
 //Documention: https://codedocs.revrobotics.com/java/com/revrobotics/package-summary.html 
@@ -11,7 +10,6 @@ public class CCSparkMax extends CANSparkMax{
 
     private String name;
     private String shortName;
-    public  SparkMaxPIDController pidController;
     private RelativeEncoder encoder;
     private double voltageConversionFactor;
 
@@ -35,7 +33,6 @@ public class CCSparkMax extends CANSparkMax{
         super.setInverted(reverse);
         
 
-        pidController = super.getPIDController();
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(positionConversionFactor);
         this.setVelocityConversionFactor(velocityConversionFactor);
@@ -49,7 +46,6 @@ public class CCSparkMax extends CANSparkMax{
         super.setInverted(reverse);
         
 
-        pidController = super.getPIDController();
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(1);
         this.setVelocityConversionFactor(1);
@@ -63,7 +59,6 @@ public class CCSparkMax extends CANSparkMax{
         super.setInverted(reverse);
         
         if(encoder < 0) return;
-        pidController = super.getPIDController();
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(1);
         this.setVelocityConversionFactor(1);
@@ -75,9 +70,6 @@ public class CCSparkMax extends CANSparkMax{
         encoder.setPosition(0);
     }
 
-    public void setReferencePosition(double pos){
-        pidController.setReference(pos, ControlType.kPosition);
-    }
 
     /**
      * Sets the speed of the motor controller
@@ -141,12 +133,6 @@ public class CCSparkMax extends CANSparkMax{
      * @param Ki The integral gain value
      * @param Kd The derivative gain value
      */
-    public void setPID(double Kp, double Ki, double Kd, double Ff){  
-        pidController.setP(Kp);
-        pidController.setI(Ki);
-        pidController.setD(Kd);
-        pidController.setFF(Ff);
-    }
 
     public String getName() {
         return name;
