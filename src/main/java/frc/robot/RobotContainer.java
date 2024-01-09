@@ -61,7 +61,7 @@ Field2d ff;
         // for (String pathName : paths) {
         //     autoCommands.addOption(pathName, followPathPlanner(pathName).withName(pathName));
         // }
-        // //this is the default command to prevent accidents of running the wrong auto
+        // this is the default command to prevent accidents of running the wrong auto
         // autoCommands.addDefaultOption("Nothing",
         //         Commands.run(() -> swerveDrive.printWorld(), swerveDrive).withName("Nothing"));
         
@@ -73,7 +73,8 @@ Field2d ff;
     }
 
     public Command getAutoCommand() {
-        return autoCommands.get();
+        // return autoCommands.get();
+        return autoChooser.getSelected();
     }
 
     /**
