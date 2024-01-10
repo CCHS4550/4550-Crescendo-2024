@@ -6,12 +6,12 @@ import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
+// import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
+// import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -28,7 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+// import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,16 +39,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.helpers.CCSparkMax;
 import frc.maps.RobotMap;
-import frc.robot.RobotContainer;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 /**
@@ -171,7 +165,7 @@ public class SwerveDrive extends SubsystemBase {
         private GenericEntry abs_Enc_FR_Entry, abs_Enc_FL_Entry, abs_Enc_BR_Entry, abs_Enc_BL_Entry;
         
         private GenericEntry enc_FR_pos_Entry, enc_FL_pos_Entry, enc_BR_pos_Entry, enc_BL_pos_Entry;
-        private GenericEntry enc_FR_vel_Entry, enc_FL_vel_Entry, enc_BR_vel_Entry, enc_BL_vel_Entry;
+        // private GenericEntry enc_FR_vel_Entry, enc_FL_vel_Entry, enc_BR_vel_Entry, enc_BL_vel_Entry;
        
         // ShuffleBoardLayouts for putting encoders onto the board
         private ShuffleboardLayout absolute_encoders_offset_list = Shuffleboard.getTab("Encoders")
@@ -183,9 +177,9 @@ public class SwerveDrive extends SubsystemBase {
                         .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
                         .withSize(2, 2);
 
-        private ShuffleboardLayout turn_encoder_velocities = Shuffleboard.getTab("Encoders")
-                        .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
-                        .withSize(2, 2);
+        // private ShuffleboardLayout turn_encoder_velocities = Shuffleboard.getTab("Encoders")
+        //                 .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
+        //                 .withSize(2, 2);
 
         /**
          * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
@@ -235,7 +229,7 @@ public class SwerveDrive extends SubsystemBase {
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        4.5, // Max module speed, in m/s
+                        RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),

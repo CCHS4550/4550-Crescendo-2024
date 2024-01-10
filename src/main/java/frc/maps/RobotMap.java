@@ -143,4 +143,10 @@ public interface RobotMap {
     public static final boolean FRONT_INTAKE_REVERSED = false;
     public static final int BACK_INTAKE = 10;
     public static final boolean BACK_INTAKE_REVERSED = false;
+
+
+    /*To Do */
+    public static final int LED_PORT = 0;
+    public static final int LED_LENGTH = 50;
+
 }

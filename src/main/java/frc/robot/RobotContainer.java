@@ -12,23 +12,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.controlschemes.MechanismScheme;
 import frc.controlschemes.SwerveDriveScheme;
-import frc.controlschemes.Testing;
 import frc.maps.RobotMap;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
-    SwerveDrive swerveDrive = new SwerveDrive();
+    SwerveDrive swerveDrive;
+    Leds led;
     /** Event map for path planner */
     public static HashMap<String, Command> eventMap = new HashMap<>();
     /** Command List for auto paths in SmartDashBoard */
     
     LoggedDashboardChooser<Command> autoCommands = new LoggedDashboardChooser<Command>("Auto Commands");
-    private final String[] paths = {"outback","out","outturn","turn","meters", "EventTest"};
+    // private final String[] paths = {"outback","out","outturn","turn","meters", "EventTest"};
     // private static String[] paths = { "move" };
     private final SendableChooser<Command> autoChooser;
+    // private final LoggedDashboardChooser<Command> autoChooser;
 
 
 
@@ -37,11 +37,19 @@ public class RobotContainer {
 Field2d ff;
     
     public RobotContainer() {
+        //initialize subsytems here
+        swerveDrive = new SwerveDrive();
+        led = new Leds(RobotMap.LED_PORT, RobotMap.LED_LENGTH);
+
+        
+        //initialize controller schemes here
         SwerveDriveScheme.configure(swerveDrive, 0);
+
+        
         // Testing.configure(swerveDrive, 0);
 
         //fix this with a new subsystem
-        eventMap.put("toggle", Commands.runOnce(() -> swerveDrive.toggleEvent(), null ));
+        eventMap.put("toggle", Commands.runOnce(() -> swerveDrive.toggleEvent(), null ));       
 
         diagnosticsInit();
 
