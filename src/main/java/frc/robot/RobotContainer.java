@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.controlschemes.SwerveDriveScheme;
+import frc.controlschemes.Testing;
 import frc.maps.RobotMap;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.SwerveDrive;
@@ -49,7 +50,7 @@ Field2d ff;
         // Testing.configure(swerveDrive, 0);
 
         //fix this with a new subsystem
-        eventMap.put("toggle", Commands.runOnce(() -> swerveDrive.toggleEvent(), null ));       
+        // eventMap.put("toggle", Commands.runOnce(() -> swerveDrive.toggleEvent(), null ));       
 
         diagnosticsInit();
 

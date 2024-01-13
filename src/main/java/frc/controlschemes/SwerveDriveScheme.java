@@ -59,7 +59,7 @@ public class SwerveDriveScheme implements ControlScheme {
                 //Relative to field
                 chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveDrive.getRotation2d());
             } else {
-                //Relative to robot
+                //Relative to robotgh
                 chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
             }
 
