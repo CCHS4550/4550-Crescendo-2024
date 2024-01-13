@@ -132,7 +132,7 @@ public class SwerveModule extends SubsystemBase {
      * @return The state of the swerve module in SwerveModuleState format.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRadiansOffset()));
     }
 
     /**
@@ -149,7 +149,7 @@ public class SwerveModule extends SubsystemBase {
             // isOpenLoop would be true in teleop perhaps because some drivers, like ours prefers it that way
         
         driveMotor.set(state.speedMetersPerSecond);
-        turnMotor.set(turningPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+        turnMotor.set(turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), state.angle.getRadians()));
     }
 
     /**

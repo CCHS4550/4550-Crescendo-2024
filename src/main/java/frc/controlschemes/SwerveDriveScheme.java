@@ -2,12 +2,14 @@ package frc.controlschemes;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -23,6 +25,8 @@ import frc.robot.subsystems.SwerveDrive;
  */
 public class SwerveDriveScheme implements ControlScheme {
     private static boolean fieldCentric = true;
+    private static boolean orientationLocked = false;
+    private static double orientationLockAngle;
     private static BooleanSupplier fieldCentricSupplier = () -> {
         return fieldCentric;
     };
@@ -40,12 +44,20 @@ public class SwerveDriveScheme implements ControlScheme {
         SlewRateLimiter yRateLimiter = new SlewRateLimiter(RobotMap.DRIVE_RATE_LIMIT, -RobotMap.DRIVE_RATE_LIMIT, 0);
         SlewRateLimiter turnRateLimiter = new SlewRateLimiter(RobotMap.TURN_RATE_LIMIT);
 
+        PIDController orientationLockPID = new PIDController(.5, 0, 0);
+
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             //Set x, y, and turn speed based on joystick inputs
             double xSpeed = -OI.axis(port, ControlMap.L_JOYSTICK_VERTICAL) * .75 * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1));
             double ySpeed = -OI.axis(port, ControlMap.L_JOYSTICK_HORIZONTAL) * .75 * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1));
-            double turnSpeed = -OI.axis(port, ControlMap.R_JOYSTICK_HORIZONTAL);
+            double turnSpeed = 0;
+            if(!orientationLocked) {
+                turnSpeed = -OI.axis(port, ControlMap.R_JOYSTICK_HORIZONTAL);
+            } else {
+                turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle);
+            }
+            
 
             //Limits acceleration and speed
             //Possibly change the speed limiting to somewhere else (maybe a normalize function)
@@ -59,13 +71,13 @@ public class SwerveDriveScheme implements ControlScheme {
                 //Relative to field
                 chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveDrive.getRotation2d());
             } else {
-                //Relative to robotgh
+                //Relative to robotg
                 chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
             }
 
+            SwerveModuleState[] moduleStates;
             //Convert chassis speeds to individual module states
-            SwerveModuleState[] moduleStates = RobotMap.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-
+            moduleStates = RobotMap.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
             swerveDrive.setModuleStates(moduleStates);
             
         }, swerveDrive).withName("Swerve Controller Command"));
@@ -83,7 +95,10 @@ public class SwerveDriveScheme implements ControlScheme {
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
             .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
         new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-            .onTrue(new InstantCommand(() -> swerveDrive.setOdometry(new Pose2d(0, 0, null))));   
+            .onTrue(new InstantCommand(() -> swerveDrive.setOdometry(new Pose2d(0, 0, null)))); 
+        new JoystickButton(controllers[port], ControlMap.X_BUTTON)
+            .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
+            .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
     }
 
     /**
@@ -92,4 +107,11 @@ public class SwerveDriveScheme implements ControlScheme {
     private static void toggleFieldCentric(){
         fieldCentric = !fieldCentric;
     }
+    private static void toggleOrientationLock(SwerveDrive swerveDrive){
+    
+    orientationLocked = !orientationLocked;
+    if(orientationLocked){
+        orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+    }
+}
 }

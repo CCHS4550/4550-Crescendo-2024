@@ -159,6 +159,7 @@ public class SwerveDrive extends SubsystemBase {
         /** Module positions used for odometry */
         SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
 
+
         // ** NetworkTableEntry for the encoders of the turn motors */
         private GenericEntry abs_Enc_FR_Offset_Entry, abs_Enc_FL_Offset_Entry, abs_Enc_BR_Offset_Entry,
                         abs_Enc_BL_Offset_Entry;
@@ -177,6 +178,7 @@ public class SwerveDrive extends SubsystemBase {
                         .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
                         .withSize(2, 2);
 
+        private SwerveModuleState[] currentSwerveModuleStates;
         // private ShuffleboardLayout turn_encoder_velocities = Shuffleboard.getTab("Encoders")
         //                 .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
         //                 .withSize(2, 2);
@@ -220,7 +222,10 @@ public class SwerveDrive extends SubsystemBase {
                         } catch (Exception e) {
                         }
                 }).start();
-        
+
+        currentSwerveModuleStates = new SwerveModuleState[]{new SwerveModuleState(0.0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))};
+
+
         AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
                 this::setOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -230,7 +235,7 @@ public class SwerveDrive extends SubsystemBase {
                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
                         RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
-                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        0.8621, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
                 () -> {
@@ -330,6 +335,7 @@ public class SwerveDrive extends SubsystemBase {
          *                      in the SwerveModuleState format.
          */
         public void setModuleStates(SwerveModuleState[] desiredStates) {
+        //        currentSwerveModuleStates = desiredStates;
                 boolean openLoop = true;
                 SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND);
                 Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
@@ -380,7 +386,7 @@ public class SwerveDrive extends SubsystemBase {
 
 
         public ChassisSpeeds getRobotRelativeSpeeds(){
-                return ChassisSpeeds.fromFieldRelativeSpeeds(RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(), getRotation2d());
+                return ChassisSpeeds.fromFieldRelativeSpeeds(RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(currentSwerveModuleStates), getRotation2d());
         }
 
         public void driveRobotRelative(ChassisSpeeds chassisSpeeds){
