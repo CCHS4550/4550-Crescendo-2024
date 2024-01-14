@@ -178,7 +178,7 @@ public class SwerveDrive extends SubsystemBase {
                         .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
                         .withSize(2, 2);
 
-        private SwerveModuleState[] currentSwerveModuleStates;
+        // private SwerveModuleState[] currentSwerveModuleStates;
         // private ShuffleboardLayout turn_encoder_velocities = Shuffleboard.getTab("Encoders")
         //                 .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
         //                 .withSize(2, 2);
@@ -223,7 +223,7 @@ public class SwerveDrive extends SubsystemBase {
                         }
                 }).start();
 
-        currentSwerveModuleStates = new SwerveModuleState[]{new SwerveModuleState(0.0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))};
+        // currentSwerveModuleStates = new SwerveModuleState[]{new SwerveModuleState(0.0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))};
 
 
         AutoBuilder.configureHolonomic(
@@ -355,6 +355,16 @@ public class SwerveDrive extends SubsystemBase {
                 return odometer.getPoseMeters();
         }
 
+        public SwerveModuleState[] getCurrentModuleStates(){
+                 SwerveModuleState[] states = new SwerveModuleState[] {
+                                new SwerveModuleState(frontRight.getDriveVelocity(), new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
+                                new SwerveModuleState(frontLeft.getDriveVelocity(), new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
+                                new SwerveModuleState(backRight.getDriveVelocity(), new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
+                                new SwerveModuleState(backLeft.getDriveVelocity(), new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
+                };
+                return states;
+        }
+
         /**
          * Resets the odometer readings using the gyro, SwerveModulePositions (defined
          * in constructor), and Pose2d.
@@ -386,7 +396,7 @@ public class SwerveDrive extends SubsystemBase {
 
 
         public ChassisSpeeds getRobotRelativeSpeeds(){
-                return ChassisSpeeds.fromFieldRelativeSpeeds(RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(currentSwerveModuleStates), getRotation2d());
+                return ChassisSpeeds.fromFieldRelativeSpeeds(RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()), getRotation2d());
         }
 
         public void driveRobotRelative(ChassisSpeeds chassisSpeeds){
