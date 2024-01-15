@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.SparkPIDController;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -26,6 +28,8 @@ public class SwerveModule extends SubsystemBase {
 
     private PIDController turningPIDController, drivingPidController;
 
+    // private SparkPIDController turningPIDController;
+
     private AnalogEncoder absoluteEncoder;
     private double absoluteEncoderOffset;
     private String name;
@@ -51,7 +55,8 @@ public class SwerveModule extends SubsystemBase {
 
         // this.absoluteEncoder.setPositionOffset(absoluteEncoderOffset);
         this.absoluteEncoderOffset = absoluteEncoderOffset;
-        turningPIDController = new PIDController(.5, 0, 0);
+        // turningPIDController = new SparkPIDController(.5, 0, 0);
+        // turningPIDController = new SparkPIDController();
         turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivingPidController = new PIDController(0.5, 0, 0);
@@ -132,7 +137,7 @@ public class SwerveModule extends SubsystemBase {
      * @return The state of the swerve module in SwerveModuleState format.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurnPosition()));
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRadiansOffset()));
     }
 
     /**
@@ -149,7 +154,7 @@ public class SwerveModule extends SubsystemBase {
             // isOpenLoop would be true in teleop perhaps because some drivers, like ours prefers it that way
         
         driveMotor.set(state.speedMetersPerSecond);
-        turnMotor.set(turningPIDController.calculate(getTurnPosition(), state.angle.getRadians()));
+        turnMotor.set(turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), state.angle.getRadians()));
     }
 
     /**
