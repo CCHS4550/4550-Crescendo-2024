@@ -90,6 +90,10 @@ public class CCSparkMax extends CANSparkMax{
         super.setVoltage(speed * voltageConversionFactor);
     }
 
+    public void getVelocity() {
+        encoder.getVelocity();
+    }
+
     public void disable(){
         super.disable();
     }

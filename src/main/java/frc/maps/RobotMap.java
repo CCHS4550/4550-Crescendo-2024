@@ -49,7 +49,7 @@ public interface RobotMap {
     //horizontal distance travelled by one motor rotation
     public static final double HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION = WHEEL_CIRCUMFRENCE
             * DRIVE_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS;
-    public static final double DRIVE_MOTOR_METERS_PER_SECOND = HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0; 
+    public static final double DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR = HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0; 
 
 
      public static final int FRONT_RIGHT_DRIVE = 6;
@@ -156,5 +156,7 @@ public interface RobotMap {
     //TODO Do sysid to et values
     public static final double DRIVEKS = 0;
     public static final double DRIVEKV = 0;
+    public static final double TURNKS = 0;
+    public static final double TURNKV = 0;
 
 }

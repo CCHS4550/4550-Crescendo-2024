@@ -65,7 +65,7 @@ public class SwerveDrive extends SubsystemBase {
                                         IdleMode.kBrake,
                                         RobotMap.FRONT_RIGHT_DRIVE_REVERSE,
                                         RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND),
+                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
                         new CCSparkMax(
                                         "Front Right Turn",
                                         "frt",
@@ -88,7 +88,7 @@ public class SwerveDrive extends SubsystemBase {
                                         IdleMode.kBrake,
                                         RobotMap.FRONT_LEFT_DRIVE_REVERSE,
                                         RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND),
+                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
                         new CCSparkMax(
                                         "Front Left Turn",
                                         "flt",
@@ -111,7 +111,7 @@ public class SwerveDrive extends SubsystemBase {
                                         IdleMode.kBrake,
                                         RobotMap.BACK_RIGHT_DRIVE_REVERSE,
                                         RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND),
+                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
                         new CCSparkMax(
                                         "Back Right Turn",
                                         "brt",
@@ -134,7 +134,7 @@ public class SwerveDrive extends SubsystemBase {
                                         IdleMode.kBrake,
                                         RobotMap.BACK_LEFT_DRIVE_REVERSE,
                                         RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND),
+                                        RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
                         new CCSparkMax(
                                         "Back Left Turn",
                                         "blt",

@@ -29,7 +29,7 @@ public class SwerveModule extends SubsystemBase {
     private CCSparkMax turnMotor;
 
     private PIDController turningPIDController, drivingPidController;
-    private SimpleMotorFeedforward driveFeedforward;
+    private SimpleMotorFeedforward driveFeedforward/*, turnFeedforward*/;
 
     // private SparkPIDController turningPIDController;
 
@@ -60,11 +60,15 @@ public class SwerveModule extends SubsystemBase {
         this.absoluteEncoderOffset = absoluteEncoderOffset;
         // turningPIDController = new SparkPIDController(.5, 0, 0);
         // turningPIDController = new SparkPIDController();
+
+        turningPIDController = new PIDController(0.5, 0, 0);
         turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivingPidController = new PIDController(0.5, 0, 0);
 
+        //possibly kA values too, if sysid provides those
         driveFeedforward = new SimpleMotorFeedforward(RobotMap.DRIVEKS, RobotMap.DRIVEKV);
+        // turnFeedforward = new SimpleMotorFeedforward(RobotMap.TURNKS, RobotMap.TURNKV);
 
         this.name = name;
         resetEncoders();
@@ -180,11 +184,19 @@ public class SwerveModule extends SubsystemBase {
         state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
         //integrate max speed here
-            // isOpenLoop would be true in teleop perhaps because some drivers, like ours prefers it that way
+        // isOpenLoop would be true in teleop perhaps because some drivers, like ours prefers it that way
 
-        // NEED TO DO FEED FORWARD STUFF
-        driveMotor.setVoltageFromSpeed(desiredState.speedMetersPerSecond);
-        turnMotor.setVoltageFromSpeed(turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), desiredState.angle.getRadians()));
+        // These are both in m/s
+        double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), state.speedMetersPerSecond);
+        //Feed forward
+        double driveFf = driveFeedforward.calculate(state.speedMetersPerSecond);
+        
+        // Likely no need for feed forward here, as the change is minimal
+        double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), state.angle.getRadians());
+
+
+        driveMotor.setVoltage(driveOutput + driveFf);
+        turnMotor.setVoltage(turnOutput);
     }
 
     /**
