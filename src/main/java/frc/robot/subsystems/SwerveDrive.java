@@ -28,10 +28,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -44,6 +48,7 @@ import frc.helpers.CCSparkMax;
 import frc.maps.RobotMap;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and
@@ -182,6 +187,52 @@ public class SwerveDrive extends SubsystemBase {
         // private ShuffleboardLayout turn_encoder_velocities = Shuffleboard.getTab("Encoders")
         //                 .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
         //                 .withSize(2, 2);
+
+
+private final SysIdRoutine m_sysIdRoutine =
+      new SysIdRoutine(
+          // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+          new SysIdRoutine.Config(),
+          new SysIdRoutine.Mechanism(
+              // Tell SysId how to plumb the driving voltage to the motors.
+              (Measure<Voltage> volts) -> {
+                setDriveVoltages(volts);
+              },
+              // Tell SysId how to record a frame of data for each motor on the mechanism being
+              // characterized.
+              log -> {
+                // Record a frame for the left motors.  Since these share an encoder, we consider
+                // the entire group to be one motor.
+                log.motor("drive-left")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                            m_leftMotor.get() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
+                    .linearVelocity(
+                        m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
+                // Record a frame for the right motors.  Since these share an encoder, we consider
+                // the entire group to be one motor.
+                log.motor("drive-right")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                            m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
+                    .linearVelocity(
+                        m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
+              },
+              // Tell SysId to make generated commands require this subsystem, suffix test state in
+              // WPILog with this subsystem's name ("drive")
+              this));
+
+
+
+
+
+
+
+
+
+
 
         /**
          * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
@@ -591,5 +642,20 @@ public class SwerveDrive extends SubsystemBase {
         public double getPitch() {
                 return gyro.getPitch() - 1.14;
         }
+
+        public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
+  }
+
+  public void setDriveVoltages(double voltage){
+        frontRight.setDriveVoltage(voltage);
+        frontLeft.setDriveVoltage(voltage);
+        backRight.setDriveVoltage(voltage);
+        backLeft.setDriveVoltage(voltage);
+  }
 
 }

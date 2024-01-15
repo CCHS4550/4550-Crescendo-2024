@@ -6,6 +6,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -199,12 +201,28 @@ public class SwerveModule extends SubsystemBase {
         turnMotor.setVoltage(turnOutput);
     }
 
+public void setDriveVelocity(){
+
+}
+
+public void setTurnPosition(){
+
+}
+
     /**
      * Sets the speed of the drive and turn motors to 0.
      */
     public void stop() {
         driveMotor.setVoltageFromSpeed(0);
         turnMotor.setVoltageFromSpeed(0);
+    }
+
+    public void setDriveVoltage(double voltage){
+        driveMotor.setVoltage(voltage);
+    }
+
+    public void setTurnVoltage(double voltage){
+        turnMotor.setVoltage(voltage);
     }
 
     /**
@@ -238,4 +256,17 @@ public class SwerveModule extends SubsystemBase {
     public void setName(String name) {
         this.name = name;
     }
+
+
+
+/**
+ * Runs the module with the specified voltage while controlling to zero degrees. Must be called
+ * periodically.
+ */
+public void runCharacterization(Measure<Voltage> volts) {
+    // System.out.println(volts.in(Volts));
+    setDesiredState(new SwerveModuleState(),false);
+    driveMotor.setVoltage(volts);
+}
+
 }
