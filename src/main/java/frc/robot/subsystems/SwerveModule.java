@@ -29,6 +29,7 @@ public class SwerveModule extends SubsystemBase {
     private CCSparkMax turnMotor;
 
     private PIDController turningPIDController, drivingPidController;
+    private SimpleMotorFeedforward driveFeedforward;
 
     // private SparkPIDController turningPIDController;
 
@@ -62,6 +63,8 @@ public class SwerveModule extends SubsystemBase {
         turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivingPidController = new PIDController(0.5, 0, 0);
+
+        driveFeedforward = new SimpleMotorFeedforward(RobotMap.DRIVEKS, RobotMap.DRIVEKV);
 
         this.name = name;
         resetEncoders();
