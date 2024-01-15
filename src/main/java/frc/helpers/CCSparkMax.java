@@ -36,6 +36,7 @@ public class CCSparkMax extends CANSparkMax{
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(positionConversionFactor);
         this.setVelocityConversionFactor(velocityConversionFactor);
+        voltageConversionFactor = 12;
     }
     public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
      boolean reverse){
@@ -49,6 +50,7 @@ public class CCSparkMax extends CANSparkMax{
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(1);
         this.setVelocityConversionFactor(1);
+        voltageConversionFactor = 12;
     }
     public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
      boolean reverse, double encoder){
@@ -62,6 +64,7 @@ public class CCSparkMax extends CANSparkMax{
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(1);
         this.setVelocityConversionFactor(1);
+        voltageConversionFactor = 12;
     }
 
    

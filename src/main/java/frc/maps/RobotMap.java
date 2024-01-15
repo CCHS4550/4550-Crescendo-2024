@@ -95,6 +95,10 @@ public interface RobotMap {
     // public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 2.49;
     // public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 5.42;
 
+    // Robot Constants (change with SysId)
+    //max speed in free sprint: used in getting velocities of swerve modules
+    public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL = 4.72;
+
     //new
     public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.968 - Math.PI;
     public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 1.752 - Math.PI;

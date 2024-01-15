@@ -336,8 +336,8 @@ public class SwerveDrive extends SubsystemBase {
          */
         public void setModuleStates(SwerveModuleState[] desiredStates) {
         //        currentSwerveModuleStates = desiredStates;
-                boolean openLoop = true;
-                SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND);
+                boolean openLoop = false;
+                SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
                 Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
                 frontRight.setDesiredState(desiredStates[0], openLoop);
                 frontLeft.setDesiredState(desiredStates[1], openLoop);

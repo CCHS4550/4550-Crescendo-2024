@@ -7,8 +7,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
+import frc.maps.RobotMap;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 /**
@@ -84,12 +86,12 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Gets the speed of the drive motor.
+     * Gets the speed of the drive motor. Obtained using max speed given 12V of power.
      * 
-     * @return The speed of the drive motor between -1 and 1.
+     * @return The speed of the drive motor in m/s.
      */
     public double getDriveVelocity() {
-        return driveMotor.getSpeed();
+        return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12 * driveMotor.getBusVoltage();
     }
 
     /**
@@ -99,6 +101,24 @@ public class SwerveModule extends SubsystemBase {
      */
     public double getTurnVelocity() {
         return turnMotor.getSpeed();
+    }
+
+    /**
+     * Gets the voltage being supplied to the turn motor.
+     * 
+     * @return The voltage being supplied to the turn motor.
+     */
+    public double getDriveVoltage() {
+        return driveMotor.get() * driveMotor.getBusVoltage();
+    }
+
+    /**
+     * Gets the voltage being supplied to the turn motor.
+     * 
+     * @return The voltage being supplied to the turn motor.
+     */
+    public double getTurnVoltage() {
+        return turnMotor.get() * turnMotor.getBusVoltage();
     }
 
     /**
@@ -144,25 +164,32 @@ public class SwerveModule extends SubsystemBase {
      * Sets the state of the module.
      * @param state The state to set the swerve module to in SwerveModuleState format.
      */
-    public void setDesiredState(SwerveModuleState state, boolean isOpenLoop){
-        if(Math.abs(state.speedMetersPerSecond) <= .005){
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
+        if(Math.abs(desiredState.speedMetersPerSecond) <= .005){
             stop();
             return;
         }
-        state = SwerveModuleState.optimize(state, getState().angle);
+
+        Rotation2d encoderRotation = new Rotation2d(getState().angle.getRadians());
+
+        SwerveModuleState state = SwerveModuleState.optimize(desiredState, encoderRotation);
+        // Minimizes side drift when driving
+        state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
+
         //integrate max speed here
             // isOpenLoop would be true in teleop perhaps because some drivers, like ours prefers it that way
-        
-        driveMotor.set(state.speedMetersPerSecond);
-        turnMotor.set(turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), state.angle.getRadians()));
+
+        // NEED TO DO FEED FORWARD STUFF
+        driveMotor.setVoltageFromSpeed(desiredState.speedMetersPerSecond);
+        turnMotor.setVoltageFromSpeed(turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), desiredState.angle.getRadians()));
     }
 
     /**
      * Sets the speed of the drive and turn motors to 0.
      */
     public void stop() {
-        driveMotor.set(0);
-        turnMotor.set(0);
+        driveMotor.setVoltageFromSpeed(0);
+        turnMotor.setVoltageFromSpeed(0);
     }
 
     /**
@@ -172,8 +199,8 @@ public class SwerveModule extends SubsystemBase {
      * @param turnSpeed  Speed of the turn motor.
      */
     public void driveAndTurn(double driveSpeed, double turnSpeed) {
-        driveMotor.set(driveSpeed);
-        turnMotor.set(turnSpeed);
+        driveMotor.setVoltageFromSpeed(driveSpeed);
+        turnMotor.setVoltageFromSpeed(turnSpeed);
     }
 
     public void printEncoders() {

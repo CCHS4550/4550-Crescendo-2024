@@ -42,7 +42,6 @@ Field2d ff;
         swerveDrive = new SwerveDrive();
         led = new Leds(RobotMap.LED_PORT, RobotMap.LED_LENGTH);
 
-        
         //initialize controller schemes here
         SwerveDriveScheme.configure(swerveDrive, 0);
 
