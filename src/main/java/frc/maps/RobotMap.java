@@ -153,4 +153,8 @@ public interface RobotMap {
     public static final int LED_PORT = 0;
     public static final int LED_LENGTH = 50;
 
+    //TODO Do sysid to et values
+    public static final double DRIVEKS = 0;
+    public static final double DRIVEKV = 0;
+
 }
