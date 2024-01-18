@@ -259,7 +259,7 @@ public void setTurnPosition(){
     }
 
     public double getTurnEncoderDistance(){
-        return turnMotor.getPosition();
+    return turnMotor.getPosition();
     }
 
     public double getTurnEncoderVelocity(){
