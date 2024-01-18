@@ -195,19 +195,26 @@ public class SwerveModule extends SubsystemBase {
         double driveFf = driveFeedforward.calculate(state.speedMetersPerSecond);
         
         // Likely no need for feed forward here, as the change is minimal
-        double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), state.angle.getRadians());
+        
 
+        setDriveVelocity(state.speedMetersPerSecond);
+        setTurnPosition(state.angle.getRadians());
 
         driveMotor.setVoltage(driveOutput + driveFf);
-        turnMotor.setVoltage(turnOutput);
+        
     }
 
-public void setDriveVelocity(){
-
+public void setDriveVelocity(double speedMetersPerSecond){
+     // These are both in m/s
+        double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), speedMetersPerSecond);
+        //Feed forward
+        double driveFf = driveFeedforward.calculate(speedMetersPerSecond);
+        driveMotor.setVoltage(driveOutput + driveFf);
 }
 
-public void setTurnPosition(){
-
+public void setTurnPosition(double turnPositionRadians){
+    double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), turnPositionRadians);
+    turnMotor.setVoltage(turnOutput);
 }
 
     /**
@@ -281,9 +288,14 @@ public void setTurnPosition(){
  */
 public void runCharacterization(Measure<Voltage> volts) {
     // System.out.println(volts.in(Volts));
+<<<<<<< Updated upstream
     setDesiredState(new SwerveModuleState(),false);
     driveMotor.setVoltage(volts.in(Volts));
     // turnMotor.setVoltage(volts.in(Volts));
+=======
+    
+    driveMotor.setVoltage(volts.in(Voltage<));
+>>>>>>> Stashed changes
 }
 
 }
