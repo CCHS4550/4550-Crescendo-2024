@@ -1,9 +1,17 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import static edu.wpi.first.units.MutableMeasure.mutable;
 
 import com.kauailabs.navx.frc.AHRS;
 // import com.pathplanner.lib.path.PathPlannerTrajectory;
@@ -32,7 +40,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -164,15 +175,15 @@ public class SwerveDrive extends SubsystemBase {
         /** Module positions used for odometry */
         SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
 
-
         // ** NetworkTableEntry for the encoders of the turn motors */
         private GenericEntry abs_Enc_FR_Offset_Entry, abs_Enc_FL_Offset_Entry, abs_Enc_BR_Offset_Entry,
                         abs_Enc_BL_Offset_Entry;
         private GenericEntry abs_Enc_FR_Entry, abs_Enc_FL_Entry, abs_Enc_BR_Entry, abs_Enc_BL_Entry;
-        
+
         private GenericEntry enc_FR_pos_Entry, enc_FL_pos_Entry, enc_BR_pos_Entry, enc_BL_pos_Entry;
-        // private GenericEntry enc_FR_vel_Entry, enc_FL_vel_Entry, enc_BR_vel_Entry, enc_BL_vel_Entry;
-       
+        // private GenericEntry enc_FR_vel_Entry, enc_FL_vel_Entry, enc_BR_vel_Entry,
+        // enc_BL_vel_Entry;
+
         // ShuffleBoardLayouts for putting encoders onto the board
         private ShuffleboardLayout absolute_encoders_offset_list = Shuffleboard.getTab("Encoders")
                         .getLayout("Absolute Encoders Offset", BuiltInLayouts.kGrid).withSize(2, 2);
@@ -184,55 +195,56 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 2);
 
         // private SwerveModuleState[] currentSwerveModuleStates;
-        // private ShuffleboardLayout turn_encoder_velocities = Shuffleboard.getTab("Encoders")
-        //                 .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
-        //                 .withSize(2, 2);
+        // private ShuffleboardLayout turn_encoder_velocities =
+        // Shuffleboard.getTab("Encoders")
+        // .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
+        // .withSize(2, 2);
 
+        // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+        private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+        // Mutable holder for unit-safe linear distance values, persisted to avoid
+        // reallocation.
+        private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
+        // Mutable holder for unit-safe linear velocity values, persisted to avoid
+        // reallocation.
+        private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RadiansPerSecond.of(0));
 
-private final SysIdRoutine m_sysIdRoutine =
-      new SysIdRoutine(
-          // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-          new SysIdRoutine.Config(),
-          new SysIdRoutine.Mechanism(
-              // Tell SysId how to plumb the driving voltage to the motors.
-              (Measure<Voltage> volts) -> {
-                setDriveVoltages(volts);
-              },
-              // Tell SysId how to record a frame of data for each motor on the mechanism being
-              // characterized.
-              log -> {
-                // Record a frame for the left motors.  Since these share an encoder, we consider
-                // the entire group to be one motor.
-                log.motor("drive-left")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            m_leftMotor.get() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
-                // Record a frame for the right motors.  Since these share an encoder, we consider
-                // the entire group to be one motor.
-                log.motor("drive-right")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
-              },
-              // Tell SysId to make generated commands require this subsystem, suffix test state in
-              // WPILog with this subsystem's name ("drive")
-              this));
-
-
-
-
-
-
-
-
-
-
+        private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+                        // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+                        new SysIdRoutine.Config(),
+                        new SysIdRoutine.Mechanism(
+                                        // Tell SysId how to plumb the driving voltage to the motors.
+                                        (Measure<Voltage> volts) -> {
+                                                setDriveVoltages(volts);
+                                        },
+                                        // Tell SysId how to record a frame of data for each motor on the mechanism
+                                        // being
+                                        // characterized.
+                                        log -> {
+                                                // Record a frame for the left motors. Since these share an encoder, we
+                                                // consider
+                                                // the entire group to be one motor.
+                                                log.motor("drive-left")
+                                                                .voltage(
+                                                                                m_appliedVoltage.mut_replace(
+                                                                                                // frontRight.get() *
+                                                                                                // RobotController.getBatteryVoltage(),
+                                                                                                // Volts))
+                                                                                                Volts.of(frontRight
+                                                                                                                .getTurnVoltage())
+                                                                                                                .angularPosition(
+                                                                                                                                m_distance.mut_replace(
+                                                                                                                                                frontRight.getTurnEncoderDistance(),
+                                                                                                                                                Radians))
+                                                                                                                .linearVelocity(
+                                                                                                                                m_velocity.mut_replace(
+                                                                                                                                                frontRight.getTurnEncoderVelocity(),
+                                                                                                                                                RadiansPerSecond))));
+                                        },
+                                        // Tell SysId to make generated commands require this subsystem, suffix test
+                                        // state in
+                                        // WPILog with this subsystem's name ("drive")
+                                        this));
 
         /**
          * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
@@ -274,35 +286,48 @@ private final SysIdRoutine m_sysIdRoutine =
                         }
                 }).start();
 
-        // currentSwerveModuleStates = new SwerveModuleState[]{new SwerveModuleState(0.0, new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),new SwerveModuleState(0.0, new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))};
+                // currentSwerveModuleStates = new SwerveModuleState[]{new
+                // SwerveModuleState(0.0, new
+                // Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),new
+                // SwerveModuleState(0.0, new
+                // Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),new
+                // SwerveModuleState(0.0, new
+                // Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),new
+                // SwerveModuleState(0.0, new
+                // Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))};
 
+                AutoBuilder.configureHolonomic(
+                                this::getPose, // Robot pose supplier
+                                this::setOdometry, // Method to reset odometry (will be called if your auto has a
+                                                   // starting pose)
+                                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
+                                                          // ChassisSpeeds
+                                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
+                                                                 // in your Constants class
+                                                new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                                                new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                                                RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
+                                                0.8621, // Drive base radius in meters. Distance from robot center to
+                                                        // furthest module.
+                                                new ReplanningConfig() // Default path replanning config. See the API
+                                                                       // for the options here
+                                ),
+                                () -> {
+                                        // Boolean supplier that controls when the path will be mirrored for the red
+                                        // alliance
+                                        // This will flip the path being followed to the red side of the field.
+                                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        AutoBuilder.configureHolonomic(
-                this::getPose, // Robot pose supplier
-                this::setOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
-                        0.8621, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig() // Default path replanning config. See the API for the options here
-                ),
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                                        var alliance = DriverStation.getAlliance();
+                                        if (alliance.isPresent()) {
+                                                return alliance.get() == DriverStation.Alliance.Red;
+                                        }
+                                        return false;
+                                },
+                                this // Reference to this subsystem to set requirements
+                );
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                },
-                this // Reference to this subsystem to set requirements
-        );
-        
         }
 
         /**
@@ -386,9 +411,10 @@ private final SysIdRoutine m_sysIdRoutine =
          *                      in the SwerveModuleState format.
          */
         public void setModuleStates(SwerveModuleState[] desiredStates) {
-        //        currentSwerveModuleStates = desiredStates;
+                // currentSwerveModuleStates = desiredStates;
                 boolean openLoop = false;
-                SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
+                SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
+                                RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
                 Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
                 frontRight.setDesiredState(desiredStates[0], openLoop);
                 frontLeft.setDesiredState(desiredStates[1], openLoop);
@@ -406,12 +432,16 @@ private final SysIdRoutine m_sysIdRoutine =
                 return odometer.getPoseMeters();
         }
 
-        public SwerveModuleState[] getCurrentModuleStates(){
-                 SwerveModuleState[] states = new SwerveModuleState[] {
-                                new SwerveModuleState(frontRight.getDriveVelocity(), new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
-                                new SwerveModuleState(frontLeft.getDriveVelocity(), new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
-                                new SwerveModuleState(backRight.getDriveVelocity(), new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
-                                new SwerveModuleState(backLeft.getDriveVelocity(), new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
+        public SwerveModuleState[] getCurrentModuleStates() {
+                SwerveModuleState[] states = new SwerveModuleState[] {
+                                new SwerveModuleState(frontRight.getDriveVelocity(),
+                                                new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
+                                new SwerveModuleState(frontLeft.getDriveVelocity(),
+                                                new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
+                                new SwerveModuleState(backRight.getDriveVelocity(),
+                                                new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
+                                new SwerveModuleState(backLeft.getDriveVelocity(),
+                                                new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
                 };
                 return states;
         }
@@ -445,17 +475,15 @@ private final SysIdRoutine m_sysIdRoutine =
                 odometer.update(getRotation2d(), swerveModulePositions);
         }
 
-
-        public ChassisSpeeds getRobotRelativeSpeeds(){
-                return ChassisSpeeds.fromFieldRelativeSpeeds(RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()), getRotation2d());
+        public ChassisSpeeds getRobotRelativeSpeeds() {
+                return ChassisSpeeds.fromFieldRelativeSpeeds(
+                                RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()), getRotation2d());
         }
 
-        public void driveRobotRelative(ChassisSpeeds chassisSpeeds){
+        public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
                 SwerveModuleState[] moduleStates = RobotMap.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
                 setModuleStates(moduleStates);
         }
-
-
 
         // Autonomous
         // Odometer used to get Pose2d of the robot.
@@ -478,30 +506,31 @@ private final SysIdRoutine m_sysIdRoutine =
         // https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage
 
         // * I copied this one from documentation */
-        // public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
-        //         return new SequentialCommandGroup(
-        //                         new InstantCommand(() -> {
-        //                                 // Reset odometry for the first path you run during auto
-        //                                 if (isFirstPath) {
-        //                                         this.setOdometry(traj.getInitialHolonomicPose());
-        //                                 }
-        //                         }),
-        //                         new WaitCommand(1),
-        //                         new FollowPathWithEvents(new PPSwerveControllerCommand(
-        //                                         traj,
-        //                                         this::getPose, // Pose supplier
-        //                                         RobotMap.DRIVE_KINEMATICS, // SwerveDriveKinematics
-        //                                         xPID, // X controller. Tune these values for your robot. Leaving them 0
-        //                                               // will only use feedforwards.
-        //                                         yPID, // Y controller (usually the same values as X controller)
-        //                                         turnPID, // Rotation controller. Tune these values for your robot.
-        //                                                  // Leaving them 0 will only use feedforwards.
-        //                                         this::setModuleStates, // Module states consumer
-        //                                         true, // Should the path be automatically mirrored depending on alliance
-        //                                               // color. Optional, defaults to true
-        //                                         this // Requires this drive subsystem
-        //                         ), traj.getMarkers(),
-        //                                         RobotContainer.eventMap));
+        // public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean
+        // isFirstPath) {
+        // return new SequentialCommandGroup(
+        // new InstantCommand(() -> {
+        // // Reset odometry for the first path you run during auto
+        // if (isFirstPath) {
+        // this.setOdometry(traj.getInitialHolonomicPose());
+        // }
+        // }),
+        // new WaitCommand(1),
+        // new FollowPathWithEvents(new PPSwerveControllerCommand(
+        // traj,
+        // this::getPose, // Pose supplier
+        // RobotMap.DRIVE_KINEMATICS, // SwerveDriveKinematics
+        // xPID, // X controller. Tune these values for your robot. Leaving them 0
+        // // will only use feedforwards.
+        // yPID, // Y controller (usually the same values as X controller)
+        // turnPID, // Rotation controller. Tune these values for your robot.
+        // // Leaving them 0 will only use feedforwards.
+        // this::setModuleStates, // Module states consumer
+        // true, // Should the path be automatically mirrored depending on alliance
+        // // color. Optional, defaults to true
+        // this // Requires this drive subsystem
+        // ), traj.getMarkers(),
+        // RobotContainer.eventMap));
         // }
 
         public Command moveCommand() {
@@ -583,13 +612,17 @@ private final SysIdRoutine m_sysIdRoutine =
         }
 
         public void initShuffleBoardEncoders() {
-                abs_Enc_FR_Offset_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_offset_list.getTitle())
+                abs_Enc_FR_Offset_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_offset_list.getTitle())
                                 .add(frontRight.getName(), frontRight.getAbsoluteEncoderRadiansOffset()).getEntry();
-                abs_Enc_FL_Offset_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_offset_list.getTitle())
+                abs_Enc_FL_Offset_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_offset_list.getTitle())
                                 .add(frontLeft.getName(), frontLeft.getAbsoluteEncoderRadiansOffset()).getEntry();
-                abs_Enc_BR_Offset_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_offset_list.getTitle())
+                abs_Enc_BR_Offset_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_offset_list.getTitle())
                                 .add(backRight.getName(), backRight.getAbsoluteEncoderRadiansOffset()).getEntry();
-                abs_Enc_BL_Offset_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_offset_list.getTitle())
+                abs_Enc_BL_Offset_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_offset_list.getTitle())
                                 .add(backLeft.getName(), backLeft.getAbsoluteEncoderRadiansOffset()).getEntry();
 
                 enc_FR_pos_Entry = Shuffleboard.getTab("Encoders").getLayout(turn_encoders_positions.getTitle())
@@ -601,13 +634,17 @@ private final SysIdRoutine m_sysIdRoutine =
                 enc_BL_pos_Entry = Shuffleboard.getTab("Encoders").getLayout(turn_encoders_positions.getTitle())
                                 .add(backLeft.getName(), backLeft.getTurnPosition()).getEntry();
 
-                abs_Enc_FR_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_no_offset_list.getTitle())
+                abs_Enc_FR_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(frontRight.getName(), frontRight.getAbsoluteEncoderRadiansNoOffset()).getEntry();
-                abs_Enc_FL_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_no_offset_list.getTitle())
+                abs_Enc_FL_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(frontLeft.getName(), frontLeft.getAbsoluteEncoderRadiansNoOffset()).getEntry();
-                abs_Enc_BR_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_no_offset_list.getTitle())
+                abs_Enc_BR_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(backRight.getName(), backRight.getAbsoluteEncoderRadiansNoOffset()).getEntry();
-                abs_Enc_BL_Entry = Shuffleboard.getTab("Encoders").getLayout(absolute_encoders_no_offset_list.getTitle())
+                abs_Enc_BL_Entry = Shuffleboard.getTab("Encoders")
+                                .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(backLeft.getName(), backLeft.getAbsoluteEncoderRadiansNoOffset()).getEntry();
 
         }
@@ -622,7 +659,6 @@ private final SysIdRoutine m_sysIdRoutine =
                 abs_Enc_FL_Entry.setDouble(frontLeft.getAbsoluteEncoderRadiansOffset());
                 abs_Enc_BR_Entry.setDouble(backRight.getAbsoluteEncoderRadiansOffset());
                 abs_Enc_BL_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansOffset());
-
 
                 enc_FR_pos_Entry.setDouble(frontRight.getTurnPosition());
                 enc_FL_pos_Entry.setDouble(frontLeft.getTurnPosition());
@@ -644,18 +680,18 @@ private final SysIdRoutine m_sysIdRoutine =
         }
 
         public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
+                return m_sysIdRoutine.quasistatic(direction);
+        }
 
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
+        public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+                return m_sysIdRoutine.dynamic(direction);
+        }
 
-  public void setDriveVoltages(double voltage){
-        frontRight.setDriveVoltage(voltage);
-        frontLeft.setDriveVoltage(voltage);
-        backRight.setDriveVoltage(voltage);
-        backLeft.setDriveVoltage(voltage);
-  }
+        public void setDriveVoltages(Measure<Voltage> volts) {
+                frontRight.setDriveVoltage(volts.in(Volts));
+                frontLeft.setDriveVoltage(volts.in(Volts));
+                backRight.setDriveVoltage(volts.in(Volts));
+                backLeft.setDriveVoltage(volts.in(Volts));
+        }
 
 }

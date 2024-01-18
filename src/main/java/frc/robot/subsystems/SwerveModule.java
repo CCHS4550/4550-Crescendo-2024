@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.RobotMap;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Class for controlling a swerve module. Each module has 2 motors, one for
@@ -257,6 +258,21 @@ public void setTurnPosition(){
         this.name = name;
     }
 
+    public double getTurnEncoderDistance(){
+        return turnMotor.getPosition();
+    }
+
+    public double getTurnEncoderVelocity(){
+        return turnMotor.getVelocity();
+    }
+
+    public double getDriveEncoderDistance(){
+        return driveMotor.getPosition();
+    }
+
+    public double getDriveEncoderVelocity(){
+        return driveMotor.getVelocity();
+    }
 
 
 /**
@@ -266,7 +282,8 @@ public void setTurnPosition(){
 public void runCharacterization(Measure<Voltage> volts) {
     // System.out.println(volts.in(Volts));
     setDesiredState(new SwerveModuleState(),false);
-    driveMotor.setVoltage(volts);
+    driveMotor.setVoltage(volts.in(Volts));
+    // turnMotor.setVoltage(volts.in(Volts));
 }
 
 }
