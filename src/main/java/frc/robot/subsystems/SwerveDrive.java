@@ -8,7 +8,6 @@ import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import static edu.wpi.first.units.MutableMeasure.mutable;
@@ -40,13 +39,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -57,9 +52,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.RobotMap;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and
@@ -689,6 +682,15 @@ public class SwerveDrive extends SubsystemBase {
         frontLeft.setDriveVoltage(volts.in(Volts));
         backRight.setDriveVoltage(volts.in(Volts));
         backLeft.setDriveVoltage(volts.in(Volts));
+    }
+
+    public void runCharacterization(Measure<Voltage> volts) {
+        // characterizationVolts.mut_replace(volts.in(Volts), Volts);
+        // // Run in characterization mode
+        // for (var module : modules) {
+        //     module.runCharacterization(volts);
+        // }
+        frontRight.runCharacterization(volts);
     }
 
 }
