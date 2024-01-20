@@ -29,7 +29,7 @@ public class SwerveModule extends SubsystemBase {
     private CCSparkMax turnMotor;
 
     private PIDController turningPIDController, drivingPidController;
-    private SimpleMotorFeedforward driveFeedforward/*, turnFeedforward*/;
+    private SimpleMotorFeedforward driveFeedforward/* , turnFeedforward */;
 
     // private SparkPIDController turningPIDController;
 
@@ -66,9 +66,10 @@ public class SwerveModule extends SubsystemBase {
 
         drivingPidController = new PIDController(0.5, 0, 0);
 
-        //possibly kA values too, if sysid provides those
+        // possibly kA values too, if sysid provides those
         driveFeedforward = new SimpleMotorFeedforward(RobotMap.DRIVEKS, RobotMap.DRIVEKV);
-        // turnFeedforward = new SimpleMotorFeedforward(RobotMap.TURNKS, RobotMap.TURNKV);
+        // turnFeedforward = new SimpleMotorFeedforward(RobotMap.TURNKS,
+        // RobotMap.TURNKV);
 
         this.name = name;
         resetEncoders();
@@ -93,7 +94,8 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Gets the speed of the drive motor. Obtained using max speed given 12V of power.
+     * Gets the speed of the drive motor. Obtained using max speed given 12V of
+     * power.
      * 
      * @return The speed of the drive motor in m/s.
      */
@@ -137,12 +139,12 @@ public class SwerveModule extends SubsystemBase {
         return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffset;
     }
 
-
     /**
      * Gets the reading of the absolute encoder with offset.
-     * Used for getting the offset. 
+     * Used for getting the offset.
      * 
-     * @return The value of the absolute encoder in radians without the offset applied.
+     * @return The value of the absolute encoder in radians without the offset
+     *         applied.
      */
     public double getAbsoluteEncoderRadiansNoOffset() {
         return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition());
@@ -169,10 +171,12 @@ public class SwerveModule extends SubsystemBase {
 
     /**
      * Sets the state of the module.
-     * @param state The state to set the swerve module to in SwerveModuleState format.
+     * 
+     * @param state The state to set the swerve module to in SwerveModuleState
+     *              format.
      */
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
-        if(Math.abs(desiredState.speedMetersPerSecond) <= .005){
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
+        if (Math.abs(desiredState.speedMetersPerSecond) <= .005) {
             stop();
             return;
         }
@@ -183,29 +187,24 @@ public class SwerveModule extends SubsystemBase {
         // Minimizes side drift when driving
         state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
-        //integrate max speed here
-        // isOpenLoop would be true in teleop perhaps because some drivers, like ours prefers it that way
+        setDriveVelocity(state.speedMetersPerSecond);
+        setTurnPosition(state.angle.getRadians());
 
-        // These are both in m/s
-        double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), state.speedMetersPerSecond);
-        //Feed forward
-        double driveFf = driveFeedforward.calculate(state.speedMetersPerSecond);
-        
-        // Likely no need for feed forward here, as the change is minimal
-        double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), state.angle.getRadians());
-
-
-        driveMotor.setVoltage(driveOutput + driveFf);
-        turnMotor.setVoltage(turnOutput);
     }
 
-public void setDriveVelocity(){
+    public void setDriveVelocity(double velocity) {
+        // These are both in m/s
+        double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
+        // Feed forward
+        double driveFf = driveFeedforward.calculate(velocity);
 
-}
+        driveMotor.setVoltage(driveOutput + driveFf);
+    }
 
-public void setTurnPosition(){
-
-}
+    public void setTurnPosition(double angle) {
+        double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), angle);
+        turnMotor.setVoltage(turnOutput);
+    }
 
     /**
      * Sets the speed of the drive and turn motors to 0.
@@ -215,11 +214,11 @@ public void setTurnPosition(){
         turnMotor.setVoltageFromSpeed(0);
     }
 
-    public void setDriveVoltage(double voltage){
+    public void setDriveVoltage(double voltage) {
         driveMotor.setVoltage(voltage);
     }
 
-    public void setTurnVoltage(double voltage){
+    public void setTurnVoltage(double voltage) {
         turnMotor.setVoltage(voltage);
     }
 
@@ -255,32 +254,32 @@ public void setTurnPosition(){
         this.name = name;
     }
 
-    public double getTurnEncoderDistance(){
-    return turnMotor.getPosition();
+    public double getTurnEncoderDistance() {
+        return turnMotor.getPosition();
     }
 
-    public double getTurnEncoderVelocity(){
+    public double getTurnEncoderVelocity() {
         return turnMotor.getVelocity();
     }
 
-    public double getDriveEncoderDistance(){
+    public double getDriveEncoderDistance() {
         return driveMotor.getPosition();
     }
 
-    public double getDriveEncoderVelocity(){
+    public double getDriveEncoderVelocity() {
         return driveMotor.getVelocity();
     }
 
-
-/**
- * Runs the module with the specified voltage while controlling to zero degrees. Must be called
- * periodically.
- */
-public void runCharacterization(Measure<Voltage> volts) {
-    // System.out.println(volts.in(Volts));
-    setDesiredState(new SwerveModuleState(),false);
-    driveMotor.setVoltage(volts.in(Volts));
-    // turnMotor.setVoltage(volts.in(Volts));
-}
+    /**
+     * Runs the module with the specified voltage while controlling to zero degrees.
+     * Must be called
+     * periodically.
+     */
+    public void runCharacterization(Measure<Voltage> volts) {
+        // System.out.println(volts.in(Volts));
+        setDesiredState(new SwerveModuleState(), false);
+        driveMotor.setVoltage(volts.in(Volts));
+        // turnMotor.setVoltage(volts.in(Volts));
+    }
 
 }

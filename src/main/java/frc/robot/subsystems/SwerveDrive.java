@@ -8,6 +8,7 @@ import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import static edu.wpi.first.units.MutableMeasure.mutable;
@@ -156,6 +157,8 @@ public class SwerveDrive extends SubsystemBase {
             RobotMap.BACK_LEFT_ABSOLUTE_ENCODER,
             RobotMap.BACK_LEFT_ABSOLUTE_ENCODER_OFFSET,
             "Back Left");
+
+    private SwerveModule[] swerveModules = new SwerveModule[] { frontRight, frontLeft, backRight, backLeft };
     // Initialize gyro
     private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -193,48 +196,74 @@ public class SwerveDrive extends SubsystemBase {
     // .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
     // .withSize(2, 2);
 
+    // // Mutable holder for unit-safe voltage values, persisted to avoid
+    // reallocation.
+    // private final MutableMeasure<Voltage> m_appliedVoltage =
+    // mutable(Volts.of(0));
+    // // Mutable holder for unit-safe linear distance values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
+    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Velocity<Angle>> m_velocity =
+    // mutable(RadiansPerSecond.of(0));
+
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
     // Mutable holder for unit-safe linear distance values, persisted to avoid
     // reallocation.
-    private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
+    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
     // Mutable holder for unit-safe linear velocity values, persisted to avoid
     // reallocation.
-    private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RadiansPerSecond.of(0));
+    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
-    private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-            // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                    // Tell SysId how to plumb the driving voltage to the motors.
-                    (Measure<Voltage> volts) -> {
-                        setDriveVoltages(volts);
-                    },
-                    // Tell SysId how to record a frame of data for each motor on the mechanism
-                    // being
-                    // characterized.
-                    log -> {
-                        // Record a frame for the left motors. Since these share an encoder, we
-                        // consider
-                        // the entire group to be one motor.
-                        log.motor("turn-motors")
-                                .voltage(
-                                        m_appliedVoltage.mut_replace(
-                                                Volts.of(frontRight
-                                                        .getTurnVoltage())))
-                                .angularPosition(
-                                        m_distance.mut_replace(
-                                                frontRight.getTurnEncoderDistance(),
-                                                Radians))
-                                .angularVelocity(
-                                        m_velocity.mut_replace(
-                                                frontRight.getTurnEncoderVelocity(),
-                                                RadiansPerSecond));
-                    },
-                    // Tell SysId to make generated commands require this subsystem, suffix test
-                    // state in
-                    // WPILog with this subsystem's name ("drive")
-                    this));
+    // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+    //         // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+    //         new SysIdRoutine.Config(),
+    //         new SysIdRoutine.Mechanism(
+    //                 // Tell SysId how to plumb the driving voltage to the motors.
+    //                 (Measure<Voltage> volts) -> {
+    //                     setDriveVoltages(volts);
+    //                 },
+    //                 // Tell SysId how to record a frame of data for each motor on the mechanism
+    //                 // being
+    //                 // characterized.
+    //                 log -> {
+    //                     // Record a frame for the left motors. Since these share an encoder, we
+    //                     // consider
+    //                     // the entire group to be one motor.
+    //                     log.motor("drive-motors")
+    //                             .voltage(
+    //                                     m_appliedVoltage.mut_replace(
+    //                                             Volts.of(frontRight
+    //                                                     .getTurnVoltage())))
+    //                             .linearPosition(
+    //                                     m_distance.mut_replace(
+    //                                             frontRight.getTurnEncoderDistance(),
+    //                                             Meters))
+    //                             .linearVelocity(
+    //                                     m_velocity.mut_replace(
+    //                                             frontRight.getTurnEncoderVelocity(),
+    //                                             MetersPerSecond));
+    //                 },
+    //                 // Tell SysId to make generated commands require this subsystem, suffix test
+    //                 // state in
+    //                 // WPILog with this subsystem's name ("drive")
+    //                 this));
+
+
+                    SysIdRoutine sysIdRoutine = new SysIdRoutine(
+                        new SysIdRoutine.Config(),
+                        new SysIdRoutine.Mechanism(
+                          (voltage) -> setDriveVoltages(voltage),
+                          null, // No log consumer, since data is recorded by URCL
+                          this
+                        )
+                      );
+
+
+
+
 
     /**
      * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
@@ -276,16 +305,6 @@ public class SwerveDrive extends SubsystemBase {
             }
         }).start();
 
-        // currentSwerveModuleStates = new SwerveModuleState[]{new
-        // SwerveModuleState(0.0, new
-        // Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),new
-        // SwerveModuleState(0.0, new
-        // Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),new
-        // SwerveModuleState(0.0, new
-        // Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),new
-        // SwerveModuleState(0.0, new
-        // Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))};
-
         AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
                 this::setOdometry, // Method to reset odometry (will be called if your auto has a
@@ -326,10 +345,6 @@ public class SwerveDrive extends SubsystemBase {
      */
     public void zeroHeading() {
         gyro.reset();
-    }
-
-    public double getRoll() {
-        return gyro.getRoll();
     }
 
     /**
@@ -533,73 +548,6 @@ public class SwerveDrive extends SubsystemBase {
         return new SwerveControllerCommand(trajectory, this::getPose, RobotMap.DRIVE_KINEMATICS, xPID, yPID,
                 turnPIDProfiled, this::setModuleStates, this);
     }
-    // public Command moveTo(double position) {
-    // return new RunCommand(() -> {
-    // double speed = yPID.calculate(frontRight.getDrivePosition(), position) *
-    // RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND;
-    // SwerveModuleState[] states = {new SwerveModuleState(speed, new
-    // Rotation2d(frontRight.getTurnPosition())), new SwerveModuleState(speed, new
-    // Rotation2d(frontLeft.getTurnPosition())), new SwerveModuleState(speed, new
-    // Rotation2d(backRight.getTurnPosition())), new SwerveModuleState(speed, new
-    // Rotation2d(backLeft.getTurnPosition()))};
-    // setModuleStates(states);
-    // }, this) {
-    // @Override
-    // public boolean isFinished() {
-    // return Math.abs(frontRight.getDrivePosition() - position) < 0.2;
-    // }
-    // };
-    // }
-
-    public void test(double driveSpeed, double turnSpeed) {
-        backRight.driveAndTurn(driveSpeed, turnSpeed);
-        backRight.printEncoders();
-    }
-
-    public void resetAbsoluteEncoders() {
-        frontRight.resetAbsoluteEncoder();
-        frontLeft.resetAbsoluteEncoder();
-        backRight.resetAbsoluteEncoder();
-        backLeft.resetAbsoluteEncoder();
-    }
-
-    public void printAbsoluteEncoders() {
-        frontRight.printAbsoluteEncoder();
-        frontLeft.printAbsoluteEncoder();
-        backRight.printAbsoluteEncoder();
-        backLeft.printAbsoluteEncoder();
-    }
-
-    public void resetEncoders() {
-        frontRight.resetEncoders();
-        frontLeft.resetEncoders();
-        backRight.resetEncoders();
-        backLeft.resetEncoders();
-    }
-
-    public void printFrontRight() {
-        frontRight.printEncoders();
-        frontRight.printAbsoluteEncoder();
-    }
-
-    public void printFrontLeft() {
-        frontLeft.printEncoders();
-        frontLeft.printAbsoluteEncoder();
-    }
-
-    public void printBackRight() {
-        backRight.printEncoders();
-        backRight.printAbsoluteEncoder();
-    }
-
-    public void printBackLeft() {
-        backLeft.printEncoders();
-        backLeft.printAbsoluteEncoder();
-    }
-
-    public void printPos2d() {
-        System.out.println(odometer.getPoseMeters());
-    }
 
     public void initShuffleBoardEncoders() {
         abs_Enc_FR_Offset_Entry = Shuffleboard.getTab("Encoders")
@@ -670,27 +618,77 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.quasistatic(direction);
+        return sysIdRoutine.quasistatic(direction);
     }
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutine.dynamic(direction);
+        return sysIdRoutine.dynamic(direction);
     }
 
     public void setDriveVoltages(Measure<Voltage> volts) {
-        frontRight.setDriveVoltage(volts.in(Volts));
-        frontLeft.setDriveVoltage(volts.in(Volts));
-        backRight.setDriveVoltage(volts.in(Volts));
-        backLeft.setDriveVoltage(volts.in(Volts));
+        for (SwerveModule s : swerveModules) {
+            s.setTurnPosition(0);
+            s.setDriveVoltage(volts.in(Volts));
+        }
+        // frontRight.setDriveVoltage(volts.in(Volts));
+        // frontLeft.setDriveVoltage(volts.in(Volts));
+        // backRight.setDriveVoltage(volts.in(Volts));
+        // backLeft.setDriveVoltage(volts.in(Volts));
     }
 
-    public void runCharacterization(Measure<Voltage> volts) {
-        // characterizationVolts.mut_replace(volts.in(Volts), Volts);
-        // // Run in characterization mode
-        // for (var module : modules) {
-        //     module.runCharacterization(volts);
-        // }
-        frontRight.runCharacterization(volts);
+
+    public void test(double driveSpeed, double turnSpeed) {
+        backRight.driveAndTurn(driveSpeed, turnSpeed);
+        backRight.printEncoders();
+    }
+
+    public void resetAbsoluteEncoders() {
+        frontRight.resetAbsoluteEncoder();
+        frontLeft.resetAbsoluteEncoder();
+        backRight.resetAbsoluteEncoder();
+        backLeft.resetAbsoluteEncoder();
+    }
+
+    public void printAbsoluteEncoders() {
+        frontRight.printAbsoluteEncoder();
+        frontLeft.printAbsoluteEncoder();
+        backRight.printAbsoluteEncoder();
+        backLeft.printAbsoluteEncoder();
+    }
+
+    public void resetEncoders() {
+        frontRight.resetEncoders();
+        frontLeft.resetEncoders();
+        backRight.resetEncoders();
+        backLeft.resetEncoders();
+    }
+
+    public void printFrontRight() {
+        frontRight.printEncoders();
+        frontRight.printAbsoluteEncoder();
+    }
+
+    public void printFrontLeft() {
+        frontLeft.printEncoders();
+        frontLeft.printAbsoluteEncoder();
+    }
+
+    public void printBackRight() {
+        backRight.printEncoders();
+        backRight.printAbsoluteEncoder();
+    }
+
+    public void printBackLeft() {
+        backLeft.printEncoders();
+        backLeft.printAbsoluteEncoder();
+    }
+
+    public void printPos2d() {
+        System.out.println(odometer.getPoseMeters());
+    }
+
+    public double getRoll() {
+        return gyro.getRoll();
     }
 
 }
