@@ -11,6 +11,8 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Unit;
+
 import static edu.wpi.first.units.MutableMeasure.mutable;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -180,6 +182,8 @@ public class SwerveDrive extends SubsystemBase {
     // private GenericEntry enc_FR_vel_Entry, enc_FL_vel_Entry, enc_BR_vel_Entry,
     // enc_BL_vel_Entry;
 
+    private final Unit<Velocity<Voltage>> VoltsPerSecond = Volts.per(Second);
+
     // ShuffleBoardLayouts for putting encoders onto the board
     private ShuffleboardLayout absolute_encoders_offset_list = Shuffleboard.getTab("Encoders")
             .getLayout("Absolute Encoders Offset", BuiltInLayouts.kGrid).withSize(2, 2);
@@ -253,14 +257,13 @@ public class SwerveDrive extends SubsystemBase {
 
 
                     SysIdRoutine sysIdRoutine = new SysIdRoutine(
-                        new SysIdRoutine.Config(),
+                        new SysIdRoutine.Config(VoltsPerSecond.of(1),Volts.of(5),Seconds.of(5)),
                         new SysIdRoutine.Mechanism(
                           (voltage) -> setDriveVoltages(voltage),
                           null, // No log consumer, since data is recorded by URCL
                           this
                         )
                       );
-
 
 
 
