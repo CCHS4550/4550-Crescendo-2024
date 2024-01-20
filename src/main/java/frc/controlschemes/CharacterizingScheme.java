@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,6 +38,7 @@ public class CharacterizingScheme implements ControlScheme{
             .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
         new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
             .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        new JoystickButton(controllers[port], ControlMap.RB_BUTTON).onTrue(Commands.runOnce(() -> swerveDrive.zeroHeading(), swerveDrive));
     }
 
 
