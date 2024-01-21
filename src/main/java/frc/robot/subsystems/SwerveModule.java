@@ -67,9 +67,7 @@ public class SwerveModule extends SubsystemBase {
         drivingPidController = new PIDController(0.5, 0, 0);
 
         // possibly kA values too, if sysid provides those
-        driveFeedforward = new SimpleMotorFeedforward(RobotMap.DRIVEKS, RobotMap.DRIVEKV);
-        // turnFeedforward = new SimpleMotorFeedforward(RobotMap.TURNKS,
-        // RobotMap.TURNKV);
+        driveFeedforward = new SimpleMotorFeedforward(RobotMap.DRIVE_KS, RobotMap.DRIVE_KV,RobotMap.DRIVE_KA);
 
         this.name = name;
         resetEncoders();
