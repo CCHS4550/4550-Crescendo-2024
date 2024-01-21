@@ -222,51 +222,45 @@ public class SwerveDrive extends SubsystemBase {
     private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
     // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-    //         // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-    //         new SysIdRoutine.Config(),
-    //         new SysIdRoutine.Mechanism(
-    //                 // Tell SysId how to plumb the driving voltage to the motors.
-    //                 (Measure<Voltage> volts) -> {
-    //                     setDriveVoltages(volts);
-    //                 },
-    //                 // Tell SysId how to record a frame of data for each motor on the mechanism
-    //                 // being
-    //                 // characterized.
-    //                 log -> {
-    //                     // Record a frame for the left motors. Since these share an encoder, we
-    //                     // consider
-    //                     // the entire group to be one motor.
-    //                     log.motor("drive-motors")
-    //                             .voltage(
-    //                                     m_appliedVoltage.mut_replace(
-    //                                             Volts.of(frontRight
-    //                                                     .getTurnVoltage())))
-    //                             .linearPosition(
-    //                                     m_distance.mut_replace(
-    //                                             frontRight.getTurnEncoderDistance(),
-    //                                             Meters))
-    //                             .linearVelocity(
-    //                                     m_velocity.mut_replace(
-    //                                             frontRight.getTurnEncoderVelocity(),
-    //                                             MetersPerSecond));
-    //                 },
-    //                 // Tell SysId to make generated commands require this subsystem, suffix test
-    //                 // state in
-    //                 // WPILog with this subsystem's name ("drive")
-    //                 this));
+    // // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+    // new SysIdRoutine.Config(),
+    // new SysIdRoutine.Mechanism(
+    // // Tell SysId how to plumb the driving voltage to the motors.
+    // (Measure<Voltage> volts) -> {
+    // setDriveVoltages(volts);
+    // },
+    // // Tell SysId how to record a frame of data for each motor on the mechanism
+    // // being
+    // // characterized.
+    // log -> {
+    // // Record a frame for the left motors. Since these share an encoder, we
+    // // consider
+    // // the entire group to be one motor.
+    // log.motor("drive-motors")
+    // .voltage(
+    // m_appliedVoltage.mut_replace(
+    // Volts.of(frontRight
+    // .getTurnVoltage())))
+    // .linearPosition(
+    // m_distance.mut_replace(
+    // frontRight.getTurnEncoderDistance(),
+    // Meters))
+    // .linearVelocity(
+    // m_velocity.mut_replace(
+    // frontRight.getTurnEncoderVelocity(),
+    // MetersPerSecond));
+    // },
+    // // Tell SysId to make generated commands require this subsystem, suffix test
+    // // state in
+    // // WPILog with this subsystem's name ("drive")
+    // this));
 
-
-                    SysIdRoutine sysIdRoutine = new SysIdRoutine(
-                        new SysIdRoutine.Config(VoltsPerSecond.of(1),Volts.of(5),Seconds.of(5)),
-                        new SysIdRoutine.Mechanism(
-                          (voltage) -> setDriveVoltages(voltage),
-                          null, // No log consumer, since data is recorded by URCL
-                          this
-                        )
-                      );
-
-
-
+    SysIdRoutine sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5)),
+            new SysIdRoutine.Mechanism(
+                    (voltage) -> setDriveVoltages(voltage),
+                    null, // No log consumer, since data is recorded by URCL
+                    this));
 
     /**
      * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
@@ -308,6 +302,9 @@ public class SwerveDrive extends SubsystemBase {
             }
         }).start();
 
+        /**
+         * The autobuilder for Path Planner Autos
+         */
         AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
                 this::setOdometry, // Method to reset odometry (will be called if your auto has a
@@ -393,10 +390,6 @@ public class SwerveDrive extends SubsystemBase {
         updateShuffleBoardEncoders();
 
         updateOdometer();
-    }
-
-    public void toggleEvent() {
-        test = !test;
     }
 
     /**
@@ -605,11 +598,6 @@ public class SwerveDrive extends SubsystemBase {
         enc_FL_pos_Entry.setDouble(frontLeft.getTurnPosition());
         enc_BR_pos_Entry.setDouble(backRight.getTurnPosition());
         enc_BL_pos_Entry.setDouble(backLeft.getTurnPosition());
-
-        // enc_FR_vel_Entry.setDouble(frontRight.getTurnVelocity());
-        // enc_FL_vel_Entry.setDouble(frontLeft.getTurnVelocity());
-        // enc_BR_vel_Entry.setDouble(backRight.getTurnVelocity());
-        // enc_BL_vel_Entry.setDouble(backLeft.getTurnVelocity());
     }
 
     public void printWorld() {
@@ -620,25 +608,38 @@ public class SwerveDrive extends SubsystemBase {
         return gyro.getPitch() - 1.14;
     }
 
+    /**
+     * Used only in characterizing. Don't touch this.
+     * 
+     * @param direction
+     * @return
+     */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
     }
 
+    /**
+     * Used only in characterizing. Don't touch this.
+     * 
+     * @param direction
+     * @return a command
+     */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
 
+    /**
+     * Used only in Characterizing. Don't touch this. Sets the provided voltages and
+     * locks the wheels to 0 radians.
+     * 
+     * @param volts
+     */
     public void setDriveVoltages(Measure<Voltage> volts) {
         for (SwerveModule s : swerveModules) {
             s.setTurnPosition(0);
             s.setDriveVoltage(volts.in(Volts));
         }
-        // frontRight.setDriveVoltage(volts.in(Volts));
-        // frontLeft.setDriveVoltage(volts.in(Volts));
-        // backRight.setDriveVoltage(volts.in(Volts));
-        // backLeft.setDriveVoltage(volts.in(Volts));
     }
-
 
     public void test(double driveSpeed, double turnSpeed) {
         backRight.driveAndTurn(driveSpeed, turnSpeed);
