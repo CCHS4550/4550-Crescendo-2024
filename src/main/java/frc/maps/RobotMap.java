@@ -49,7 +49,7 @@ public interface RobotMap {
     //horizontal distance travelled by one motor rotation
     public static final double HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION = WHEEL_CIRCUMFRENCE
             * DRIVE_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS;
-    public static final double DRIVE_MOTOR_METERS_PER_SECOND = HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0; 
+    public static final double DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR = HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION / 60.0; 
 
 
      public static final int FRONT_RIGHT_DRIVE = 6;
@@ -94,6 +94,10 @@ public interface RobotMap {
     // public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 4.85;
     // public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 2.49;
     // public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 5.42;
+
+    // Robot Constants (change with SysId)
+    //max speed in free sprint: used in getting velocities of swerve modules
+    public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL = 4.72;
 
     //new
     public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.968 - Math.PI;
@@ -148,5 +152,13 @@ public interface RobotMap {
     /*To Do */
     public static final int LED_PORT = 0;
     public static final int LED_LENGTH = 50;
+
+    //TODO Do sysid to et values
+    public static final double DRIVE_KS = 0.14222;
+    public static final double DRIVE_KV = 2.5769;
+    public static final double DRIVE_KA = 0.29973;
+    
+    public static final double TURNKS = 0;
+    public static final double TURNKV = 0;
 
 }

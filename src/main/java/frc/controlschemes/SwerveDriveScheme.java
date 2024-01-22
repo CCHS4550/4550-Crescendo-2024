@@ -9,10 +9,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.ControlScheme;
 import frc.helpers.OI;
 import frc.maps.ControlMap;
@@ -36,7 +36,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port The controller port of the driving controller.
      */
-    public static void configure(SwerveDrive swerveDrive, int port){
+    public static void configure(SwerveDrive swerveDrive, int port, boolean characterizing){
         Shuffleboard.getTab("Diagnostics").getLayout("Swerve", "List").add("isCentric",fieldCentric).withWidget(BuiltInWidgets.kBooleanBox);
        Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier).withWidget(BuiltInWidgets.kToggleSwitch);
 
@@ -49,13 +49,13 @@ public class SwerveDriveScheme implements ControlScheme {
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             //Set x, y, and turn speed based on joystick inputs
-            double xSpeed = -OI.axis(port, ControlMap.L_JOYSTICK_VERTICAL) * .75 * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1));
-            double ySpeed = -OI.axis(port, ControlMap.L_JOYSTICK_HORIZONTAL) * .75 * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1));
+            double xSpeed = -OI.axis(port, ControlMap.L_JOYSTICK_VERTICAL) * .75 * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1)) * RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
+            double ySpeed = -OI.axis(port, ControlMap.L_JOYSTICK_HORIZONTAL) * .75 * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1)) * RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
             double turnSpeed = 0;
             if(!orientationLocked) {
                 turnSpeed = -OI.axis(port, ControlMap.R_JOYSTICK_HORIZONTAL);
             } else {
-                turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle);
+                turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle) * 2;
             }
             
 
@@ -81,7 +81,7 @@ public class SwerveDriveScheme implements ControlScheme {
             swerveDrive.setModuleStates(moduleStates);
             
         }, swerveDrive).withName("Swerve Controller Command"));
-        configureButtons(swerveDrive, port);
+        configureButtons(swerveDrive, port, characterizing);
     }
 
     /**
@@ -89,7 +89,8 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port The controller port of the driving controller.
      */
-    private static void configureButtons(SwerveDrive swerveDrive, int port){
+    private static void configureButtons(SwerveDrive swerveDrive, int port, boolean characterizing){
+        if(!characterizing){
         new JoystickButton(controllers[port], ControlMap.B_BUTTON)
             .onTrue(new InstantCommand(() -> toggleFieldCentric()));
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
@@ -99,6 +100,17 @@ public class SwerveDriveScheme implements ControlScheme {
         new JoystickButton(controllers[port], ControlMap.X_BUTTON)
             .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
             .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
+        }else{
+             new JoystickButton(controllers[port], ControlMap.A_BUTTON)
+            .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        new JoystickButton(controllers[port], ControlMap.B_BUTTON)
+            .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        new JoystickButton(controllers[port], ControlMap.X_BUTTON)
+            .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
+        new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
+            .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+            
+        }
     }
 
     /**

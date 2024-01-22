@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
-import frc.controlschemes.Testing;
 import frc.maps.RobotMap;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.SwerveDrive;
@@ -42,9 +41,10 @@ Field2d ff;
         swerveDrive = new SwerveDrive();
         led = new Leds(RobotMap.LED_PORT, RobotMap.LED_LENGTH);
 
-        
         //initialize controller schemes here
-        SwerveDriveScheme.configure(swerveDrive, 0);
+        // SwerveDriveScheme.configure(swerveDrive, 0, true);
+
+        CharacterizingScheme.configure(swerveDrive, 0);
 
         
         // Testing.configure(swerveDrive, 0);
