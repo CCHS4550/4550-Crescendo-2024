@@ -213,13 +213,13 @@ public class SwerveDrive extends SubsystemBase {
     // mutable(RadiansPerSecond.of(0));
 
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-    // Mutable holder for unit-safe linear distance values, persisted to avoid
-    // reallocation.
-    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid
-    // reallocation.
-    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+    // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+    // // Mutable holder for unit-safe linear distance values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
     // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
     // // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
@@ -612,7 +612,7 @@ public class SwerveDrive extends SubsystemBase {
      * Used only in characterizing. Don't touch this.
      * 
      * @param direction
-     * @return
+     * @return the quasistatic characterization test
      */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
@@ -622,7 +622,7 @@ public class SwerveDrive extends SubsystemBase {
      * Used only in characterizing. Don't touch this.
      * 
      * @param direction
-     * @return a command
+     * @return the dynamic characterization test
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
@@ -644,47 +644,6 @@ public class SwerveDrive extends SubsystemBase {
     public void test(double driveSpeed, double turnSpeed) {
         backRight.driveAndTurn(driveSpeed, turnSpeed);
         backRight.printEncoders();
-    }
-
-    public void resetAbsoluteEncoders() {
-        frontRight.resetAbsoluteEncoder();
-        frontLeft.resetAbsoluteEncoder();
-        backRight.resetAbsoluteEncoder();
-        backLeft.resetAbsoluteEncoder();
-    }
-
-    public void printAbsoluteEncoders() {
-        frontRight.printAbsoluteEncoder();
-        frontLeft.printAbsoluteEncoder();
-        backRight.printAbsoluteEncoder();
-        backLeft.printAbsoluteEncoder();
-    }
-
-    public void resetEncoders() {
-        frontRight.resetEncoders();
-        frontLeft.resetEncoders();
-        backRight.resetEncoders();
-        backLeft.resetEncoders();
-    }
-
-    public void printFrontRight() {
-        frontRight.printEncoders();
-        frontRight.printAbsoluteEncoder();
-    }
-
-    public void printFrontLeft() {
-        frontLeft.printEncoders();
-        frontLeft.printAbsoluteEncoder();
-    }
-
-    public void printBackRight() {
-        backRight.printEncoders();
-        backRight.printAbsoluteEncoder();
-    }
-
-    public void printBackLeft() {
-        backLeft.printEncoders();
-        backLeft.printAbsoluteEncoder();
     }
 
     public void printPos2d() {
