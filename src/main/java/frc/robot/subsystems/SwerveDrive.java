@@ -314,10 +314,10 @@ public class SwerveDrive extends SubsystemBase {
                                           // ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
                                                  // in your Constants class
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, // Max module speed, in m/s
-                        0.8621, // Drive base radius in meters. Distance from robot center to
+                        new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(0.5, 0.0, 0.0), // Rotation PID constants
+                        RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
+                        0.43105, // Drive base radius in meters. Distance from robot center to
                                 // furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API
                                                // for the options here
@@ -477,7 +477,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
-        return ChassisSpeeds.fromFieldRelativeSpeeds(
+        return ChassisSpeeds.fromRobotRelativeSpeeds(
                 RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()), getRotation2d());
     }
 

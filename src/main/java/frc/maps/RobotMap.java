@@ -106,8 +106,8 @@ public interface RobotMap {
     public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 2.378 - Math.PI;
 
     //Velocity Limits
-    public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND = 2;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 1 * Math.PI;
+    public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND = 5;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 4 * Math.PI;
 
     //Rate Limiters (acceleration)
     public static final double DRIVE_RATE_LIMIT = MAX_DRIVE_SPEED_METERS_PER_SECOND * 1.5;

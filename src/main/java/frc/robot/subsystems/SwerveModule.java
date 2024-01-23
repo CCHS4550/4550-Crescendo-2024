@@ -98,7 +98,7 @@ public class SwerveModule extends SubsystemBase {
      * @return The speed of the drive motor in m/s.
      */
     public double getDriveVelocity() {
-        return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12 * driveMotor.getBusVoltage();
+        return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.getBusVoltage();
     }
 
     /**
