@@ -57,6 +57,7 @@ public class SwerveDriveScheme implements ControlScheme {
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle) * 2;
             }
+            turnSpeed *= 2 * Math.PI;
             
 
             //Limits acceleration and speed
@@ -90,7 +91,6 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param port The controller port of the driving controller.
      */
     private static void configureButtons(SwerveDrive swerveDrive, int port, boolean characterizing){
-        if(!characterizing){
         new JoystickButton(controllers[port], ControlMap.B_BUTTON)
             .onTrue(new InstantCommand(() -> toggleFieldCentric()));
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
@@ -100,17 +100,6 @@ public class SwerveDriveScheme implements ControlScheme {
         new JoystickButton(controllers[port], ControlMap.X_BUTTON)
             .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
             .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
-        }else{
-             new JoystickButton(controllers[port], ControlMap.A_BUTTON)
-            .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-            .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        new JoystickButton(controllers[port], ControlMap.X_BUTTON)
-            .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
-        new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-            .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-            
-        }
     }
 
     /**
