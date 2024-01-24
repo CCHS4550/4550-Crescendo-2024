@@ -540,16 +540,16 @@ public class SwerveDrive extends SubsystemBase {
     // RobotContainer.eventMap));
     // }
 
-    public Command moveCommand() {
-        List<Translation2d> midpts = new ArrayList<Translation2d>();
-        midpts.add(new Translation2d(1, 0));
-        TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, 1)
-                .setKinematics(RobotMap.DRIVE_KINEMATICS);
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
-                midpts, new Pose2d(2.5, 0, new Rotation2d(0)), trajectoryConfig);
-        return new SwerveControllerCommand(trajectory, this::getPose, RobotMap.DRIVE_KINEMATICS, xPID, yPID,
-                turnPIDProfiled, this::setModuleStates, this);
-    }
+    // public Command moveCommand() {
+    //     List<Translation2d> midpts = new ArrayList<Translation2d>();
+    //     midpts.add(new Translation2d(1, 0));
+    //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, 1)
+    //             .setKinematics(RobotMap.DRIVE_KINEMATICS);
+    //     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
+    //             midpts, new Pose2d(2.5, 0, new Rotation2d(0)), trajectoryConfig);
+    //     return new SwerveControllerCommand(trajectory, this::getPose, RobotMap.DRIVE_KINEMATICS, xPID, yPID,
+    //             turnPIDProfiled, this::setModuleStates, this);
+    // }
 
     public void initShuffleBoardEncoders() {
         abs_Enc_FR_Offset_Entry = Shuffleboard.getTab("Encoders")

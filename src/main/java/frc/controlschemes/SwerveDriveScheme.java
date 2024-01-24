@@ -36,7 +36,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port The controller port of the driving controller.
      */
-    public static void configure(SwerveDrive swerveDrive, int port, boolean characterizing){
+    public static void configure(SwerveDrive swerveDrive, int port){
         Shuffleboard.getTab("Diagnostics").getLayout("Swerve", "List").add("isCentric",fieldCentric).withWidget(BuiltInWidgets.kBooleanBox);
        Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier).withWidget(BuiltInWidgets.kToggleSwitch);
 
@@ -82,7 +82,7 @@ public class SwerveDriveScheme implements ControlScheme {
             swerveDrive.setModuleStates(moduleStates);
             
         }, swerveDrive).withName("Swerve Controller Command"));
-        configureButtons(swerveDrive, port, characterizing);
+        configureButtons(swerveDrive, port);
     }
 
     /**
@@ -90,7 +90,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port The controller port of the driving controller.
      */
-    private static void configureButtons(SwerveDrive swerveDrive, int port, boolean characterizing){
+    private static void configureButtons(SwerveDrive swerveDrive, int port){
         new JoystickButton(controllers[port], ControlMap.B_BUTTON)
             .onTrue(new InstantCommand(() -> toggleFieldCentric()));
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)

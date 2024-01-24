@@ -55,7 +55,7 @@ public class Robot extends LoggedRobot {
                                                                                                   // new log
         }
 
-    
+        Logger.start(); 
         // DataLogManager.start();
         // URCL.start();
 
