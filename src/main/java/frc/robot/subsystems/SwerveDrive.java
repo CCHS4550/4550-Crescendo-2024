@@ -390,6 +390,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putBoolean("Event Test", test);
 
         m_field.setRobotPose(odometer.getEstimatedPosition());
+        Logger.recordOutput("SwerveModuleStates/MeausredOutputs", getCurrentModuleStates());
 
         odometer.update(getRotation2d(), swerveModulePositions);
         
