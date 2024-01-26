@@ -91,6 +91,10 @@ public class SwerveModule extends SubsystemBase {
         return turnMotor.getPosition(); // should be in radians?
     }
 
+    public double getDriveVoltagee(){
+        return driveMotor.getAppliedOutput();
+    }
+
     /**
      * Gets the speed of the drive motor. Obtained using max speed given 12V of
      * power.
@@ -99,6 +103,11 @@ public class SwerveModule extends SubsystemBase {
      */
     public double getDriveVelocity() {
         return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.getBusVoltage();
+        //  return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.get();
+    }
+
+    public double getDriveVel(){
+        return driveMotor.getVelocity();
     }
 
     /**

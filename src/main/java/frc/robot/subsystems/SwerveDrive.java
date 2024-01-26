@@ -442,6 +442,14 @@ public class SwerveDrive extends SubsystemBase {
 
     public SwerveModuleState[] getCurrentModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[] {
+                // new SwerveModuleState(frontRight.getDriveVel(),
+                //         new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
+                // new SwerveModuleState(frontLeft.getDriveVel(),
+                //         new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
+                // new SwerveModuleState(backRight.getDriveVel(),
+                //         new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
+                // new SwerveModuleState(backLeft.getDriveVel(),
+                //         new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
                 new SwerveModuleState(frontRight.getDriveVelocity(),
                         new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
                 new SwerveModuleState(frontLeft.getDriveVelocity(),
