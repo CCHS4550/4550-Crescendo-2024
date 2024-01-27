@@ -388,7 +388,7 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putBoolean("Event Test", test);
 
         m_field.setRobotPose(odometer.getEstimatedPosition());
-        Logger.recordOutput("SwerveModuleStates/MeausredOutputs", getCurrentModuleStates());
+        Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
 
         odometer.update(getRotation2d(), swerveModulePositions);
         
@@ -448,13 +448,13 @@ public class SwerveDrive extends SubsystemBase {
                 //         new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
                 // new SwerveModuleState(backLeft.getDriveVel(),
                 //         new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
-                new SwerveModuleState(frontRight.getDriveVelocity(),
+                new SwerveModuleState(frontRight.getDriveEncoderVelocity(),
                         new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
-                new SwerveModuleState(frontLeft.getDriveVelocity(),
+                new SwerveModuleState(frontLeft.getDriveEncoderVelocity(),
                         new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
-                new SwerveModuleState(backRight.getDriveVelocity(),
+                new SwerveModuleState(backRight.getDriveEncoderVelocity(),
                         new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
-                new SwerveModuleState(backLeft.getDriveVelocity(),
+                new SwerveModuleState(backLeft.getDriveEncoderVelocity(),
                         new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
         };
         return states;

@@ -13,6 +13,8 @@ import frc.maps.RobotMap;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import static edu.wpi.first.units.Units.*;
 
+import org.littletonrobotics.junction.Logger;
+
 /**
  * Class for controlling a swerve module. Each module has 2 motors, one for
  * driving and one for turning, as well as an absolute encoder.
@@ -120,9 +122,9 @@ public class SwerveModule extends SubsystemBase {
     }
 
     /**
-     * Gets the voltage being supplied to the turn motor.
+     * Gets the voltage being supplied to the drive motor.
      * 
-     * @return The voltage being supplied to the turn motor.
+     * @return The voltage being supplied to the drive motor.
      */
     public double getDriveVoltage() {
         return driveMotor.get() * driveMotor.getBusVoltage();
@@ -288,6 +290,11 @@ public class SwerveModule extends SubsystemBase {
         setDesiredState(new SwerveModuleState(), false);
         driveMotor.setVoltage(volts.in(Volts));
         // turnMotor.setVoltage(volts.in(Volts));
+    }
+    
+    @Override
+    public void periodic(){
+        Logger.recordOutput(this.getName() + " Drive Velocity", getDriveEncoderVelocity());
     }
 
 }
