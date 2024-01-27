@@ -16,12 +16,10 @@ import edu.wpi.first.units.Unit;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 
 import com.kauailabs.navx.frc.AHRS;
-// import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
