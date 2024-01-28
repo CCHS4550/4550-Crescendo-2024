@@ -46,6 +46,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -54,6 +55,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
+import frc.helpers.LimelightHelpers;
+import frc.helpers.LimelightHelpers.LimelightResults;
 import frc.maps.RobotMap;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
@@ -165,9 +168,9 @@ public class SwerveDrive extends SubsystemBase {
     private AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     // SwerveDriveOdometry odometer;
-    SwerveDrivePoseEstimator odometer;
+    SwerveDrivePoseEstimator poseEstimator;
     PIDController xPID, yPID;
-    PIDController turnPID;
+    public PIDController turnPID;
     ProfiledPIDController turnPIDProfiled;
     // ProfiledPIDController turnPID;
 
@@ -194,12 +197,6 @@ public class SwerveDrive extends SubsystemBase {
     private ShuffleboardLayout turn_encoders_positions = Shuffleboard.getTab("Encoders")
             .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
             .withSize(2, 2);
-
-    // private SwerveModuleState[] currentSwerveModuleStates;
-    // private ShuffleboardLayout turn_encoder_velocities =
-    // Shuffleboard.getTab("Encoders")
-    // .getLayout("Turn Encoders Velocity (Rad / Sec)", BuiltInLayouts.kList)
-    // .withSize(2, 2);
 
     // // Mutable holder for unit-safe voltage values, persisted to avoid
     // reallocation.
@@ -277,7 +274,7 @@ public class SwerveDrive extends SubsystemBase {
         swerveModulePositions[3] = new SwerveModulePosition(0,
                 new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
-        odometer = new SwerveDrivePoseEstimator(RobotMap.DRIVE_KINEMATICS, new Rotation2d(0), swerveModulePositions, new Pose2d());
+        poseEstimator = new SwerveDrivePoseEstimator(RobotMap.DRIVE_KINEMATICS, new Rotation2d(0), swerveModulePositions, new Pose2d());
 
         xPID = new PIDController(.7, .1, 0);
         yPID = new PIDController(.7, .1, 0);
@@ -373,24 +370,13 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
-        SmartDashboard.putNumber("Wheel Velocity", frontRight.getDriveVelocity());
-        // SmartDashboard.putNumber("X", odometer.getPoseMeters().getX());
-        // SmartDashboard.putNumber("Y", odometer.getPoseMeters().getY());
-        SmartDashboard.putNumber("Pitch", this.getPitch());
-        SmartDashboard.putNumber("Roll", gyro.getRoll());
-        SmartDashboard.putNumber("Yaw", gyro.getYaw());
-
-        SmartDashboard.putNumber("FR", frontRight.getDriveVelocity());
-        SmartDashboard.putNumber("FL", frontLeft.getDriveVelocity());
-        SmartDashboard.putNumber("BR", backRight.getDriveVelocity());
-        SmartDashboard.putNumber("BL", backLeft.getDriveVelocity());
 
         SmartDashboard.putBoolean("Event Test", test);
 
-        m_field.setRobotPose(odometer.getEstimatedPosition());
+        m_field.setRobotPose(poseEstimator.getEstimatedPosition());
         Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
 
-        odometer.update(getRotation2d(), swerveModulePositions);
+        poseEstimator.update(getRotation2d(), swerveModulePositions);
         
         updateShuffleBoardEncoders();
 
@@ -435,28 +421,12 @@ public class SwerveDrive extends SubsystemBase {
      * @return The Pose2d of the robot.
      */
     public Pose2d getPose() {
-        return odometer.getEstimatedPosition();
+        return poseEstimator.getEstimatedPosition();
     }
 
     public SwerveModuleState[] getCurrentModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[] {
-                // new SwerveModuleState(frontRight.getDriveVel(),
-                //         new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
-                // new SwerveModuleState(frontLeft.getDriveVel(),
-                //         new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
-                // new SwerveModuleState(backRight.getDriveVel(),
-                //         new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
-                // new SwerveModuleState(backLeft.getDriveVel(),
-                //         new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
-                new SwerveModuleState(frontRight.getDriveEncoderVelocity(),
-                        new Rotation2d(frontRight.getAbsoluteEncoderRadiansOffset())),
-                new SwerveModuleState(frontLeft.getDriveEncoderVelocity(),
-                        new Rotation2d(frontLeft.getAbsoluteEncoderRadiansOffset())),
-                new SwerveModuleState(backRight.getDriveEncoderVelocity(),
-                        new Rotation2d(backRight.getAbsoluteEncoderRadiansOffset())),
-                new SwerveModuleState(backLeft.getDriveEncoderVelocity(),
-                        new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()))
-        };
+                frontRight.getState(), frontLeft.getState(), backRight.getState(), backLeft.getState()};
         return states;
     }
 
@@ -464,12 +434,17 @@ public class SwerveDrive extends SubsystemBase {
      * Resets the odometer readings using the gyro, SwerveModulePositions (defined
      * in constructor), and Pose2d.
      */
-    public void resetOdometry() {
-        odometer.resetPosition(getRotation2d(), swerveModulePositions, getPose());
+    public void setOdometry() {
+        poseEstimator.resetPosition(getRotation2d(), swerveModulePositions, getPose());
     }
 
+    /**
+     * Resets the odometer readings using the gyro, SwerveModulePositions (defined
+     * in constructor), and Pose2d.
+     * @param pos the Pose2d to set the odometry
+     */
     public void setOdometry(Pose2d pos) {
-        odometer.resetPosition(getRotation2d(), swerveModulePositions, pos);
+        poseEstimator.resetPosition(getRotation2d(), swerveModulePositions, pos);
     }
 
     public void updateModulePositions() {
@@ -485,8 +460,13 @@ public class SwerveDrive extends SubsystemBase {
 
     public void updateOdometer() {
         updateModulePositions();
-        Logger.recordOutput("Odometry/Pose2D", odometer.getEstimatedPosition());
-        odometer.update(getRotation2d(), swerveModulePositions);
+        Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
+        // if(LimelightHelpers.getBotPose2d("Limelight3") < 1){
+        // }
+        // if(LimelightHelpers.)
+
+        poseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d("Limelight3"), Timer.getFPGATimestamp() - (LimelightHelpers.getBotPose("Limelight 3")[6]/1000.0));
+        poseEstimator.update(getRotation2d(), swerveModulePositions);
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -660,7 +640,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void printPos2d() {
-        System.out.println(odometer.getEstimatedPosition());
+        System.out.println(poseEstimator.getEstimatedPosition());
     }
 
     public double getRoll() {

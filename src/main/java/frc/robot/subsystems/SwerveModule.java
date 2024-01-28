@@ -97,20 +97,20 @@ public class SwerveModule extends SubsystemBase {
         return driveMotor.getAppliedOutput();
     }
 
-    /**
-     * Gets the speed of the drive motor. Obtained using max speed given 12V of
-     * power.
-     * 
-     * @return The speed of the drive motor in m/s.
-     */
-    public double getDriveVelocity() {
-        return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.getBusVoltage();
-        //  return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.get();
-    }
+    // /**
+    //  * Gets the speed of the drive motor. Obtained using max speed given 12V of
+    //  * power.
+    //  * 
+    //  * @return The speed of the drive motor in m/s.
+    //  */
+    // public double getDriveVelocity() {
+    //     return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.getBusVoltage();
+    //     //  return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 * driveMotor.get();
+    // }
 
-    public double getDriveVel(){
-        return driveMotor.getVelocity();
-    }
+    // public double getDriveVel(){
+    //     return driveMotor.getVelocity();
+    // }
 
     /**
      * Gets the speed of the turn motor.
@@ -175,7 +175,7 @@ public class SwerveModule extends SubsystemBase {
      * @return The state of the swerve module in SwerveModuleState format.
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteEncoderRadiansOffset()));
+        return new SwerveModuleState(getDriveEncoderVelocity(), new Rotation2d(getAbsoluteEncoderRadiansOffset()));
     }
 
     /**
@@ -205,9 +205,9 @@ public class SwerveModule extends SubsystemBase {
         // These are both in m/s
         double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
         // Feed forward
-        double driveFf = driveFeedforward.calculate(velocity);
+        double driveFF = driveFeedforward.calculate(velocity);
 
-        driveMotor.setVoltage(driveOutput + driveFf);
+        driveMotor.setVoltage(driveOutput + driveFF);
     }
 
     public void setTurnPosition(double angle) {
