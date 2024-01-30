@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.controlschemes.CharacterizingScheme;
+// import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
 import frc.maps.RobotMap;
 import frc.robot.subsystems.Leds;
