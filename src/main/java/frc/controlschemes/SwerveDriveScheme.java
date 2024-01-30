@@ -71,10 +71,12 @@ public class SwerveDriveScheme implements ControlScheme {
             if(fieldCentric){
                 //Relative to field
                 chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turnSpeed, swerveDrive.getRotation2d());
+                // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0, turnSpeed, swerveDrive.getRotation2d());
             } else {
                 //Relative to robotg
                 chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
             }
+            chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
 
             SwerveModuleState[] moduleStates;
             //Convert chassis speeds to individual module states

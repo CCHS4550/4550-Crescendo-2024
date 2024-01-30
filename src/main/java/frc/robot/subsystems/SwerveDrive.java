@@ -284,7 +284,7 @@ public class SwerveDrive extends SubsystemBase {
         // *TODO: Possibly research profiled PID
         // turnPID = new ProfiledPIDController(0.5, 0, 0,
         // RobotMap.thetaControllConstraints);
-        turnPID = new PIDController(.7, 0, 0);
+        turnPID = new PIDController(.5, 0, 0);
         turnPIDProfiled = new ProfiledPIDController(.7, 0, 0, new Constraints(
                 RobotMap.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, RobotMap.TURN_RATE_LIMIT));
         turnPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -465,7 +465,7 @@ public class SwerveDrive extends SubsystemBase {
         // }
         // if(LimelightHelpers.)
 
-        poseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d("Limelight3"), Timer.getFPGATimestamp() - (LimelightHelpers.getBotPose("Limelight 3")[6]/1000.0));
+        // poseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d("Limelight3"), Timer.getFPGATimestamp() - (LimelightHelpers.getBotPose("Limelight 3")[6]/1000.0));
         poseEstimator.update(getRotation2d(), swerveModulePositions);
     }
 

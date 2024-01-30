@@ -208,6 +208,7 @@ public class SwerveModule extends SubsystemBase {
         double driveFF = driveFeedforward.calculate(velocity);
 
         driveMotor.setVoltage(driveOutput + driveFF);
+        // driveMotor.set(driveOutput);
     }
 
     public void setTurnPosition(double angle) {
