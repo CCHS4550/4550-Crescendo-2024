@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -130,7 +131,7 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
 
     }
-
+    //Sets the elevator to target a setpoint
     public Command elevatorToSetpoint(double setpoint) {
         return this.run(
                 () -> this.targetPosition(setpoint)).until(
@@ -138,14 +139,16 @@ public class Elevator extends SubsystemBase {
                 .onlyIf(() -> (limitSwitch.get() == false));
     }
 
-    // homes the elevator
-    public Command home() {
-        return this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
-                .until(() -> (limitSwitch.get()))
-                .andThen(elevatorToSetpoint(1))
-                .andThen(Commands.waitSeconds(1))
-                .andThen(elevatorToSetpoint(0));
-    }
+   // homes the elevator
+   public Command home() {
+    return sequence(
+            this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
+              .until(() -> (limitSwitch.get())),
+            elevatorToSetpoint(1),
+            waitSeconds(1),
+            elevatorToSetpoint(0)
+    );
+}
 
     /**
      * Used only in characterizing. Don't touch this.
