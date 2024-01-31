@@ -52,7 +52,7 @@ public class ElevatorToSetPoint extends Command {
 
         TrapezoidProfile.State nextSetpoint = currentProfile.calculate(0.02, elevator.getSetpoint(), elevator.getGoal());
 
-        double feedForwardPower = feedforward.calculate(nextSetpoint.velocity) / 12;
+        double feedForwardPower = feedforward.calculate(nextSetpoint.velocity);
 
         elevator.setSetpoint(nextSetpoint);
 
@@ -61,7 +61,9 @@ public class ElevatorToSetPoint extends Command {
         elevatorPIDController.setSetpoint(nextSetpoint.position);
 
         double elevatorPower = elevatorPIDController.calculate(currentPosition);
-        elevator.setElevatorVoltage(Units.Volts.of(elevatorPower + feedForwardPower));
+        // elevator.setElevatorVoltage(Units.Volts.of(elevatorPower + feedForwardPower));
+
+        elevator.setPosition(nextSetpoint.position, feedForwardPower);
     }
 
     // Called once the command ends or is interrupted.

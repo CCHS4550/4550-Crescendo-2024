@@ -180,60 +180,8 @@ public class SwerveDrive extends SubsystemBase {
             .getLayout("Turn Encoders Position(Rad)", BuiltInLayouts.kGrid)
             .withSize(2, 2);
 
-    // // Mutable holder for unit-safe voltage values, persisted to avoid
-    // reallocation.
-    // private final MutableMeasure<Voltage> m_appliedVoltage =
-    // mutable(Volts.of(0));
-    // // Mutable holder for unit-safe linear distance values, persisted to avoid
-    // // reallocation.
-    // private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
-    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
-    // // reallocation.
-    // private final MutableMeasure<Velocity<Angle>> m_velocity =
-    // mutable(RadiansPerSecond.of(0));
 
-    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-    // // Mutable holder for unit-safe linear distance values, persisted to avoid
-    // // reallocation.
-    // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
-    // // reallocation.
-    // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
-    // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-    // // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-    // new SysIdRoutine.Config(),
-    // new SysIdRoutine.Mechanism(
-    // // Tell SysId how to plumb the driving voltage to the motors.
-    // (Measure<Voltage> volts) -> {
-    // setDriveVoltages(volts);
-    // },
-    // // Tell SysId how to record a frame of data for each motor on the mechanism
-    // // being
-    // // characterized.
-    // log -> {
-    // // Record a frame for the left motors. Since these share an encoder, we
-    // // consider
-    // // the entire group to be one motor.
-    // log.motor("drive-motors")
-    // .voltage(
-    // m_appliedVoltage.mut_replace(
-    // Volts.of(frontRight
-    // .getTurnVoltage())))
-    // .linearPosition(
-    // m_distance.mut_replace(
-    // frontRight.getTurnEncoderDistance(),
-    // Meters))
-    // .linearVelocity(
-    // m_velocity.mut_replace(
-    // frontRight.getTurnEncoderVelocity(),
-    // MetersPerSecond));
-    // },
-    // // Tell SysId to make generated commands require this subsystem, suffix test
-    // // state in
-    // // WPILog with this subsystem's name ("drive")
-    // this));
 
     SysIdRoutine sysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5)),
@@ -461,65 +409,7 @@ public class SwerveDrive extends SubsystemBase {
         setModuleStates(moduleStates);
     }
 
-    // Autonomous
-    // Odometer used to get Pose2d of the robot.
-
-    // xPID and yPID should have the same values.
-
-    // PPHolonomicDriveController holonomicDriveController = new
-    // PPHolonomicDriveController(xPID, yPID, turnPID);
-
-    /**
-     * Follows a PathPlanner path. Referenced in autonomous classes.
-     *
-     * @param traj      The PathPlannerTrajectory to be followed.
-     * @param firstPath Whether or not this is the first path being followed in
-     *                  auto. If so, resets the gyro before starting.
-     * @return A command that follows a path.
-     */
-
-    // docs:
-    // https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage
-
-    // * I copied this one from documentation */
-    // public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean
-    // isFirstPath) {
-    // return new SequentialCommandGroup(
-    // new InstantCommand(() -> {
-    // // Reset odometry for the first path you run during auto
-    // if (isFirstPath) {
-    // this.setOdometry(traj.getInitialHolonomicPose());
-    // }
-    // }),
-    // new WaitCommand(1),
-    // new FollowPathWithEvents(new PPSwerveControllerCommand(
-    // traj,
-    // this::getPose, // Pose supplier
-    // RobotMap.DRIVE_KINEMATICS, // SwerveDriveKinematics
-    // xPID, // X controller. Tune these values for your robot. Leaving them 0
-    // // will only use feedforwards.
-    // yPID, // Y controller (usually the same values as X controller)
-    // turnPID, // Rotation controller. Tune these values for your robot.
-    // // Leaving them 0 will only use feedforwards.
-    // this::setModuleStates, // Module states consumer
-    // true, // Should the path be automatically mirrored depending on alliance
-    // // color. Optional, defaults to true
-    // this // Requires this drive subsystem
-    // ), traj.getMarkers(),
-    // RobotContainer.eventMap));
-    // }
-
-    // public Command moveCommand() {
-    //     List<Translation2d> midpts = new ArrayList<Translation2d>();
-    //     midpts.add(new Translation2d(1, 0));
-    //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, 1)
-    //             .setKinematics(RobotMap.DRIVE_KINEMATICS);
-    //     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
-    //             midpts, new Pose2d(2.5, 0, new Rotation2d(0)), trajectoryConfig);
-    //     return new SwerveControllerCommand(trajectory, this::getPose, RobotMap.DRIVE_KINEMATICS, xPID, yPID,
-    //             turnPIDProfiled, this::setModuleStates, this);
-    // }
-
+    
     public void initShuffleBoardEncoders() {
         abs_Enc_FR_Offset_Entry = Shuffleboard.getTab("Encoders")
                 .getLayout(absolute_encoders_offset_list.getTitle())
@@ -630,3 +520,121 @@ public class SwerveDrive extends SubsystemBase {
     }
 
 }
+
+
+// // Mutable holder for unit-safe voltage values, persisted to avoid
+    // reallocation.
+    // private final MutableMeasure<Voltage> m_appliedVoltage =
+    // mutable(Volts.of(0));
+    // // Mutable holder for unit-safe linear distance values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Angle> m_distance = mutable(Radians.of(0));
+    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Velocity<Angle>> m_velocity =
+    // mutable(RadiansPerSecond.of(0));
+
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+    // // Mutable holder for unit-safe linear distance values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
+    // // reallocation.
+    // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+    // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+    // // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+    // new SysIdRoutine.Config(),
+    // new SysIdRoutine.Mechanism(
+    // // Tell SysId how to plumb the driving voltage to the motors.
+    // (Measure<Voltage> volts) -> {
+    // setDriveVoltages(volts);
+    // },
+    // // Tell SysId how to record a frame of data for each motor on the mechanism
+    // // being
+    // // characterized.
+    // log -> {
+    // // Record a frame for the left motors. Since these share an encoder, we
+    // // consider
+    // // the entire group to be one motor.
+    // log.motor("drive-motors")
+    // .voltage(
+    // m_appliedVoltage.mut_replace(
+    // Volts.of(frontRight
+    // .getTurnVoltage())))
+    // .linearPosition(
+    // m_distance.mut_replace(
+    // frontRight.getTurnEncoderDistance(),
+    // Meters))
+    // .linearVelocity(
+    // m_velocity.mut_replace(
+    // frontRight.getTurnEncoderVelocity(),
+    // MetersPerSecond));
+    // },
+    // // Tell SysId to make generated commands require this subsystem, suffix test
+    // // state in
+    // // WPILog with this subsystem's name ("drive")
+    // this));
+
+
+
+
+    // Autonomous
+    // Odometer used to get Pose2d of the robot.
+
+    // xPID and yPID should have the same values.
+
+    // PPHolonomicDriveController holonomicDriveController = new
+    // PPHolonomicDriveController(xPID, yPID, turnPID);
+
+    /**
+     * Follows a PathPlanner path. Referenced in autonomous classes.
+     *
+     * @param traj      The PathPlannerTrajectory to be followed.
+     * @param firstPath Whether or not this is the first path being followed in
+     *                  auto. If so, resets the gyro before starting.
+     * @return A command that follows a path.
+     */
+
+    // docs:
+    // https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage
+
+    // * I copied this one from documentation */
+    // public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean
+    // isFirstPath) {
+    // return new SequentialCommandGroup(
+    // new InstantCommand(() -> {
+    // // Reset odometry for the first path you run during auto
+    // if (isFirstPath) {
+    // this.setOdometry(traj.getInitialHolonomicPose());
+    // }
+    // }),
+    // new WaitCommand(1),
+    // new FollowPathWithEvents(new PPSwerveControllerCommand(
+    // traj,
+    // this::getPose, // Pose supplier
+    // RobotMap.DRIVE_KINEMATICS, // SwerveDriveKinematics
+    // xPID, // X controller. Tune these values for your robot. Leaving them 0
+    // // will only use feedforwards.
+    // yPID, // Y controller (usually the same values as X controller)
+    // turnPID, // Rotation controller. Tune these values for your robot.
+    // // Leaving them 0 will only use feedforwards.
+    // this::setModuleStates, // Module states consumer
+    // true, // Should the path be automatically mirrored depending on alliance
+    // // color. Optional, defaults to true
+    // this // Requires this drive subsystem
+    // ), traj.getMarkers(),
+    // RobotContainer.eventMap));
+    // }
+
+    // public Command moveCommand() {
+    //     List<Translation2d> midpts = new ArrayList<Translation2d>();
+    //     midpts.add(new Translation2d(1, 0));
+    //     TrajectoryConfig trajectoryConfig = new TrajectoryConfig(RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND, 1)
+    //             .setKinematics(RobotMap.DRIVE_KINEMATICS);
+    //     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),
+    //             midpts, new Pose2d(2.5, 0, new Rotation2d(0)), trajectoryConfig);
+    //     return new SwerveControllerCommand(trajectory, this::getPose, RobotMap.DRIVE_KINEMATICS, xPID, yPID,
+    //             turnPIDProfiled, this::setModuleStates, this);
+    // }
