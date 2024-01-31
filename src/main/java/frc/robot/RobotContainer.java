@@ -14,12 +14,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 // import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
 import frc.maps.RobotMap;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
     SwerveDrive swerveDrive;
     Leds led;
+    Elevator elevator = new Elevator();
+    Shooter shooter = new Shooter();
+    Intake intake = new Intake();
+
+
     /** Event map for path planner */
     public static HashMap<String, Command> eventMap = new HashMap<>();
     /** Command List for auto paths in SmartDashBoard */

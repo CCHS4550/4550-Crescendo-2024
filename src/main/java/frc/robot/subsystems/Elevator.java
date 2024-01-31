@@ -19,8 +19,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
@@ -50,6 +52,8 @@ public class Elevator extends SubsystemBase {
 
     private TrapezoidProfile.State setPoint, goal;
 
+    DigitalInput limitSwitch = new DigitalInput(0);
+
     public Elevator() {
         elevatorMotorFeedforward = new ElevatorFeedforward(
                 RobotMap.ELEVATOR_KS,
@@ -57,18 +61,17 @@ public class Elevator extends SubsystemBase {
                 RobotMap.ELEVATOR_KV,
                 RobotMap.ELEVATOR_KA);
         elevatorPidController = new PIDController(0.3, 0, 0);
-        
+
         constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
         profile = new TrapezoidProfile(constraints);
         setPoint = new TrapezoidProfile.State();
         goal = new TrapezoidProfile.State();
     }
 
-    public void setPosition(double position) {
+    public void targetPosition(double position) {
         // elevatorMotorOne.getPIDController().setReference(position,
         // ControlType.kPosition, 0);
-        elevatorMotorOne.getPIDController().setReference(position, ControlType.kPosition, 0, volts,
-                ArbFFUnits.kVoltage);
+        setGoal(position);
 
         double currentPosition = getElevatorPosition();
 
@@ -80,9 +83,13 @@ public class Elevator extends SubsystemBase {
 
         SmartDashboard.putNumber("Trapezoid Position", nextSetpoint.position);
 
-        // setSetpoint(nextSetpoint.position);
+        // double elevatorPower = elevatorPidController.calculate(currentPosition);
 
-        double elevatorPower = elevatorPidController.calculate(currentPosition);
+        elevatorMotorOne.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
+                ArbFFUnits.kVoltage);
+
+        elevatorMotorTwo.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
+                ArbFFUnits.kVoltage);
     }
 
     public void setElevatorVoltage(Measure<Voltage> volts) {
@@ -117,6 +124,27 @@ public class Elevator extends SubsystemBase {
     public void resetEncoders() {
         elevatorMotorOne.reset();
         elevatorMotorTwo.reset();
+    }
+
+    @Override
+    public void periodic() {
+
+    }
+
+    public Command elevatorToSetpoint(double setpoint) {
+        return this.run(
+                () -> this.targetPosition(setpoint)).until(
+                        () -> (getSetpoint().position == getGoal().position))
+                .onlyIf(() -> (limitSwitch.get() == false));
+    }
+
+    // homes the elevator
+    public Command home() {
+        return this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
+                .until(() -> (limitSwitch.get()))
+                .andThen(elevatorToSetpoint(1))
+                .andThen(Commands.waitSeconds(1))
+                .andThen(elevatorToSetpoint(0));
     }
 
     /**
