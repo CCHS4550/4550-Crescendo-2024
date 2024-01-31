@@ -23,37 +23,33 @@ public class RobotContainer {
     /** Event map for path planner */
     public static HashMap<String, Command> eventMap = new HashMap<>();
     /** Command List for auto paths in SmartDashBoard */
-    
+
     LoggedDashboardChooser<Command> autoCommands = new LoggedDashboardChooser<Command>("Auto Commands");
-    // private final String[] paths = {"outback","out","outturn","turn","meters", "EventTest"};
+    // private final String[] paths = {"outback","out","outturn","turn","meters",
+    // "EventTest"};
     // private static String[] paths = { "move" };
     private final SendableChooser<Command> autoChooser;
-    // private final LoggedDashboardChooser<Command> autoChooser;
-
-
-
-
+    // private final LoggedDashboardChooser<Command> autoChooser
 
     Field2d ff;
-    
+
     public RobotContainer() {
-        //initialize subsytems here
+        // initialize subsytems here
         swerveDrive = new SwerveDrive();
         led = new Leds(RobotMap.LED_PORT, RobotMap.LED_LENGTH);
 
-        //initialize controller schemes here
+        // initialize controller schemes here
         SwerveDriveScheme.configure(swerveDrive, 0);
 
         // CharacterizingScheme.configure(swerveDrive, 0);
 
-        
         // Testing.configure(swerveDrive, 0);
 
-        //fix this with a new subsystem
-        // eventMap.put("toggle", Commands.runOnce(() -> swerveDrive.toggleEvent(), null ));       
+        // fix this with a new subsystem
+        // eventMap.put("toggle", Commands.runOnce(() -> swerveDrive.toggleEvent(), null
+        // ));
 
         diagnosticsInit();
-
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -62,23 +58,26 @@ public class RobotContainer {
         // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        
+
     }
 
-    
-    public void diagnosticsInit(){
+    public void diagnosticsInit() {
         // for (String pathName : paths) {
-        //     autoCommands.addOption(pathName, followPathPlanner(pathName).withName(pathName));
+        // autoCommands.addOption(pathName,
+        // followPathPlanner(pathName).withName(pathName));
         // }
         // this is the default command to prevent accidents of running the wrong auto
         // autoCommands.addDefaultOption("Nothing",
-        //         Commands.run(() -> swerveDrive.printWorld(), swerveDrive).withName("Nothing"));
-        
+        // Commands.run(() -> swerveDrive.printWorld(),
+        // swerveDrive).withName("Nothing"));
+
         // SmartDashboard.putData("Auto", autoCommands.getSendableChooser());
-        // autoCommands.addOption("Move Straight", swerveDrive.moveCommand().withName("Move Straight"));
-        
+        // autoCommands.addOption("Move Straight",
+        // swerveDrive.moveCommand().withName("Move Straight"));
+
         Shuffleboard.getTab("Diagnostics").add("SwerveDrive", swerveDrive);
-        // Shuffleboard.getTab("Config").add("Run Auto", getAutoCommand()).withWidget(BuiltInWidgets.kCommand);
+        // Shuffleboard.getTab("Config").add("Run Auto",
+        // getAutoCommand()).withWidget(BuiltInWidgets.kCommand);
     }
 
     public Command getAutoCommand() {
@@ -90,13 +89,13 @@ public class RobotContainer {
      * Functionally the same as the Autonomous class method, just less messy.
      */
     // public Command followPathPlanner(String pathName) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath(pathName,
-    //             RobotMap.AUTO_PATH_CONSTRAINTS);
+    // PathPlannerTrajectory traj = PathPlanner.loadPath(pathName,
+    // RobotMap.AUTO_PATH_CONSTRAINTS);
 
-    //     return Commands.sequence(
-    //             Commands.waitSeconds(1),
-    //             Commands.runOnce(swerveDrive::resetOdometry, swerveDrive),
-    //             swerveDrive.followTrajectoryCommand(traj, true),
-    //             Commands.runOnce(swerveDrive::stopModules, swerveDrive));
+    // return Commands.sequence(
+    // Commands.waitSeconds(1),
+    // Commands.runOnce(swerveDrive::resetOdometry, swerveDrive),
+    // swerveDrive.followTrajectoryCommand(traj, true),
+    // Commands.runOnce(swerveDrive::stopModules, swerveDrive));
     // }
 }
