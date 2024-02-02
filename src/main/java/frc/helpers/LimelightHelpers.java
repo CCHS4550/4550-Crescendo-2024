@@ -381,7 +381,7 @@ public class LimelightHelpers {
         return name;
     }
 
-    private static Pose3d toPose3D(double[] inData){
+    public static Pose3d toPose3D(double[] inData){
         if(inData.length < 6)
         {
             System.err.println("Bad LL 3D Pose Data!");
