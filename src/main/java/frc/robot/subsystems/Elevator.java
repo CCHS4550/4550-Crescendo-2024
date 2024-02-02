@@ -70,11 +70,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void targetPosition(double position) {
-        // elevatorMotorOne.getPIDController().setReference(position,
-        // ControlType.kPosition, 0);
         setGoal(position);
-
-        double currentPosition = getElevatorPosition();
 
         TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
 
@@ -131,6 +127,7 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
 
     }
+
     //Sets the elevator to target a setpoint
     public Command elevatorToSetpoint(double setpoint) {
         return this.run(
