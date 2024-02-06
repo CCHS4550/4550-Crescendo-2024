@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -58,9 +59,10 @@ public class RobotContainer {
         // ));
 
         diagnosticsInit();
-
+        NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
+        
 
         // Another option that allows you to specify the default auto by its name
         // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");

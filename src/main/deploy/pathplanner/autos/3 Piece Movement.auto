@@ -1,0 +1,56 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start to Top Note"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Top Note to Shoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot to Middle"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle to Shoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot to Bottom"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bottom to Shoot"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
