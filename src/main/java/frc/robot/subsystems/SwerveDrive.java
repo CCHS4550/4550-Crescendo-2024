@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
+import frc.maps.Constants;
 import frc.maps.RobotMap;
 
 /**
@@ -57,94 +58,95 @@ public class SwerveDrive extends SubsystemBase {
             new CCSparkMax(
                     "Front Right Drive",
                     "frd",
-                    RobotMap.FRONT_RIGHT_DRIVE,
+                    Constants.MotorConstants.FRONT_RIGHT_DRIVE,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.FRONT_RIGHT_DRIVE_REVERSE,
-                    RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                    RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
+                    Constants.MotorConstants.FRONT_RIGHT_DRIVE_REVERSE,
+                    Constants.ConverstionConstants.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
+                    Constants.ConverstionConstants.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
             new CCSparkMax(
                     "Front Right Turn",
                     "frt",
-                    RobotMap.FRONT_RIGHT_TURN,
+                    Constants.MotorConstants.FRONT_RIGHT_TURN,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.FRONT_RIGHT_TURN_REVERSE,
-                    RobotMap.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
-                    RobotMap.TURN_MOTOR_RADIANS_PER_SECOND),
-            RobotMap.FRONT_RIGHT_ABSOLUTE_ENCODER,
-            RobotMap.FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET,
+                    Constants.MotorConstants.FRONT_RIGHT_TURN_REVERSE,
+                    Constants.ConverstionConstants.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
+                    Constants.ConverstionConstants.TURN_MOTOR_RADIANS_PER_SECOND),
+            Constants.SwerveConstants.FRONT_RIGHT_ABSOLUTE_ENCODER,
+            Constants.SwerveConstants.FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET,
             "Front Right");
 
     private final SwerveModule frontLeft = new SwerveModule(
             new CCSparkMax(
                     "Front Left Drive",
                     "fld",
-                    RobotMap.FRONT_LEFT_DRIVE,
+                    Constants.MotorConstants.FRONT_LEFT_DRIVE,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.FRONT_LEFT_DRIVE_REVERSE,
-                    RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                    RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
+                    Constants.MotorConstants.FRONT_LEFT_DRIVE_REVERSE,
+                    Constants.ConverstionConstants.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
+                    Constants.ConverstionConstants.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
             new CCSparkMax(
                     "Front Left Turn",
                     "flt",
-                    RobotMap.FRONT_LEFT_TURN,
+                    Constants.MotorConstants.FRONT_LEFT_TURN,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.FRONT_LEFT_TURN_REVERSE,
-                    RobotMap.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
-                    RobotMap.TURN_MOTOR_RADIANS_PER_SECOND),
-            RobotMap.FRONT_LEFT_ABSOLUTE_ENCODER,
-            RobotMap.FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET,
+                    Constants.MotorConstants.FRONT_LEFT_TURN_REVERSE,
+                    Constants.ConverstionConstants.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
+                    Constants.ConverstionConstants.TURN_MOTOR_RADIANS_PER_SECOND),
+            Constants.SwerveConstants.FRONT_LEFT_ABSOLUTE_ENCODER,
+            Constants.SwerveConstants.FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET,
             "Front Left");
 
     private final SwerveModule backRight = new SwerveModule(
             new CCSparkMax(
                     "Back Right Drive",
                     "brd",
-                    RobotMap.BACK_RIGHT_DRIVE,
+                    Constants.MotorConstants.BACK_RIGHT_DRIVE,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.BACK_RIGHT_DRIVE_REVERSE,
-                    RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
-                    RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
+                    Constants.MotorConstants.BACK_RIGHT_DRIVE_REVERSE,
+                    Constants.ConverstionConstants.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
+                    Constants.ConverstionConstants.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
             new CCSparkMax(
                     "Back Right Turn",
                     "brt",
-                    RobotMap.BACK_RIGHT_TURN,
+                    Constants.MotorConstants.BACK_RIGHT_TURN,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.BACK_RIGHT_TURN_REVERSE,
-                    RobotMap.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
-                    RobotMap.TURN_MOTOR_RADIANS_PER_SECOND),
-            RobotMap.BACK_RIGHT_ABSOLUTE_ENCODER,
-            RobotMap.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET,
+                    Constants.MotorConstants.BACK_RIGHT_TURN_REVERSE,
+                    Constants.ConverstionConstants.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
+                    Constants.ConverstionConstants.TURN_MOTOR_RADIANS_PER_SECOND),
+            Constants.SwerveConstants.BACK_RIGHT_ABSOLUTE_ENCODER,
+            Constants.SwerveConstants.BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET,
             "Back Right");
 
     private final SwerveModule backLeft = new SwerveModule(
             new CCSparkMax(
                     "Back Left Drive",
                     "bld",
-                    RobotMap.BACK_LEFT_DRIVE,
+                    Constants.MotorConstants.BACK_LEFT_DRIVE,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.BACK_LEFT_DRIVE_REVERSE,
+                    Constants.MotorConstants.BACK_LEFT_DRIVE_REVERSE,
                     RobotMap.HORIZONTAL_DISTANCE_TRAVELLED_PER_MOTOR_REVOLUTION,
                     RobotMap.DRIVE_MOTOR_METERS_PER_SECOND_CONVERSION_FACTOR),
             new CCSparkMax(
                     "Back Left Turn",
                     "blt",
-                    RobotMap.BACK_LEFT_TURN,
+                    Constants.MotorConstants.BACK_LEFT_TURN,
                     MotorType.kBrushless,
                     IdleMode.kBrake,
-                    RobotMap.BACK_LEFT_TURN_REVERSE,
+                    Constants.MotorConstants.BACK_LEFT_TURN_REVERSE,
                     RobotMap.TURN_MOTOR_ROTATIONS_TO_WHEEL_ROTATIONS_RADIANS,
                     RobotMap.TURN_MOTOR_RADIANS_PER_SECOND),
-            RobotMap.BACK_LEFT_ABSOLUTE_ENCODER,
-            RobotMap.BACK_LEFT_ABSOLUTE_ENCODER_OFFSET,
+            Constants.SwerveConstants.BACK_LEFT_ABSOLUTE_ENCODER,
+            Constants.SwerveConstants.BACK_LEFT_ABSOLUTE_ENCODER_OFFSET,
             "Back Left");
 
+        //* Must be in the order FR, FL, BR, BL */
     private SwerveModule[] swerveModules = new SwerveModule[] { frontRight, frontLeft, backRight, backLeft };
     // Initialize gyro
     private AHRS gyro = new AHRS(SPI.Port.kMXP);
@@ -204,7 +206,7 @@ public class SwerveDrive extends SubsystemBase {
         swerveModulePositions[3] = new SwerveModulePosition(0,
                 new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
-        poseEstimator = new SwerveDrivePoseEstimator(RobotMap.DRIVE_KINEMATICS, new Rotation2d(0), swerveModulePositions, new Pose2d());
+        poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.DRIVE_KINEMATICS, new Rotation2d(0), swerveModulePositions, new Pose2d());
 
         xPID = new PIDController(.7, .1, 0);
         yPID = new PIDController(.7, .1, 0);
@@ -216,7 +218,7 @@ public class SwerveDrive extends SubsystemBase {
         // RobotMap.thetaControllConstraints);
         turnPID = new PIDController(.5, 0, 0);
         turnPIDProfiled = new ProfiledPIDController(.7, 0, 0, new Constraints(
-                RobotMap.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, RobotMap.TURN_RATE_LIMIT));
+                Constants.SwerveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, Constants.SwerveConstants.TURN_RATE_LIMIT));
         turnPID.enableContinuousInput(-Math.PI, Math.PI);
 
         initShuffleBoardEncoders();
@@ -244,7 +246,7 @@ public class SwerveDrive extends SubsystemBase {
                                                  // in your Constants class
                         new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(0.5, 0.0, 0.0), // Rotation PID constants
-                        RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
+                        Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max module speed, in m/s
                         0.43105, // Drive base radius in meters. Distance from robot center to
                                 // furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API
@@ -336,7 +338,7 @@ public class SwerveDrive extends SubsystemBase {
         // currentSwerveModuleStates = desiredStates;
         boolean openLoop = false;
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-                RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
+                Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL);
         Logger.recordOutput("SwerveModuleStates/SetpointsOptimized", desiredStates);
         frontRight.setDesiredState(desiredStates[0], openLoop);
         frontLeft.setDesiredState(desiredStates[1], openLoop);
@@ -401,7 +403,7 @@ public class SwerveDrive extends SubsystemBase {
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return ChassisSpeeds.fromRobotRelativeSpeeds(
-                RobotMap.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()), getRotation2d());
+                Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()), getRotation2d());
     }
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {

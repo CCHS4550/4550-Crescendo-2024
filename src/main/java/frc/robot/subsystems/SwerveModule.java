@@ -9,6 +9,7 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
+import frc.maps.Constants;
 import frc.maps.RobotMap;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import static edu.wpi.first.units.Units.*;
@@ -69,7 +70,7 @@ public class SwerveModule extends SubsystemBase {
         drivingPidController = new PIDController(0.5, 0, 0);
 
         // possibly kA values too, if sysid provides those
-        driveFeedforward = new SimpleMotorFeedforward(RobotMap.DRIVE_KS, RobotMap.DRIVE_KV,RobotMap.DRIVE_KA);
+        driveFeedforward = new SimpleMotorFeedforward(Constants.FeedForwardConstants.DRIVE_KS, Constants.FeedForwardConstants.DRIVE_KV,Constants.FeedForwardConstants.DRIVE_KA);
 
         this.name = name;
         resetEncoders();

@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
+import frc.maps.Constants;
 import frc.maps.RobotMap;
 
 public class Elevator extends SubsystemBase {
@@ -38,10 +39,10 @@ public class Elevator extends SubsystemBase {
                     null, // No log consumer, since data is recorded by URCL
                     this));
 
-    private CCSparkMax elevatorMotorOne = new CCSparkMax("Elevator One", "EO", RobotMap.ELEVATOR_ONE,
-            MotorType.kBrushless, IdleMode.kBrake, RobotMap.ELEVATOR_ONE_REVERSED);
-    private CCSparkMax elevatorMotorTwo = new CCSparkMax("Elevator Two", "ET", RobotMap.ELEVATOR_TWO,
-            MotorType.kBrushless, IdleMode.kBrake, RobotMap.ELEVATOR_TWO_REVERSED);
+    private CCSparkMax elevatorMotorOne = new CCSparkMax("Elevator One", "EO", Constants.MotorConstants.ELEVATOR_ONE,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_ONE_REVERSED);
+    private CCSparkMax elevatorMotorTwo = new CCSparkMax("Elevator Two", "ET", Constants.MotorConstants.ELEVATOR_TWO,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_TWO_REVERSED);
 
     private ElevatorFeedforward elevatorMotorFeedforward;
 
@@ -57,10 +58,10 @@ public class Elevator extends SubsystemBase {
 
     public Elevator() {
         elevatorMotorFeedforward = new ElevatorFeedforward(
-                RobotMap.ELEVATOR_KS,
-                RobotMap.ELEVATOR_KG,
-                RobotMap.ELEVATOR_KV,
-                RobotMap.ELEVATOR_KA);
+                Constants.FeedForwardConstants.ELEVATOR_KS,
+                Constants.FeedForwardConstants.ELEVATOR_KG,
+                Constants.FeedForwardConstants.ELEVATOR_KV,
+                Constants.FeedForwardConstants.ELEVATOR_KA);
         elevatorPidController = new PIDController(0.3, 0, 0);
 
         constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));

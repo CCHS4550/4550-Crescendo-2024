@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 // import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.ControlScheme;
 import frc.helpers.OI;
+import frc.maps.Constants;
 import frc.maps.ControlMap;
 import frc.maps.RobotMap;
 import frc.robot.subsystems.SwerveDrive;
@@ -43,24 +44,24 @@ public class SwerveDriveScheme implements ControlScheme {
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
                 .withWidget(BuiltInWidgets.kToggleSwitch);
 
-        SlewRateLimiter xRateLimiter = new SlewRateLimiter(RobotMap.DRIVE_RATE_LIMIT, -RobotMap.DRIVE_RATE_LIMIT, 0);
-        SlewRateLimiter yRateLimiter = new SlewRateLimiter(RobotMap.DRIVE_RATE_LIMIT, -RobotMap.DRIVE_RATE_LIMIT, 0);
-        SlewRateLimiter turnRateLimiter = new SlewRateLimiter(RobotMap.TURN_RATE_LIMIT);
+        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT, -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
+        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT, -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
+        SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT);
 
         PIDController orientationLockPID = new PIDController(.5, 0, 0);
 
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = -OI.axis(port, ControlMap.L_JOYSTICK_VERTICAL) * .75
-                    * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1))
-                    * RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
-            double ySpeed = -OI.axis(port, ControlMap.L_JOYSTICK_HORIZONTAL) * .75
-                    * (OI.axis(0, ControlMap.RT) > 0.5 ? 0.5 : (OI.axis(0, ControlMap.LT) > 0.5 ? (4 / 3) : 1))
-                    * RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
+            double xSpeed = -OI.axis(port, Constants.XboxConstants.L_JOYSTICK_VERTICAL) * .75
+                    * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5 : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
+                    * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
+            double ySpeed = -OI.axis(port, Constants.XboxConstants.L_JOYSTICK_HORIZONTAL) * .75
+                    * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5 : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
+                    * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
             double turnSpeed = 0;
             if (!orientationLocked) {
-                turnSpeed = -OI.axis(port, ControlMap.R_JOYSTICK_HORIZONTAL);
+                turnSpeed = -OI.axis(port, Constants.XboxConstants.R_JOYSTICK_HORIZONTAL);
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                         * 2;
@@ -83,14 +84,15 @@ public class SwerveDriveScheme implements ControlScheme {
                 // chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0, turnSpeed,
                 // swerveDrive.getRotation2d());
             } else {
-                // Relative to robotg
+                // Relative to robot
                 chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
             }
             chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
 
             SwerveModuleState[] moduleStates;
             // Convert chassis speeds to individual module states
-            moduleStates = RobotMap.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+            moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+           
             swerveDrive.setModuleStates(moduleStates);
 
         }, swerveDrive).withName("Swerve Controller Command"));

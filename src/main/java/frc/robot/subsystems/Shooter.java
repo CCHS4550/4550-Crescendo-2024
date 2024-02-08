@@ -6,13 +6,14 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
+import frc.maps.Constants;
 import frc.maps.RobotMap;
 
 public class Shooter extends SubsystemBase {
-    private CCSparkMax shooterTop = new CCSparkMax("Shooter Top","ST", RobotMap.SHOOTER_TOP, MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_TOP_REVERSED);
-    private CCSparkMax shooterBottom = new CCSparkMax("Shooter Bottom","SB", RobotMap.SHOOTER_BOTTOM, MotorType.kBrushless, IdleMode.kCoast, RobotMap.SHOOTER_BOTTOM_REVERSED);
+    private CCSparkMax shooterTop = new CCSparkMax("Shooter Top","ST", Constants.MotorConstants.SHOOTER_TOP, MotorType.kBrushless, IdleMode.kCoast, Constants.MotorConstants.SHOOTER_TOP_REVERSED);
+    private CCSparkMax shooterBottom = new CCSparkMax("Shooter Bottom","SB", Constants.MotorConstants.SHOOTER_BOTTOM, MotorType.kBrushless, IdleMode.kCoast, Constants.MotorConstants.SHOOTER_BOTTOM_REVERSED);
 
-    private CCSparkMax indexer = new CCSparkMax("index", "in", RobotMap.INDEXER, MotorType.kBrushless, IdleMode.kBrake, RobotMap.INDEXER_REVERSED);
+    private CCSparkMax indexer = new CCSparkMax("index", "in", Constants.MotorConstants.INDEXER, MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.INDEXER_REVERSED);
 
     public Shooter(){
         shooterTop.follow(shooterBottom);
