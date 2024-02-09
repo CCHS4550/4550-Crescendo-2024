@@ -60,6 +60,7 @@ public class RobotContainer {
 
         diagnosticsInit();
         NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
+        NamedCommands.registerCommand("Shoot", shooter.shoot());
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
         
