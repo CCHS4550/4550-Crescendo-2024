@@ -427,8 +427,9 @@ public class SwerveDrive extends SubsystemBase {
 
         /**
          * Default end state of 0 mps and 0 degrees
+         * 
          * @param poses an array of poses to have on the path
-         * @return A PathPlannerPath following given poses 
+         * @return A PathPlannerPath following given poses
          */
         public PathPlannerPath onTheFlyPath(Pose2d[] poses) {
                 List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
@@ -442,9 +443,9 @@ public class SwerveDrive extends SubsystemBase {
                                                                                          // angular constraints have no
                                                                                          // effect.
                                 new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a
-                                                                                   // holonomic rotation here. If using
-                                                                                   // a differential drivetrain, the
-                                                                                   // rotation will have no effect.
+                                                                                 // holonomic rotation here. If using
+                                                                                 // a differential drivetrain, the
+                                                                                 // rotation will have no effect.
                 );
 
                 // Prevent the path from being flipped if the coordinates are already correct
@@ -454,25 +455,25 @@ public class SwerveDrive extends SubsystemBase {
 
         /**
          * 
-         * @param poses an array of poses to have on the path
+         * @param poses           an array of poses to have on the path
          * @param desiredEndState the desired end state of the path in mps and degrees
          * @return an on the fly PathPlannerPath
          */
-         public PathPlannerPath onTheFlyPath(Pose2d[] poses, GoalEndState desiredEndState) {
+        public PathPlannerPath onTheFlyPathFromPoses(Pose2d[] poses, GoalEndState desiredEndState) {
                 List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(poses);
 
                 // Create the path using the bezier points created above
                 PathPlannerPath path = new PathPlannerPath(
                                 bezierPoints,
-                                new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this
+                                Constants.SwerveConstants.AUTO_PATH_CONSTRAINTS, // The constraints for this
                                                                                          // path. If using a
                                                                                          // differential drivetrain, the
                                                                                          // angular constraints have no
                                                                                          // effect.
                                 desiredEndState // Goal end state. You can set a
-                                                                                   // holonomic rotation here. If using
-                                                                                   // a differential drivetrain, the
-                                                                                   // rotation will have no effect.
+                                                // holonomic rotation here. If using
+                                                // a differential drivetrain, the
+                                                // rotation will have no effect.
                 );
 
                 // Prevent the path from being flipped if the coordinates are already correct
@@ -480,12 +481,33 @@ public class SwerveDrive extends SubsystemBase {
                 return path;
         }
 
-        /**Follows a single PathPlannerPath
-         * @param  path the PathPlannerPath to be followed
+        /**
+         * Follows a single PathPlannerPath
+         * 
+         * @param path the PathPlannerPath to be followed
          * @return The Command to follow the path
          */
-        public Command followPathPlannerPath(PathPlannerPath path){
+        public Command followPathPlannerPath(PathPlannerPath path) {
                 return AutoBuilder.followPath(path);
+        }
+
+        /**Generates a path to go to target pose
+         * @param targetPose the pose that you want to go to. Position and Rotation
+         * @return An auto built command to get from current pose to target pose
+         */
+        public Command generatePathFindToPose(Pose2d targetPose) {
+                Command pathfindingCommand = AutoBuilder.pathfindToPose(
+                                targetPose,
+                                Constants.SwerveConstants.AUTO_PATH_CONSTRAINTS,
+                                0.0, // Goal end velocity in meters/sec
+                                0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+                );
+                return pathfindingCommand;
+        }
+
+        public Command pathFindToPathThenFollow(String pathName){
+                PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+               return AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), 0);
         }
 
         public void initShuffleBoardEncoders() {

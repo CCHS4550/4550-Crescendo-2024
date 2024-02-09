@@ -15,6 +15,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 // import org.littletonrobotics.urcl.URCL;
 
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 // import edu.wpi.first.wpilibj.DataLogManager;
 // import edu.wpi.first.wpilibj.PowerDistribution;
 // import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -41,6 +44,10 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
+
+Pathfinding.setPathfinder(new LocalADStar());
+
+
         Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
         if (isReal()) {
             // Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
