@@ -210,17 +210,17 @@ public class SwerveDrive extends SubsystemBase {
                                 new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
                 poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.DRIVE_KINEMATICS,
-                                new Rotation2d(0), swerveModulePositions, new Pose2d());
+                                new Rotation2d(0), swerveModulePositions, new Pose2d(0,0, new Rotation2d(0)));
 
-                xPID = new PIDController(.7, .1, 0);
-                yPID = new PIDController(.7, .1, 0);
+                xPID = new PIDController(1, .1, 0);
+                yPID = new PIDController(1, .1, 0);
                 // xPID = new PIDController(1, 0, 0);
                 // yPID = new PIDController(1, 0, 0);
 
                 // *TODO: Possibly research profiled PID
                 // turnPID = new ProfiledPIDController(0.5, 0, 0,
                 // RobotMap.thetaControllConstraints);
-                turnPID = new PIDController(.5, 0, 0);
+                turnPID = new PIDController(0.3, 0, 0);
                 turnPIDProfiled = new ProfiledPIDController(.7, 0, 0, new Constraints(
                                 Constants.SwerveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
                                 Constants.SwerveConstants.TURN_RATE_LIMIT));
@@ -249,8 +249,8 @@ public class SwerveDrive extends SubsystemBase {
                                                           // ChassisSpeeds
                                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your Constants class
-                                                new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
-                                                new PIDConstants(0.5, 0.0, 0.0), // Rotation PID constants
+                                                new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+                                                new PIDConstants(1, 0.5, 0.0), // Rotation PID constants
                                                 Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max
                                                                                                                          // module
                                                                                                                          // speed,
@@ -361,7 +361,7 @@ public class SwerveDrive extends SubsystemBase {
          *
          * @return The Pose2d of the robot.
          */
-        public Pose2d getPose() {
+        public Pose2d   getPose() {
                 return poseEstimator.getEstimatedPosition();
         }
 

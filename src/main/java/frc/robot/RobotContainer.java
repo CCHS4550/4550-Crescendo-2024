@@ -24,9 +24,9 @@ import frc.robot.subsystems.SwerveDrive;
 public class RobotContainer {
     SwerveDrive swerveDrive;
     Leds led;
-    Elevator elevator = new Elevator();
-    Shooter shooter = new Shooter();
-    Intake intake = new Intake();
+    // Elevator elevator = new Elevator();
+    // Shooter shooter = new Shooter();
+    // Intake intake = new Intake();
 
 
     /** Event map for path planner */
@@ -59,8 +59,8 @@ public class RobotContainer {
         // ));
 
         diagnosticsInit();
-        NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
-        NamedCommands.registerCommand("Shoot", shooter.shoot());
+        // NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
+        // NamedCommands.registerCommand("Shoot", shooter.shoot());
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
         

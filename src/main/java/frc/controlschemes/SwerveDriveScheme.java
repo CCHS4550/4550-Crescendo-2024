@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -111,7 +112,7 @@ public class SwerveDriveScheme implements ControlScheme {
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
                 .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
         new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-                .onTrue(new InstantCommand(() -> swerveDrive.setOdometry(new Pose2d(0, 0, null))));
+                .onTrue(new InstantCommand(() -> Commands.run(swerveDrive.pathFindToPathThenFollow("Middle to Shoot")), swerveDrive) );
         new JoystickButton(controllers[port], ControlMap.X_BUTTON)
                 .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
