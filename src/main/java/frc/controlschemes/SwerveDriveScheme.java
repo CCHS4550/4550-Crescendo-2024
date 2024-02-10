@@ -111,8 +111,8 @@ public class SwerveDriveScheme implements ControlScheme {
                 .onTrue(new InstantCommand(() -> toggleFieldCentric()));
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
                 .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
-        new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-                .onTrue(new InstantCommand(() -> Commands.run(swerveDrive.pathFindToPathThenFollow("Middle to Shoot")), swerveDrive) );
+        // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
+        //         .onTrue(new InstantCommand(() -> Commands.run(swerveDrive.pathFindToPathThenFollow("Middle to Shoot")), swerveDrive) );
         new JoystickButton(controllers[port], ControlMap.X_BUTTON)
                 .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
