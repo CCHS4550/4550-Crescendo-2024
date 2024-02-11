@@ -24,9 +24,9 @@ public class CCSparkMax extends CANSparkMax{
      * @param positionConversionFactor Conversion rate for position from rotations to desired unit
      * @param velocityConversionFactor Conversion rate for velocity from rotations per minute to desired unit
      */
-    public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
+    public CCSparkMax(String name, String shortName, int deviceID, MotorType motorType, IdleMode idleMode,
      boolean reverse, double positionConversionFactor, double velocityConversionFactor){
-        super(deviceID, controlMode);
+        super(deviceID, motorType);
         this.name = name;
         this.shortName = shortName;
         
@@ -36,10 +36,11 @@ public class CCSparkMax extends CANSparkMax{
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(positionConversionFactor);
         this.setVelocityConversionFactor(velocityConversionFactor);
+        voltageConversionFactor = 12;
     }
-    public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
+    public CCSparkMax(String name, String shortName, int deviceID, MotorType motorType, IdleMode idleMode,
      boolean reverse){
-        super(deviceID, controlMode);
+        super(deviceID, motorType);
         this.name = name;
         this.shortName = shortName;
         
@@ -49,10 +50,11 @@ public class CCSparkMax extends CANSparkMax{
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(1);
         this.setVelocityConversionFactor(1);
+        voltageConversionFactor = 12;
     }
-    public CCSparkMax(String name, String shortName, int deviceID, MotorType controlMode, IdleMode idleMode,
+    public CCSparkMax(String name, String shortName, int deviceID, MotorType motorType, IdleMode idleMode,
      boolean reverse, double encoder){
-        super(deviceID, controlMode);
+        super(deviceID, motorType);
         this.name = name;
         this.shortName = shortName;
         
@@ -62,6 +64,7 @@ public class CCSparkMax extends CANSparkMax{
         this.encoder = super.getEncoder();
         this.setPositionConversionFactor(1);
         this.setVelocityConversionFactor(1);
+        voltageConversionFactor = 12;
     }
 
    
@@ -85,6 +88,10 @@ public class CCSparkMax extends CANSparkMax{
     
     public void setVoltageFromSpeed(double speed) {
         super.setVoltage(speed * voltageConversionFactor);
+    }
+
+    public double getVelocity() {
+        return encoder.getVelocity();
     }
 
     public void disable(){

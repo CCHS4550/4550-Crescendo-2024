@@ -1,5 +1,5 @@
 package frc.maps;
-
+import edu.wpi.first.wpilibj.GenericHID;
 
 public interface ControlMap {
     // Joystick Axises
