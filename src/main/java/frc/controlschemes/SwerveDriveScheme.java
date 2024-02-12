@@ -7,6 +7,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -67,7 +68,7 @@ public class SwerveDriveScheme implements ControlScheme {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                         * 2;
             }
-            turnSpeed *= 2 * Math.PI;
+            turnSpeed *= 2.0 * Math.PI;
 
             // Limits acceleration and speed
             // Possibly change the speed limiting to somewhere else (maybe a normalize
