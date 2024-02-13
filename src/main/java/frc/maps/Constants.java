@@ -193,8 +193,18 @@ public class Constants {
         // new Pose2d(2.89, 4.10, new Rotation2d(0))}
     }
 
-    public class RobotPositionConstants {
-        
+    public class MechanismPositions {
+        public static double ELEVATOR_INTAKE = 0;
+        public static double WRIST_INTAKE = 0;
+
+        public static double ELEVATOR_SHOOT = 0;
+        public static double WRIST_SHOOT = 0;
+
+        public static double ELEVATOR_AMP = 0;
+        public static double WRIST_AMP = 0;
+
+        public static double ELEVATOR_HUMAN_PLAYER = 0;
+        public static double WRIST_HUMAN_PLAYER = 0;
     }
 
     public class RedFieldPositionConstants {

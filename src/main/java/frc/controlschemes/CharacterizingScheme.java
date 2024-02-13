@@ -5,11 +5,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.ControlScheme;
 import frc.maps.ControlMap;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrive;
 
 public class CharacterizingScheme implements ControlScheme{
-    public static void configure(SwerveDrive swerveDrive, int port){
-        configureButtons(swerveDrive, port);
+    public static void configure(Elevator elevator, int port){
+        configureButtons(elevator, port);
     }
 
     /**
@@ -17,17 +18,26 @@ public class CharacterizingScheme implements ControlScheme{
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port The controller port of the driving controller.
      */
-    private static void configureButtons(SwerveDrive swerveDrive, int port){
+    private static void configureButtons(Elevator elevator, int port){
     
-             new JoystickButton(controllers[port], ControlMap.A_BUTTON)
-            .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        //      new JoystickButton(controllers[port], ControlMap.A_BUTTON)
+        //     .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
+        //     .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // new JoystickButton(controllers[port], ControlMap.X_BUTTON)
+        //     .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
+        // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
+        //     .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        // new JoystickButton(controllers[port], ControlMap.RB_BUTTON).onTrue(Commands.runOnce(() -> swerveDrive.zeroHeading(), swerveDrive));
+        new JoystickButton(controllers[port], ControlMap.A_BUTTON)
+            .onTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-            .onTrue(swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+            .onTrue(elevator.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         new JoystickButton(controllers[port], ControlMap.X_BUTTON)
-            .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
+            .onTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kForward)); 
         new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-            .onTrue(swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        new JoystickButton(controllers[port], ControlMap.RB_BUTTON).onTrue(Commands.runOnce(() -> swerveDrive.zeroHeading(), swerveDrive));
+            .onTrue(elevator.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     }
 
 

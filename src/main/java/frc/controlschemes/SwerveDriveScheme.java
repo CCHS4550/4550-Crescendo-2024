@@ -1,5 +1,8 @@
 package frc.controlschemes;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -46,8 +49,10 @@ public class SwerveDriveScheme implements ControlScheme {
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
                 .withWidget(BuiltInWidgets.kToggleSwitch);
 
-        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT, -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
-        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT, -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
+        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT,
+                -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
+        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT,
+                -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
         SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT);
 
         PIDController orientationLockPID = new PIDController(.5, 0, 0);
@@ -56,10 +61,12 @@ public class SwerveDriveScheme implements ControlScheme {
 
             // Set x, y, and turn speed based on joystick inputs
             double xSpeed = -OI.axis(port, Constants.XboxConstants.L_JOYSTICK_VERTICAL) * .75
-                    * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5 : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
+                    * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5
+                            : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
                     * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
             double ySpeed = -OI.axis(port, Constants.XboxConstants.L_JOYSTICK_HORIZONTAL) * .75
-                    * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5 : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
+                    * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5
+                            : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
                     * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
             double turnSpeed = 0;
             if (!orientationLocked) {
@@ -94,7 +101,7 @@ public class SwerveDriveScheme implements ControlScheme {
             SwerveModuleState[] moduleStates;
             // Convert chassis speeds to individual module states
             moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-           
+
             swerveDrive.setModuleStates(moduleStates);
 
         }, swerveDrive).withName("Swerve Controller Command"));
@@ -108,25 +115,21 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param port        The controller port of the driving controller.
      */
     private static void configureButtons(SwerveDrive swerveDrive, int port) {
-        new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-                .onTrue(new InstantCommand(() -> toggleFieldCentric()));
-
-    new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-                .onTrue(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()));
-
-
-
-
-
-
-
+        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
+        // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
                 .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
-        // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-        //         .onTrue(new InstantCommand(() -> Commands.run(swerveDrive.pathFindToPathThenFollow("Middle to Shoot")), swerveDrive) );
+        new JoystickButton(controllers[port], ControlMap.B_BUTTON)
+                .onTrue(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()));
+
+        new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
+                .onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
+                        runOnce(() -> OI.setRumble(0, 0.5)), null));
+
         new JoystickButton(controllers[port], ControlMap.X_BUTTON)
                 .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
+
     }
 
     /**
