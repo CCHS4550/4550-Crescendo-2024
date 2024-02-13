@@ -5,6 +5,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.helpers.ControlScheme;
 import frc.helpers.OI;
@@ -16,7 +17,9 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
 
 public class MechanismScheme implements ControlScheme {
-    public static void configure(Subsystem subsystem) {
+    private static CommandGenericHID buttonBoard;
+    public static void configure(Subsystem subsystem, int port) {
+        buttonBoard = new CommandGenericHID(port);
         // arm.setDefaultCommand(Commands.run(() -> arm.moveArm(OI.axis(1,
         // ControlMap.L_JOYSTICK_VERTICAL) * 0.5,
         // OI.axis(1, ControlMap.R_JOYSTICK_VERTICAL) * 0.5), arm));
@@ -30,17 +33,14 @@ public class MechanismScheme implements ControlScheme {
     }
 
     public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
-        new JoystickButton(controllers[port], 1)
-                .onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
+        buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target Intake"));
-
-        new JoystickButton(controllers[port], 2)
-                .onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
+                
+        buttonBoard.button(2).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));
-
-         new JoystickButton(controllers[port], 3)
-                .onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
-                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));
+                
+        buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
+                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));        
     }
 
 }
