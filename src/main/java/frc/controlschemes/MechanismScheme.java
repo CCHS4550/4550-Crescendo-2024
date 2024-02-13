@@ -26,6 +26,8 @@ public class MechanismScheme implements ControlScheme  {
     public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator){
         new JoystickButton(controllers[port], 1)
                 .onTrue(elevator.elevatorToSetpoint(0));
+                // new JoystickButton(controllers[port], 2).onTrue()
     }
+        
 }
 // :)

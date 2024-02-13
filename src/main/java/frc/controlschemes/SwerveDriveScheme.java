@@ -110,6 +110,16 @@ public class SwerveDriveScheme implements ControlScheme {
     private static void configureButtons(SwerveDrive swerveDrive, int port) {
         new JoystickButton(controllers[port], ControlMap.B_BUTTON)
                 .onTrue(new InstantCommand(() -> toggleFieldCentric()));
+
+    new JoystickButton(controllers[port], ControlMap.B_BUTTON)
+                .onTrue(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()));
+
+
+
+
+
+
+
         new JoystickButton(controllers[port], ControlMap.A_BUTTON)
                 .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
         // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
