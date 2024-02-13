@@ -194,7 +194,29 @@ public class Constants {
     }
 
     public class RobotPositionConstants {
+        
+    }
 
+    public class RedFieldPositionConstants {
+        public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(5.5, 15.2), new Rotation2d(0));
+        public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(15.85, 4.4), new Rotation2d(60));
+        public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(15.85, 6.7), new Rotation2d(300));
+        public static Pose2d AMP = new Pose2d(new Translation2d(14.65, 7.65), new Rotation2d(90));
+        public static Pose2d SOURCE = new Pose2d(new Translation2d(1.13, .96), new Rotation2d(240));
+        public static Rotation2d STAGE_LEFT = new Rotation2d(300);
+        public static Rotation2d STAGE_RIGHT = new Rotation2d(60);
+        public static Rotation2d STAGE_FRONT = new Rotation2d(180);
+    }
+
+    public class BlueFieldPositionConstants {
+        public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(1.35, 5.55), new Rotation2d(180));
+        public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(0.7, 6.7), new Rotation2d(240));
+        public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(.75, 4.40), new Rotation2d(120));
+        public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
+        public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
+        public static Rotation2d STAGE_LEFT = new Rotation2d(120);
+        public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
+        public static Rotation2d STAGE_FRONT = new Rotation2d(0);
     }
 
     public class XboxConstants{

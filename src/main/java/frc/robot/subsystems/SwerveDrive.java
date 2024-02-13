@@ -309,6 +309,34 @@ public class SwerveDrive extends SubsystemBase {
                 return gyro.getRotation2d();
         }
 
+        /*
+         * returns nearest speaker pose for for team 
+         */
+        public Pose2d getNearestSpeakerPose() {
+                Pose2d[] poses = new Pose2d[3];
+                if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                        poses[0] = Constants.RedFieldPositionConstants.SPEAKER_FRONT;
+                        poses[1] = Constants.RedFieldPositionConstants.SPEAKER_LEFT;
+                        poses[2] = Constants.RedFieldPositionConstants.SPEAKER_RIGHT;
+                } else {
+                        poses[0] = Constants.BlueFieldPositionConstants.SPEAKER_FRONT;
+                        poses[1] = Constants.BlueFieldPositionConstants.SPEAKER_LEFT;
+                        poses[2] = Constants.BlueFieldPositionConstants.SPEAKER_RIGHT;
+                }
+                Pose2d currentPose = getPose();
+                double minimumDist = Integer.MAX_VALUE;
+                Pose2d closest = null;
+                for(Pose2d pose : poses) {
+                        double dist = Math.sqrt(Math.pow(currentPose.getX() - pose.getX(), 2) + Math.pow(currentPose.getY() - pose.getY(), 2));
+                        if(dist < minimumDist) {
+                                minimumDist = dist;
+                                closest = pose;
+                        }
+                }
+                return closest;
+        }
+
+
         @Override
         public void periodic() {
                 SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
