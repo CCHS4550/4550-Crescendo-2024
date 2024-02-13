@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import frc.maps.RobotMap;
 
 public class Shooter extends SubsystemBase {
     private CCSparkMax shooterTop = new CCSparkMax("Shooter Top","ST", Constants.MotorConstants.SHOOTER_TOP, MotorType.kBrushless, IdleMode.kCoast, Constants.MotorConstants.SHOOTER_TOP_REVERSED);

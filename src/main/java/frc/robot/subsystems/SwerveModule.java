@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import frc.maps.RobotMap;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import static edu.wpi.first.units.Units.*;
 

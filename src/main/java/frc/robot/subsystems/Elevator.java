@@ -13,8 +13,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -23,12 +21,10 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import frc.maps.RobotMap;
 
 public class Elevator extends SubsystemBase {
 
@@ -46,8 +42,6 @@ public class Elevator extends SubsystemBase {
 
     private ElevatorFeedforward elevatorMotorFeedforward;
 
-    private PIDController elevatorPidController;
-
     private TrapezoidProfile.Constraints constraints;
 
     private TrapezoidProfile profile;
@@ -62,7 +56,6 @@ public class Elevator extends SubsystemBase {
                 Constants.FeedForwardConstants.ELEVATOR_KG,
                 Constants.FeedForwardConstants.ELEVATOR_KV,
                 Constants.FeedForwardConstants.ELEVATOR_KA);
-        elevatorPidController = new PIDController(0.3, 0, 0);
 
         constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
         profile = new TrapezoidProfile(constraints);

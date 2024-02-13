@@ -2,15 +2,10 @@ package frc.controlschemes;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.helpers.ControlScheme;
-import frc.helpers.OI;
 import frc.maps.Constants;
-import frc.maps.ControlMap;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
