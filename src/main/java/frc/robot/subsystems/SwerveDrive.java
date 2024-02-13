@@ -566,6 +566,7 @@ public class SwerveDrive extends SubsystemBase {
          * @param targetPose the pose that you want to go to. Position and Rotation
          * @return An auto built command to get from current pose to target pose
          */
+        /**TODO add rumble */
         public Command generatePathFindToPose(Pose2d targetPose) {
                 Command pathfindingCommand = AutoBuilder.pathfindToPose(
                                 targetPose,
