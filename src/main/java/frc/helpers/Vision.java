@@ -1,22 +1,22 @@
 package frc.helpers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.maps.Constants;
 import frc.robot.Robot;
 
@@ -28,13 +28,12 @@ public class Vision {
 
     // Simulation
     // private PhotonCameraSim cameraSim;
-    private VisionSystemSim visionSim;
 
     public Vision(String cameraName, Transform3d robotToCam) {
         camera = new PhotonCamera(Constants.Vision.CAMERA_NAME);
 
         photonEstimator = new PhotonPoseEstimator(
-                Constants.Vision.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera,
+                Constants.AprilTags.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera,
                 robotToCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
@@ -97,15 +96,6 @@ public class Vision {
             lastEstTimestamp = latestTimestamp;
         return visionEst;
     }
-
-    // public EstimatedRobotPose getEstimatedRobotPose(){
-    //     Optional<EstimatedRobotPose> est = getEstimatedGlobalPose();
-
-    //     if(est.isPresent()){
-
-    //     }
-    // }
-
     /**
      * The standard deviations of the estimated pose from
      * {@link #getEstimatedGlobalPose()}, for use
@@ -117,11 +107,11 @@ public class Vision {
      */
     public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
         var estStdDevs = Constants.Vision.kSingleTagStdDevs;
-        var targets = getLatestResult().getTargets();
+        List<PhotonTrackedTarget> targets = getLatestResult().getTargets();
         int numTags = 0;
         double avgDist = 0;
-        for (var tgt : targets) {
-            var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+        for (PhotonTrackedTarget tgt : targets) {
+            Optional<Pose3d> tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
             if (tagPose.isEmpty())
                 continue;
             numTags++;
@@ -142,22 +132,23 @@ public class Vision {
         return estStdDevs;
     }
 
+
     // ----- Simulation
 
-    public void simulationPeriodic(Pose2d robotSimPose) {
-        visionSim.update(robotSimPose);
-    }
+    // public void simulationPeriodic(Pose2d robotSimPose) {
+    //     visionSim.update(robotSimPose);
+    // }
 
-    /** Reset pose history of the robot in the vision system simulation. */
-    public void resetSimPose(Pose2d pose) {
-        if (Robot.isSimulation())
-            visionSim.resetRobotPose(pose);
-    }
+    // /** Reset pose history of the robot in the vision system simulation. */
+    // public void resetSimPose(Pose2d pose) {
+    //     if (Robot.isSimulation())
+    //         visionSim.resetRobotPose(pose);
+    // }
 
-    /** A Field2d for visualizing our robot and objects on the field. */
-    public Field2d getSimDebugField() {
-        if (!Robot.isSimulation())
-            return null;
-        return visionSim.getDebugField();
-    }
+    // /** A Field2d for visualizing our robot and objects on the field. */
+    // public Field2d getSimDebugField() {
+    //     if (!Robot.isSimulation())
+    //         return null;
+    //     return visionSim.getDebugField();
+    // }
 }

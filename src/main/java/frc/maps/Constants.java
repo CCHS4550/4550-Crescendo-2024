@@ -1,13 +1,17 @@
 package frc.maps;
 
+import org.photonvision.PhotonUtils;
+
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -241,7 +245,7 @@ public class Constants {
         // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
         // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
         // public static Rotation2d STAGE_FRONT = new Rotation2d(0);
-        public static Pose2d STAGE_TOP;
+        public static Pose2d STAGE_TOP = AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_STAGE_TOP).get().toPose2d().transformBy(new Transform2d(2.0, 0.0,new Rotation2d(0.0)));
         public static Pose2d STAGE_BOTTOM;
         public static Pose2d STAGE_SIDE;
     }
@@ -289,8 +293,6 @@ public class Constants {
         // from center.
 
         // The layout of the AprilTags on the field
-        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
-                .loadAprilTagLayoutField();
 
         // The standard deviations of our vision estimated poses, which affect
         // correction rate
@@ -299,7 +301,7 @@ public class Constants {
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
-    public static class CAMERA_ONE {
+    public static class cameraOne {
         public static final String CAMERA_ONE_NAME = "LL3";
         public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
                 new Rotation3d(0, 0, 0));
@@ -309,7 +311,9 @@ public class Constants {
      * Gotten from here
      * https://firstfrc.blob.core.windows.net/frc2024/FieldAssets/2024LayoutMarkingDiagram.pdf
      */
-    public static class APRIL_TAGS{
+    public static class AprilTags{
+         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
+                .loadAprilTagLayoutField();
 
         public static int BLUE_SOURCE_LEFT = 1;
         public static int BLUE_SOURCE_RIGHT = 2;
@@ -326,6 +330,13 @@ public class Constants {
         public static int RED_STAGE_SIDE = 13;
         public static int BLUE_STAGE_SIDE = 14;
         public static int BLUE_STAGE_TOP = 15;
-        public static int BLUE_STAGE_BOTTOM = 16;
+        public static int BLUE_STAGE_BOTTOM = 16;   
     }
+
+    public static Pose2d mirrorPose(Pose2d bluePose) {
+        return new Pose2d(
+            Constants.AprilTags.aprilTagFieldLayout.getFieldLength()- bluePose.getX(),
+            bluePose.getY(),
+            Rotation2d.fromRadians(Math.PI - bluePose.getRotation().getRadians()));
+      }
 }
