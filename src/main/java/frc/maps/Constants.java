@@ -225,6 +225,9 @@ public class Constants {
         public static Rotation2d STAGE_RIGHT = new Rotation2d(60);
         public static Rotation2d STAGE_FRONT = new Rotation2d(180);
         // public static Pose2d STAGE_LEFT = new Pose2d(2.0,7.0, new Rotation2d(300.0));
+        public static Pose2d STAGE_TOP;
+        public static Pose2d STAGE_BOTTOM;
+        public static Pose2d STAGE_SIDE;
         
     }
 
@@ -235,9 +238,12 @@ public class Constants {
         public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT };
         public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
         public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
-        public static Rotation2d STAGE_LEFT = new Rotation2d(120);
-        public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
-        public static Rotation2d STAGE_FRONT = new Rotation2d(0);
+        // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
+        // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
+        // public static Rotation2d STAGE_FRONT = new Rotation2d(0);
+        public static Pose2d STAGE_TOP;
+        public static Pose2d STAGE_BOTTOM;
+        public static Pose2d STAGE_SIDE;
     }
 
     public class XboxConstants {
@@ -298,5 +304,28 @@ public class Constants {
         public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
                 new Rotation3d(0, 0, 0));
         public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME, ROBOT_TO_CAM);
+    }
+    /**
+     * Gotten from here
+     * https://firstfrc.blob.core.windows.net/frc2024/FieldAssets/2024LayoutMarkingDiagram.pdf
+     */
+    public static class APRIL_TAGS{
+
+        public static int BLUE_SOURCE_LEFT = 1;
+        public static int BLUE_SOURCE_RIGHT = 2;
+        public static int RED_SPEAKER_BOTTOM = 3;
+        public static int RED_SPEAKER_TOP = 4;
+        public static int RED_AMP = 5;
+        public static int BLUE_AMP = 6;
+        public static int BLUE_SPEAKER_TOP = 7;
+        public static int BLUE_SPEAKER_BUTTON = 8;
+        public static int RED_SOURCE_LEFT = 9;
+        public static int RED_SOURCE_RIGHT = 10;
+        public static int RED_STAGE_BOTTOM = 11;
+        public static int RED_STAGE_TOP = 12;
+        public static int RED_STAGE_SIDE = 13;
+        public static int BLUE_STAGE_SIDE = 14;
+        public static int BLUE_STAGE_TOP = 15;
+        public static int BLUE_STAGE_BOTTOM = 16;
     }
 }

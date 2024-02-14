@@ -337,6 +337,7 @@ public class SwerveDrive extends SubsystemBase {
         }
 
         public Pose2d getNearestStagePose(){
+
                  Pose2d[] poses = new Pose2d[3];
                 if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
                         poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
