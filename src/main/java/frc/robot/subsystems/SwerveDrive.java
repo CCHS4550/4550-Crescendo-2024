@@ -311,48 +311,51 @@ public class SwerveDrive extends SubsystemBase {
                 return gyro.getRotation2d();
         }
 
-        /** Returns the nearest speaker pose for for team 
+        /**
+         * Returns the nearest speaker pose for for team
          * 
          */
         public Pose2d getNearestSpeakerPose() {
                 Pose2d[] poses = new Pose2d[3];
-                if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-                        // poses[0] = Constants.RedFieldPositionConstants.SPEAKER_FRONT;
-                        // poses[1] = Constants.RedFieldPositionConstants.SPEAKER_LEFT;
-                        // poses[2] = Constants.RedFieldPositionConstants.SPEAKER_RIGHT;
+                if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
                         poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
                 } else {
-                        // poses[0] = Constants.BlueFieldPositionConstants.SPEAKER_FRONT;
-                        // poses[1] = Constants.BlueFieldPositionConstants.SPEAKER_LEFT;
-                        // poses[2] = Constants.BlueFieldPositionConstants.SPEAKER_RIGHT;
                         poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
                 }
+
+                poses = DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+                                ? poses = Constants.RedFieldPositionConstants.SPEAKER_POSES
+                                : Constants.RedFieldPositionConstants.SPEAKER_POSES;
                 return getPose().nearest(new ArrayList<>(Arrays.asList(poses)));
 
-                // Pose2d currentPose = getPose();
-                // double minimumDist = Integer.MAX_VALUE;
-                // Pose2d closest = null;
-                // for(Pose2d pose : poses) {
-                //         double dist = Math.sqrt(Math.pow(currentPose.getX() - pose.getX(), 2) + Math.pow(currentPose.getY() - pose.getY(), 2));
-                //         if(dist < minimumDist) {
-                //                 minimumDist = dist;
-                //                 closest = pose;
-                //         }
-                // }
+                // return getPose().nearest(new ArrayList<>(
+                //                 Arrays.asList(DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+                //                                 ? poses = Constants.RedFieldPositionConstants.SPEAKER_POSES
+                //                                 : Constants.RedFieldPositionConstants.SPEAKER_POSES)));
 
-                
-                // return closest;
 
-                
         }
 
+        public Pose2d getNearestStagePose(){
+                 Pose2d[] poses = new Pose2d[3];
+                if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                        poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
+                } else {
+                        poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
+                }
+
+                poses = DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+                                ? poses = Constants.RedFieldPositionConstants.SPEAKER_POSES
+                                : Constants.RedFieldPositionConstants.SPEAKER_POSES;
+                return getPose().nearest(new ArrayList<>(Arrays.asList(poses)));
+        }
 
         @Override
         public void periodic() {
                 SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
 
                 SmartDashboard.putBoolean("Event Test", test);
-                
+
                 Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
 
                 // poseEstimator.update(getRotation2d(), swerveModulePositions);
@@ -395,15 +398,13 @@ public class SwerveDrive extends SubsystemBase {
                 backLeft.setDesiredState(desiredStates[3], openLoop);
         }
 
-         public SwerveModuleState[] getCurrentModuleStates() {
+        public SwerveModuleState[] getCurrentModuleStates() {
                 SwerveModuleState[] states = new SwerveModuleState[] {
                                 frontRight.getState(), frontLeft.getState(), backRight.getState(),
                                 backLeft.getState() };
                 return states;
         }
 
-       
-       
         /**
          * Resets the odometer readings using the gyro, SwerveModulePositions (defined
          * in constructor), and Pose2d.
@@ -433,7 +434,7 @@ public class SwerveDrive extends SubsystemBase {
                                 new Rotation2d(backLeft.getTurnPosition()));
         }
 
-         /**
+        /**
          * Gets the position of the robot in Pose2d format. Uses odometer reading.
          * Includes the x, y, and theta values of the robot.
          *
@@ -442,7 +443,6 @@ public class SwerveDrive extends SubsystemBase {
         public Pose2d getPose() {
                 return poseEstimator.getEstimatedPosition();
         }
-
 
         public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
                 photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
@@ -455,9 +455,8 @@ public class SwerveDrive extends SubsystemBase {
 
                 poseEstimator.update(getRotation2d(), swerveModulePositions);
 
-
-
-                Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.CAMERA_ONE.FRONT_CAMERA.getEstimatedGlobalPose(getPose());
+                Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.CAMERA_ONE.FRONT_CAMERA
+                                .getEstimatedGlobalPose(getPose());
                 if (estimatedPoseOptional.isPresent()) {
                         EstimatedRobotPose estimatedRobotPose = estimatedPoseOptional.get();
                         poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
@@ -466,16 +465,16 @@ public class SwerveDrive extends SubsystemBase {
                                                         estimatedRobotPose.estimatedPose.toPose2d()));
                 }
 
-                //Should do the same thing as above x
+                // Should do the same thing as above x
                 // estimatedPoseOptional.ifPresent(est -> {
-                //         var estPose = est.estimatedPose.toPose2d();
-                //         // Change our trust in the measurement based on the tags we can see
-                //         var estStdDevs = Constants.CAMERA_ONE.FRONT_CAMERA.getEstimationStdDevs(
-                //                                         est.estimatedPose.toPose2d());
-    
-                //         poseEstimator.addVisionMeasurement(
-                //                 est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                //     });
+                // var estPose = est.estimatedPose.toPose2d();
+                // // Change our trust in the measurement based on the tags we can see
+                // var estStdDevs = Constants.CAMERA_ONE.FRONT_CAMERA.getEstimationStdDevs(
+                // est.estimatedPose.toPose2d());
+
+                // poseEstimator.addVisionMeasurement(
+                // est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                // });
         }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -566,7 +565,7 @@ public class SwerveDrive extends SubsystemBase {
          * @param targetPose the pose that you want to go to. Position and Rotation
          * @return An auto built command to get from current pose to target pose
          */
-        /**TODO add rumble */
+        /** TODO add rumble */
         public Command generatePathFindToPose(Pose2d targetPose) {
                 Command pathfindingCommand = AutoBuilder.pathfindToPose(
                                 targetPose,

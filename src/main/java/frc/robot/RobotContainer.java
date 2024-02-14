@@ -90,18 +90,4 @@ public class RobotContainer {
         // return autoCommands.get();
         return autoChooser.getSelected();
     }
-
-    /**
-     * Functionally the same as the Autonomous class method, just less messy.
-     */
-    // public Command followPathPlanner(String pathName) {
-    // PathPlannerTrajectory traj = PathPlanner.loadPath(pathName,
-    // RobotMap.AUTO_PATH_CONSTRAINTS);
-
-    // return Commands.sequence(
-    // Commands.waitSeconds(1),
-    // Commands.runOnce(swerveDrive::resetOdometry, swerveDrive),
-    // swerveDrive.followTrajectoryCommand(traj, true),
-    // Commands.runOnce(swerveDrive::stopModules, swerveDrive));
-    // }
 }
