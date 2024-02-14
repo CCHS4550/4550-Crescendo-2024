@@ -34,8 +34,8 @@ public class MechanismScheme implements ControlScheme {
         buttonBoard.button(2).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));
                 
-        buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
-                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));        
+        buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
+                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target Amp"));        
     }
 
 }
