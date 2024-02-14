@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,15 +15,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 // import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
 import frc.maps.RobotMap;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 
 public class RobotContainer {
     SwerveDrive swerveDrive;
     Leds led;
-    // Elevator elevator = new Elevator();
-    // Shooter shooter = new Shooter();
-    // Intake intake = new Intake();
+    Elevator elevator = new Elevator();
+    Shooter shooter = new Shooter();
+    Intake intake = new Intake();
+    Climber climber = new Climber();
 
 
     /** Event map for path planner */
@@ -55,7 +62,8 @@ public class RobotContainer {
 
         diagnosticsInit();
         // NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
-        // NamedCommands.registerCommand("Shoot", shooter.shoot());
+        NamedCommands.registerCommand("Shoot", shooter.shoot());
+        NamedCommands.registerCommand("Intake", intake.intake(0.5));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
         

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.6052244141525325,
-        "y": 6.951475907581444
+        "x": 2.4594951504717826,
+        "y": 6.977011190133491
       },
       "prevControl": {
-        "x": 1.3316249758188305,
-        "y": 6.951475907581444
+        "x": 1.1858957121380806,
+        "y": 6.977011190133491
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Note"
     }
   ],
   "rotationTargets": [],
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Top Start",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

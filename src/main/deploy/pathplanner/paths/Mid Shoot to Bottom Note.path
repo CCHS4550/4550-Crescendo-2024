@@ -12,16 +12,16 @@
         "y": 5.544006763946122
       },
       "isLocked": false,
-      "linkedName": "Shoot"
+      "linkedName": "Mid Shoot"
     },
     {
       "anchor": {
-        "x": 2.5540944646704107,
-        "y": 4.3690274602771435
+        "x": 2.523266002570141,
+        "y": 4.372173997702515
       },
       "prevControl": {
-        "x": 1.3601715444171631,
-        "y": 5.459027718981364
+        "x": 1.3293430823168935,
+        "y": 5.462174256406736
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -33.33741873809983,
+    "rotation": -37.591677419910475,
     "rotateFast": false
   },
   "reversed": false,
