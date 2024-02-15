@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 
 import java.util.HashMap;
 
@@ -51,6 +52,7 @@ public class RobotContainer {
     Field2d ff;
 
     public RobotContainer() {
+
         // initialize subsytems here
         swerveDrive = new SwerveDrive();
         led = new Leds(RobotMap.LED_PORT, RobotMap.LED_LENGTH);
@@ -74,7 +76,6 @@ public class RobotContainer {
                 .registerCommand("Target Intake",
                         parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)));
-
         NamedCommands
                 .registerCommand("Target Shoot",
                         parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
