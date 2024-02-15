@@ -13,6 +13,7 @@ import frc.robot.subsystems.Wrist;
 
 public class MechanismScheme implements ControlScheme {
     private static CommandGenericHID buttonBoard;
+
     public static void configure(Subsystem subsystem, int port) {
         buttonBoard = new CommandGenericHID(port);
         // arm.setDefaultCommand(Commands.run(() -> arm.moveArm(OI.axis(1,
@@ -29,13 +30,14 @@ public class MechanismScheme implements ControlScheme {
 
     public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
         buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
-                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target Intake"));
-                
+                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target Intake"));
+
         buttonBoard.button(2).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
-                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));
-                
+                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));
+
         buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
-                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target Amp"));        
+                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target Amp"));
+        buttonBoard.button(4).whileTrue(intake.intake(0.5));
     }
 
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
@@ -694,6 +696,9 @@ public class SwerveDrive extends SubsystemBase {
                 return gyro.getRoll();
         }
 
+        public Command halt(){
+                return Commands.runOnce(()-> {}, this);
+        }
 }
 
 // // Mutable holder for unit-safe voltage values, persisted to avoid
