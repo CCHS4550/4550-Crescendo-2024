@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7157649993896484,
-      "y": 6.753905773162842
+      "x": 0.7163855022154492,
+      "y": 6.684543128345515
     },
-    "rotation": 60.2551141654266
+    "rotation": 59.954771408132956
   },
   "command": {
     "type": "sequential",
@@ -26,18 +26,30 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Mid Shoot to Mid Note"
+            "pathName": "Mid Shoot to Middle Note"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Mid Note to Mid Shoot"
+            "pathName": "Middle Note to Mid Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid Shoot to Bottom Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Note to Mid Shoot"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": true
+  "choreoAuto": false
 }

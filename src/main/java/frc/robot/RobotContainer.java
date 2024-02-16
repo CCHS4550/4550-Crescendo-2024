@@ -71,6 +71,7 @@ public class RobotContainer {
         diagnosticsInit();
         // NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
         NamedCommands.registerCommand("Shoot", shooter.shoot());
+        NamedCommands.registerCommand("Rev Shooter", getAutoCommand());
         NamedCommands.registerCommand("Intake", intake.intake(0.5));
         NamedCommands
                 .registerCommand("Target Intake",
@@ -84,8 +85,9 @@ public class RobotContainer {
         NamedCommands
                 .registerCommand("Target Amp",
                         parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)));
+                                                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)));
 
+                                
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
 
