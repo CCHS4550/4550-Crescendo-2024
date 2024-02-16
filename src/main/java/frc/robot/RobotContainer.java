@@ -71,7 +71,7 @@ public class RobotContainer {
         diagnosticsInit();
         // NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
         NamedCommands.registerCommand("Shoot", shooter.shoot());
-        NamedCommands.registerCommand("Rev Shooter", getAutoCommand());
+        NamedCommands.registerCommand("Rev Shooter", shooter.rev());
         NamedCommands.registerCommand("Intake", intake.intake(0.5));
         NamedCommands
                 .registerCommand("Target Intake",
