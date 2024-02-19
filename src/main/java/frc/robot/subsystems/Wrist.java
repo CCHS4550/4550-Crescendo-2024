@@ -23,6 +23,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
@@ -161,5 +162,7 @@ public class Wrist extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
-
+    public Command halt(){
+                return Commands.runOnce(()-> {}, this);
+        }
 }

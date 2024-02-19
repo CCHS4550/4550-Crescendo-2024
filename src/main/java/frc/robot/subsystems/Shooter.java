@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
@@ -21,7 +22,7 @@ public class Shooter extends SubsystemBase {
         shooterTop.follow(shooterBottom);
     }
 
-    public void setShooterSpped(double speed) {
+    public void setShooterSpeed(double speed) {
         shooterBottom.set(speed);
     }
 
@@ -30,7 +31,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command shoot() {
-        return this.run(() -> setShooterSpped(1));
+        return this.run(() -> setShooterSpeed(1));
     }
 
     public Command index() {
@@ -38,7 +39,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command rev() {
-        return this.run(() -> setShooterSpped(1));
+        return this.run(() -> setShooterSpeed(1));
     }
-
+    public Command halt(){
+                return Commands.runOnce(()-> {}, this);
+        }
 }

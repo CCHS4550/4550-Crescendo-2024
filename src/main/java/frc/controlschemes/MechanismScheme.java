@@ -10,6 +10,8 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
+import frc.robot.subsystems.Climber;
+
 
 public class MechanismScheme implements ControlScheme {
     private static CommandGenericHID buttonBoard;
@@ -28,7 +30,7 @@ public class MechanismScheme implements ControlScheme {
         // intake)).onFalse(Commands.run(() -> intake.toggleReverse(false), intake));
     }
 
-    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
+    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, Climber climber) {
         buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target Intake"));
 
@@ -38,7 +40,12 @@ public class MechanismScheme implements ControlScheme {
         buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target Amp"));
         buttonBoard.button(4).whileTrue(intake.intake(0.5));
+        buttonBoard.button(5).whileTrue(shooter.index());
+        buttonBoard.button(6).toggleOnTrue(shooter.rev());
+        buttonBoard.button(7).whileTrue(shooter.shoot());
+        buttonBoard.button(8).whileTrue(climber.climb());
+        buttonBoard.button(11).onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(), wrist.halt(), climber.halt()));
+
     }
 
 }
-// :)
