@@ -14,6 +14,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 // import org.littletonrobotics.urcl.URCL;
+import org.littletonrobotics.urcl.URCL;
 
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -64,7 +65,7 @@ Pathfinding.setPathfinder(new LocalADStar());
 
         Logger.start(); 
         // DataLogManager.start();
-        // URCL.start();
+        URCL.start();
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our

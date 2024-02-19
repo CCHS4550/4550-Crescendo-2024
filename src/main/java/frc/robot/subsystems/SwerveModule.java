@@ -205,9 +205,10 @@ public class SwerveModule extends SubsystemBase {
         // These are both in m/s
         double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
         // Feed forward
-        double driveFF = driveFeedforward.calculate(velocity);
+        // double driveFF = driveFeedforward.calculate(velocity);
 
-        driveMotor.setVoltage(driveOutput + driveFF);
+        // driveMotor.setVoltage(driveOutput + driveFF);
+        driveMotor.set(velocity);
         // driveMotor.set(driveOutput);
     }
 

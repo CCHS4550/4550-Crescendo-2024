@@ -57,12 +57,12 @@ public class SwerveDriveScheme implements ControlScheme {
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = -controller.getLeftX() * .75;
+            double xSpeed = -controller.getLeftY() * .75;
             // * (controller.axisGreaterThan(Constants.XboxConstants.RT, 0.5)? 0.5
             // : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
             // * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
 
-            double ySpeed = -controller.getLeftY() * .75;
+            double ySpeed = -controller.getLeftX() * .75;
             // * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5
             // : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
             // * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
@@ -181,39 +181,19 @@ public class SwerveDriveScheme implements ControlScheme {
         // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
 
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
-        controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-                runOnce(() -> OI.setRumble(0, 0.5))));
+        // controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
+        //         runOnce(() -> OI.setRumble(0, 0.5))));
 
-        controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-                runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)), null));
+        // controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
+        //         runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)), null));
 
-        controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
-                .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
+        // controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
+        //         .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
 
         // controller.rightBumper().whileTrue(run(() -> climber.runClimberRight(1), climber));
 
         // controller.leftBumper().whileTrue(run(() -> climber.runClimberLeft(1), climber));
 
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-        // runOnce(() -> OI.setRumble(0, 0.5))));
-
-        // new JoystickButton(controllers[port], ControlMap.A_BUTTON)
-        // .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
-        // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-        // .onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-        // runOnce(() ->controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
-        // null));
-
-        // new JoystickButton(controllers[port], ControlMap.LB_BUTTON)
-        // .whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
-        // new JoystickButton(controllers[port], ControlMap.X_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
-        // .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
-
-        // new JoystickButton(controllers[port], ControlMap.RB_BUTTON).whileTrue(run(()
-        // -> climber.runClimberRight(1), climber));
 
     }
 
