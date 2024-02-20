@@ -5,7 +5,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
@@ -36,6 +38,15 @@ public class Shooter extends SubsystemBase {
 
     public Command index() {
         return this.run(() -> indexer.set(0.5));
+    }
+    public Command indexOneSecond(Shooter shooter) {
+        WaitCommand timer = new WaitCommand(1.0);
+        return new ParallelDeadlineGroup(timer, shooter.index());
+    }
+    
+    public Command ShootOneSecond(Shooter shooter) {
+        WaitCommand timer = new WaitCommand(1.0);
+        return new ParallelDeadlineGroup(timer, shooter.shoot());
     }
 
     public Command rev() {

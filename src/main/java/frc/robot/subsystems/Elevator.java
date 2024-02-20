@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
+import frc.maps.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
 
@@ -140,8 +141,11 @@ public class Elevator extends SubsystemBase {
             waitSeconds(1),
             elevatorToSetpoint(0)
     );
-}
-
+    }
+    
+    public double elevatorElevation(){
+        return Math.sin(ElevatorConstants.ELEVATOR_ANGLE)*elevatorMotorOne.getPosition();
+    }
     /**
      * Used only in characterizing. Don't touch this.
      * 

@@ -79,7 +79,7 @@ public class RobotContainer {
                 .registerCommand("Target Shoot",
                         parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)));
-        swerveD
+
         NamedCommands
                 .registerCommand("Target Amp",
                         parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
