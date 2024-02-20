@@ -13,10 +13,10 @@ import frc.maps.RobotMap;
 import frc.robot.Robot;
 
 public class Intake extends SubsystemBase {
-    private CCSparkMax intakeTop = new CCSparkMax("Intake Top", "IT", Constants.MotorConstants.INTAKE_TOP, MotorType.kBrushless,
-            IdleMode.kBrake, Constants.MotorConstants.INTAKE_TOP_REVERSED);
-    private CCSparkMax intakeBottom = new CCSparkMax("Intake Bottom", "IB", Constants.MotorConstants.INTAKE_BOTTOM,
-            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.INTAKE_BOTTOM_REVERSED);
+    private CCSparkMax intakeTop = new CCSparkMax("Intake Top", "IT", Constants.MotorConstants.INTAKE_RIGHT, MotorType.kBrushless,
+            IdleMode.kBrake, Constants.MotorConstants.INTAKE_RIGHT_REVERSED);
+    private CCSparkMax intakeBottom = new CCSparkMax("Intake Bottom", "IB", Constants.MotorConstants.INTAKE_LEFT,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.INTAKE_LEFT_REVERSED);
 
     public Intake(){}
 

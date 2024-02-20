@@ -49,17 +49,44 @@ public class Constants {
 
     public static class MotorConstants {
 
-        public static final int FRONT_RIGHT_DRIVE = 6;
+        // public static final int FRONT_RIGHT_DRIVE = 6;
+        // public static final boolean FRONT_RIGHT_DRIVE_REVERSE = false;
+        // public static final double FRONT_RIGHT_DRIVE_ENCODER = 1;
+        // public static final int FRONT_RIGHT_TURN = 5;
+        // public static final boolean FRONT_RIGHT_TURN_REVERSE = true;
+        // public static final double FRONT_RIGHT_TURN_ENCODER = 1;
+
+        // public static final int FRONT_LEFT_DRIVE = 2;
+        // public static final boolean FRONT_LEFT_DRIVE_REVERSE = false;
+        // public static final double FRONT_LEFT_DRIVE_ENCODER = 1;
+        // public static final int FRONT_LEFT_TURN = 1;
+        // public static final boolean FRONT_LEFT_TURN_REVERSE = true;
+        // public static final double FRONT_LEFT_TURN_ENCODER = 1;
+
+        // public static final int BACK_RIGHT_DRIVE = 7;
+        // public static final boolean BACK_RIGHT_DRIVE_REVERSE = false;
+        // public static final double BACK_RIGHT_DRIVE_ENCODER = 1;
+        // public static final int BACK_RIGHT_TURN = 8;
+        // public static final boolean BACK_RIGHT_TURN_REVERSE = true;
+        // public static final double BACK_RIGHT_TURN_ENCODER = 1;
+
+        // public static final int BACK_LEFT_DRIVE = 3;
+        // public static final boolean BACK_LEFT_DRIVE_REVERSE = false;
+        // public static final double BACK_LEFT_DRIVE_ENCODER = 1;
+        // public static final int BACK_LEFT_TURN = 4;
+        // public static final boolean BACK_LEFT_TURN_REVERSE = true;
+        // public static final double BACK_LEFT_TURN_ENCODER = 1;
+        public static final int FRONT_RIGHT_DRIVE = 1;
         public static final boolean FRONT_RIGHT_DRIVE_REVERSE = false;
         public static final double FRONT_RIGHT_DRIVE_ENCODER = 1;
-        public static final int FRONT_RIGHT_TURN = 5;
+        public static final int FRONT_RIGHT_TURN = 2;
         public static final boolean FRONT_RIGHT_TURN_REVERSE = true;
         public static final double FRONT_RIGHT_TURN_ENCODER = 1;
 
-        public static final int FRONT_LEFT_DRIVE = 2;
+        public static final int FRONT_LEFT_DRIVE = 3;
         public static final boolean FRONT_LEFT_DRIVE_REVERSE = false;
         public static final double FRONT_LEFT_DRIVE_ENCODER = 1;
-        public static final int FRONT_LEFT_TURN = 1;
+        public static final int FRONT_LEFT_TURN = 4;
         public static final boolean FRONT_LEFT_TURN_REVERSE = true;
         public static final double FRONT_LEFT_TURN_ENCODER = 1;
 
@@ -70,10 +97,10 @@ public class Constants {
         public static final boolean BACK_RIGHT_TURN_REVERSE = true;
         public static final double BACK_RIGHT_TURN_ENCODER = 1;
 
-        public static final int BACK_LEFT_DRIVE = 3;
+        public static final int BACK_LEFT_DRIVE = 5;
         public static final boolean BACK_LEFT_DRIVE_REVERSE = false;
         public static final double BACK_LEFT_DRIVE_ENCODER = 1;
-        public static final int BACK_LEFT_TURN = 4;
+        public static final int BACK_LEFT_TURN = 6;
         public static final boolean BACK_LEFT_TURN_REVERSE = true;
         public static final double BACK_LEFT_TURN_ENCODER = 1;
 
@@ -90,17 +117,17 @@ public class Constants {
         public static final int INDEXER = 99;
         public static final boolean INDEXER_REVERSED = false;
 
-        public static final int INTAKE_TOP = 99;
-        public static final boolean INTAKE_TOP_REVERSED = false;
+        public static final int INTAKE_RIGHT = 10;
+        public static final boolean INTAKE_RIGHT_REVERSED = false;
 
-        public static final int INTAKE_BOTTOM = 99;
-        public static final boolean INTAKE_BOTTOM_REVERSED = false;
+        public static final int INTAKE_LEFT = 11;
+        public static final boolean INTAKE_LEFT_REVERSED = false;
 
-        public static final int ELEVATOR_ONE = 99;
-        public static final boolean ELEVATOR_ONE_REVERSED = false;
+        public static final int ELEVATOR_RIGHT = 9;
+        public static final boolean ELEVATOR_RIGHT_REVERSED = false;
 
-        public static final int ELEVATOR_TWO = 99;
-        public static final boolean ELEVATOR_TWO_REVERSED = false;
+        public static final int ELEVATOR_LEFT = 12;
+        public static final boolean ELEVATOR_LEFT_REVERSED = false;
 
         public static final int WRIST = 99;
         public static final boolean WRIST_REVERSED = false;

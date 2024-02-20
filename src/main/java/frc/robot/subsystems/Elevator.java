@@ -37,10 +37,10 @@ public class Elevator extends SubsystemBase {
                     null, // No log consumer, since data is recorded by URCL
                     this));
 
-    private CCSparkMax elevatorMotorOne = new CCSparkMax("Elevator One", "EO", Constants.MotorConstants.ELEVATOR_ONE,
-            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_ONE_REVERSED);
-    private CCSparkMax elevatorMotorTwo = new CCSparkMax("Elevator Two", "ET", Constants.MotorConstants.ELEVATOR_TWO,
-            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_TWO_REVERSED);
+    private CCSparkMax elevatorMotorOne = new CCSparkMax("Elevator One", "EO", Constants.MotorConstants.ELEVATOR_RIGHT,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_RIGHT_REVERSED);
+    private CCSparkMax elevatorMotorTwo = new CCSparkMax("Elevator Two", "ET", Constants.MotorConstants.ELEVATOR_LEFT,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_LEFT_REVERSED);
 
     private ElevatorFeedforward elevatorMotorFeedforward;
 
