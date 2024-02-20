@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.wpilibj2.command.Commands.run;
-import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,9 +10,6 @@ import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
-import org.photonvision.PhotonUtils;
-import org.photonvision.PhotonPoseEstimator;
-
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 

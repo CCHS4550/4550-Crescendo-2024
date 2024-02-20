@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.wpilibj2.command.Commands.deadline;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -39,14 +41,14 @@ public class Shooter extends SubsystemBase {
     public Command index() {
         return this.run(() -> indexer.set(0.5));
     }
-    public Command indexOneSecond(Shooter shooter) {
+    public Command indexOneSecond() {
         WaitCommand timer = new WaitCommand(1.0);
-        return new ParallelDeadlineGroup(timer, shooter.index());
+        return deadline(timer, index());
     }
     
-    public Command ShootOneSecond(Shooter shooter) {
+    public Command ShootOneSecond() {
         WaitCommand timer = new WaitCommand(1.0);
-        return new ParallelDeadlineGroup(timer, shooter.shoot());
+        return deadline(timer, shoot());
     }
 
     public Command rev() {

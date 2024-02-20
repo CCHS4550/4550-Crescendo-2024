@@ -91,7 +91,8 @@ public class Wrist extends SubsystemBase {
                 ArbFFUnits.kVoltage);
 
     }
-    public Command autoWristAngle(SwerveDrive swerveDrive, Elevator elevator, Wrist wrist){
+
+    public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator){
         Pose2d robotPose = swerveDrive.getPose();
         Pose2d speakerPose = new Pose2d();
         double height = 78 - elevator.elevatorElevation();
@@ -102,7 +103,7 @@ public class Wrist extends SubsystemBase {
                 }
         double distanceToSpeaker = PhotonUtils.getDistanceToPose(robotPose, speakerPose);
         double wristAngle = Math.atan(height/distanceToSpeaker);
-        return wrist.wristToSetpoint(wristAngle);
+        return wristAngle;
     }
     public void setWristVoltage(Measure<Voltage> volts) {
         wristMotor.setVoltage(volts.magnitude());

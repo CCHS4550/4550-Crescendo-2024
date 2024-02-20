@@ -1,6 +1,7 @@
 package frc.controlschemes;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -14,7 +15,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Climber;
-
 
 public class MechanismScheme implements ControlScheme {
     private static CommandGenericHID buttonBoard;
@@ -33,8 +33,10 @@ public class MechanismScheme implements ControlScheme {
         // intake)).onFalse(Commands.run(() -> intake.toggleReverse(false), intake));
     }
 
-    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, Climber climber, SwerveDrive swerveDrive) {
-        SequentialCommandGroup autoShoot = new SequentialCommandGroup(wrist.autoWristAngle(swerveDrive, elevator, wrist), shooter.indexOneSecond(shooter), shooter.ShootOneSecond(shooter));
+    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist,
+            Climber climber, SwerveDrive swerveDrive) {
+        SequentialCommandGroup autoShoot =  (SequentialCommandGroup) sequence(
+                wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)), shooter.rev(), shooter.indexOneSecond());
         buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target Intake"));
 
@@ -49,7 +51,8 @@ public class MechanismScheme implements ControlScheme {
         buttonBoard.button(7).whileTrue(shooter.shoot());
         buttonBoard.button(8).whileTrue(climber.climb());
         buttonBoard.button(9).onTrue(autoShoot);
-        buttonBoard.button(11).onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(), wrist.halt(), climber.halt()));
+        buttonBoard.button(11)
+                .onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(), wrist.halt(), climber.halt()));
 
     }
 
