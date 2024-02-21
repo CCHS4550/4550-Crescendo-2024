@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.581233125429214,
-        "y": 5.5678198995353565
+        "x": 0.7488093726187455,
+        "y": 4.383339095381895
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.887504821305939,
-        "y": 5.568116821418829
+        "x": 2.265094262709712,
+        "y": 2.5763791949547183
       },
       "isLocked": false,
-      "linkedName": "Middle"
+      "linkedName": "Bottom Shoot"
     },
     {
       "anchor": {
-        "x": 1.3844597550326365,
-        "y": 5.5678198995353565
+        "x": 7.619581910460117,
+        "y": 0.7895746902604924
       },
       "prevControl": {
-        "x": 1.3361033291164515,
-        "y": 5.5678198995353565
+        "x": 7.635734461283736,
+        "y": 0.7907029934430253
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Shoot"
+      "linkedName": "Bottom Middle Note"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 1.0,
+      "name": "Intake",
+      "waypointRelativePos": 0.7,
       "command": {
-        "type": "parallel",
+        "type": "sequential",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "Shoot"
+                "name": "Intake"
               }
             }
           ]
@@ -50,18 +50,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -0.5704618570142252,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": -58.82527583763615,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.06,
-      "y": 6.95
+      "x": 0.7163855022154492,
+      "y": 6.684543128345515
     },
-    "rotation": 0
+    "rotation": 59.35339725926781
   },
   "command": {
     "type": "sequential",
@@ -18,37 +18,37 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Start to Top Note"
+                  "pathName": "Top Shoot to Top Note"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Top Note to Shoot"
+                  "pathName": "Top Note to Mid Shoot"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Shoot to Middle"
+                  "pathName": "Mid Shoot to Middle Note"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Shoot"
+                  "pathName": "Middle Note to Mid Shoot"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Shoot to Bottom"
+                  "pathName": "Mid Shoot to Bottom Note"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Bottom to Shoot"
+                  "pathName": "Bottom Note to Mid Shoot"
                 }
               }
             ]

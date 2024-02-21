@@ -13,8 +13,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -28,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import frc.maps.RobotMap;
+import frc.maps.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
 
@@ -39,14 +37,12 @@ public class Elevator extends SubsystemBase {
                     null, // No log consumer, since data is recorded by URCL
                     this));
 
-    private CCSparkMax elevatorMotorOne = new CCSparkMax("Elevator One", "EO", Constants.MotorConstants.ELEVATOR_ONE,
-            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_ONE_REVERSED);
-    private CCSparkMax elevatorMotorTwo = new CCSparkMax("Elevator Two", "ET", Constants.MotorConstants.ELEVATOR_TWO,
-            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_TWO_REVERSED);
+    private CCSparkMax elevatorMotorOne = new CCSparkMax("Elevator One", "EO", Constants.MotorConstants.ELEVATOR_RIGHT,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_RIGHT_REVERSED);
+    private CCSparkMax elevatorMotorTwo = new CCSparkMax("Elevator Two", "ET", Constants.MotorConstants.ELEVATOR_LEFT,
+            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_LEFT_REVERSED);
 
     private ElevatorFeedforward elevatorMotorFeedforward;
-
-    private PIDController elevatorPidController;
 
     private TrapezoidProfile.Constraints constraints;
 
@@ -62,7 +58,6 @@ public class Elevator extends SubsystemBase {
                 Constants.FeedForwardConstants.ELEVATOR_KG,
                 Constants.FeedForwardConstants.ELEVATOR_KV,
                 Constants.FeedForwardConstants.ELEVATOR_KA);
-        elevatorPidController = new PIDController(0.3, 0, 0);
 
         constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
         profile = new TrapezoidProfile(constraints);
@@ -146,8 +141,11 @@ public class Elevator extends SubsystemBase {
             waitSeconds(1),
             elevatorToSetpoint(0)
     );
-}
-
+    }
+    
+    public double elevatorElevation(){
+        return Math.sin(ElevatorConstants.ELEVATOR_ANGLE)*elevatorMotorOne.getPosition();
+    }
     /**
      * Used only in characterizing. Don't touch this.
      * 
@@ -167,5 +165,7 @@ public class Elevator extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
-
+    public Command halt(){
+                return Commands.runOnce(()-> {}, this);
+        }
 }

@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonUtils;
 
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -16,20 +17,22 @@ import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
+import frc.maps.Constants.BlueFieldPositionConstants;
+import frc.maps.Constants.RedFieldPositionConstants;
 import frc.maps.RobotMap;
 
 public class Wrist extends SubsystemBase {
@@ -89,6 +92,19 @@ public class Wrist extends SubsystemBase {
 
     }
 
+    public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator){
+        Pose2d robotPose = swerveDrive.getPose();
+        Pose2d speakerPose = new Pose2d();
+        double height = 78 - elevator.elevatorElevation();
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                    speakerPose = RedFieldPositionConstants.SPEAKER_MIDDLE;
+                } else {
+                    speakerPose = BlueFieldPositionConstants.SPEAKER_MIDDLE;
+                }
+        double distanceToSpeaker = PhotonUtils.getDistanceToPose(robotPose, speakerPose);
+        double wristAngle = Math.atan(height/distanceToSpeaker);
+        return wristAngle;
+    }
     public void setWristVoltage(Measure<Voltage> volts) {
         wristMotor.setVoltage(volts.magnitude());
     }
@@ -109,7 +125,7 @@ public class Wrist extends SubsystemBase {
         return goal;
     }
 
-    public double getElevatorPosition() {
+    public double getWristPosition() {
         return edu.wpi.first.math.util.Units.rotationsToRadians(wristMotor.getPosition());
     }
 
@@ -164,5 +180,7 @@ public class Wrist extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
-
+    public Command halt(){
+                return Commands.runOnce(()-> {}, this);
+        }
 }

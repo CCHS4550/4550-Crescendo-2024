@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
-import frc.maps.RobotMap;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import static edu.wpi.first.units.Units.*;
 
@@ -206,9 +205,10 @@ public class SwerveModule extends SubsystemBase {
         // These are both in m/s
         double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
         // Feed forward
-        double driveFF = driveFeedforward.calculate(velocity);
+        // double driveFF = driveFeedforward.calculate(velocity);
 
-        driveMotor.setVoltage(driveOutput + driveFF);
+        // driveMotor.setVoltage(driveOutput + driveFF);
+        driveMotor.set(velocity);
         // driveMotor.set(driveOutput);
     }
 
