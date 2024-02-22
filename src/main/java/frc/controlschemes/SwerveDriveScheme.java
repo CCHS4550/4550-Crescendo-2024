@@ -138,7 +138,8 @@ public class SwerveDriveScheme implements ControlScheme {
 
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
-
+        controller.rightBumper().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestStagePose()),
+        runOnce(() -> OI.setRumble(0, 0.5))));
     }
 
     /**
