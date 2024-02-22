@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.helpers.ControlScheme;
 import frc.maps.ControlMap;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveDrive;
 
 public class CharacterizingScheme implements ControlScheme{
