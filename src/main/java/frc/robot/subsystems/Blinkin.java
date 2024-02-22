@@ -3,11 +3,15 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import java.util.ArrayList;
 
 public class Blinkin {
     private HashMap<String, Double> colors;
     private Spark blinkin;
+    private int ind;
+    private ArrayList<String> cols;
     public Blinkin() {
+        ind = 0;
         blinkin = new Spark(0);
         colors = new HashMap<>();
         colors.put("Rainbow, Rainbow Palette", -0.99);
@@ -110,8 +114,14 @@ public class Blinkin {
         colors.put("Gray", 0.95);
         colors.put("Dark Gray", 0.97);
         colors.put("Black", 0.99);
+        cols = new ArrayList<>(colors.keySet());
     }
     public void setColor(String color) {
         blinkin.set(colors.get(color));
+        ind = cols.index(color);
+    }
+    public void toggleColor() {
+        ind = (ind + 1) % cols.size();
+        blinkin.set(colors.get(cols.get(ind)));
     }
 }
