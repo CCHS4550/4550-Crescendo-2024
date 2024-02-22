@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 import frc.helpers.OI;
 import frc.maps.Constants;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
@@ -121,15 +120,14 @@ public class SwerveDriveScheme implements ControlScheme {
         configureButtons(swerveDrive, port);
     }
 
-    /**
+
+     /**
      * Configures buttons and their respective commands.
      * 
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port        The controller port of the driving controller.
      */
-    private static void configureButtons(SwerveDrive swerveDrive, Climber climber, int port) {
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
+    private static void configureButtons(SwerveDrive swerveDrive, int port) {
 
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
         controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
@@ -140,60 +138,6 @@ public class SwerveDriveScheme implements ControlScheme {
 
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
-        
-        // controller.povUp().
-
-        // controller.rightBumper().whileTrue(run(() -> climber.runClimberRight(1), climber));
-
-        // controller.leftBumper().whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-        // runOnce(() -> OI.setRumble(0, 0.5))));
-
-        // new JoystickButton(controllers[port], ControlMap.A_BUTTON)
-        // .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
-        // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-        // .onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-        // runOnce(() ->controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
-        // null));
-
-        // new JoystickButton(controllers[port], ControlMap.LB_BUTTON)
-        // .whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
-        // new JoystickButton(controllers[port], ControlMap.X_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
-        // .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
-
-        // new JoystickButton(controllers[port], ControlMap.RB_BUTTON).whileTrue(run(()
-        // -> climber.runClimberRight(1), climber));
-
-    }
-
-     /**
-     * Configures buttons and their respective commands.
-     * 
-     * @param swerveDrive The SwerveDrive object being configured.
-     * @param port        The controller port of the driving controller.
-     */
-    private static void configureButtons(SwerveDrive swerveDrive, int port) {
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
-
-        controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
-        // controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-        //         runOnce(() -> OI.setRumble(0, 0.5))));
-
-        // controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-        //         runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)), null));
-
-        // controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
-        //         .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
-
-        // controller.rightBumper().whileTrue(run(() -> climber.runClimberRight(1), climber));
-
-        // controller.leftBumper().whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
 
     }
 
