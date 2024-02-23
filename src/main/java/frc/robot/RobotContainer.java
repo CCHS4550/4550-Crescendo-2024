@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.controlschemes.SwerveDriveScheme;
 import frc.maps.Constants;
 import frc.maps.RobotMap;
+import frc.robot.subsystems.Blinkin;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -36,6 +37,7 @@ public class RobotContainer {
     Intake intake = new Intake();
     Climber climber = new Climber();
     Wrist wrist = new Wrist();
+    Blinkin blinkin = new Blinkin();
 
     /** Event map for path planner */
     public static HashMap<String, Command> eventMap = new HashMap<>();
@@ -59,7 +61,8 @@ public class RobotContainer {
         SwerveDriveScheme.configure(swerveDrive, 0);
 
         // CharacterizingScheme.configure(swerveDrive, 0);
-
+        //Blinkin stuff
+        blinkin.setDefaultCommand(blinkin.setAllianceColor());
         // Testing.configure(swerveDrive, 0);
 
         // fix this with a new subsystem
