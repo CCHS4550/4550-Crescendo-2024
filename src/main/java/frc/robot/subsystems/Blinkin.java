@@ -2,10 +2,15 @@ package frc.robot.subsystems;
 
 import java.util.HashMap;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import java.util.ArrayList;
 
-public class Blinkin {
+public class Blinkin extends SubsystemBase {
     private HashMap<String, Double> colors;
     private Spark blinkin;
     private int ind;
@@ -118,10 +123,16 @@ public class Blinkin {
     }
     public void setColor(String color) {
         blinkin.set(colors.get(color));
-        ind = cols.index(color);
+        ind = cols.indexOf(color);
     }
     public void toggleColor() {
         ind = (ind + 1) % cols.size();
         blinkin.set(colors.get(cols.get(ind)));
+    }
+    public Command setAllianceColor() {
+        return Commands.runOnce(() -> {
+            if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) setColor("Color 1 Heartbeat Medium");
+            else setColor("Color 2 Heartbeat Medium");
+        }, this);
     }
 }
