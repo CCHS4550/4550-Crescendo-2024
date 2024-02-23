@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -131,7 +133,9 @@ public class Blinkin extends SubsystemBase {
     }
     public Command setAllianceColor() {
         return Commands.runOnce(() -> {
-            if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red) setColor("Color 1 Heartbeat Medium");
+            Optional<Alliance> alliance = DriverStation.getAlliance();
+            if(alliance.isPresent()) setColor("Rainbow, Rainbow Palette");
+            else if(alliance.get() == DriverStation.Alliance.Red) setColor("Color 1 Heartbeat Medium");
             else setColor("Color 2 Heartbeat Medium");
         }, this);
     }
