@@ -16,3 +16,5 @@ If you have any questions about the code, feel free to reach out to me</br>
 * Oliver Howe
 * JS
 * Tyler
+* Creeon
+*THEBIGTHREE

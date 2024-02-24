@@ -1,22 +1,18 @@
 package frc.maps;
 
-import org.photonvision.PhotonUtils;
-
 import com.pathplanner.lib.path.PathConstraints;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -252,31 +248,29 @@ public class Constants {
         public static Pose2d AMP = new Pose2d(new Translation2d(14.65, 7.65), new Rotation2d(90));
         public static Pose2d SOURCE = new Pose2d(new Translation2d(1.13, .96), new Rotation2d(240));
 
-        /** TODO Add Stage Poses */
-        public static Rotation2d STAGE_LEFT = new Rotation2d(300);
-        public static Rotation2d STAGE_RIGHT = new Rotation2d(60);
-        public static Rotation2d STAGE_FRONT = new Rotation2d(180);
-        // public static Pose2d STAGE_LEFT = new Pose2d(2.0,7.0, new Rotation2d(300.0));
-        public static Pose2d STAGE_TOP;
-        public static Pose2d STAGE_BOTTOM;
-        public static Pose2d STAGE_SIDE;
+
+        public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(12.4, 4.9), new Rotation2d(Units.degreesToRadians(60)));
+        public static Pose2d STAGE_BOTTOM = new Pose2d(new Translation2d(12.4, 3.4), new Rotation2d(Units.degreesToRadians(300)));
+        public static Pose2d STAGE_SIDE = new Pose2d(new Translation2d(10.7, 4.1), new Rotation2d(Units.degreesToRadians(180)));
         
     }
 
     public class BlueFieldPositionConstants {
-        public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(1.35, 5.55), new Rotation2d(180));
-        public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(0.7, 6.7), new Rotation2d(240));
-        public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(.75, 4.40), new Rotation2d(120));
-        public static Pose2d SPEAKER_MIDDLE = new Pose2d(new Translation2d(0.25, 5.5), new Rotation2d(0));
-        public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT};
-        public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
-        public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
-        // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
-        // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
-        // public static Rotation2d STAGE_FRONT = new Rotation2d(0);
-        public static Pose2d STAGE_TOP = AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_STAGE_TOP).get().toPose2d().transformBy(new Transform2d(2.0, 0.0,new Rotation2d(0.0)));
-        public static Pose2d STAGE_BOTTOM;
-        public static Pose2d STAGE_SIDE;
+            public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(1.35, 5.55), new Rotation2d(180));
+            public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(0.7, 6.7), new Rotation2d(240));
+            public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(.75, 4.40), new Rotation2d(120));
+            public static Pose2d SPEAKER_MIDDLE = new Pose2d(new Translation2d(0.25, 5.5), new Rotation2d(0));
+            public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT };
+            public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
+            public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
+            // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
+            // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
+            // public static Rotation2d STAGE_FRONT = new Rotation2d(0);
+            public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(4.4, 4.9),
+                            new Rotation2d(Units.degreesToRadians(120)));//idk if this is important-> //AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_STAGE_TOP).get().toPose2d().transformBy(new Transform2d(2.0, 0.0,new Rotation2d(0.0)));
+            public static Pose2d STAGE_BOTTOM = new Pose2d(new Translation2d(4.4, 3.2),
+                            new Rotation2d(Units.degreesToRadians(240)));
+            public static Pose2d STAGE_SIDE = new Pose2d(new Translation2d(5.9, 4.1), new Rotation2d(0));
     }
 
     public class XboxConstants {
