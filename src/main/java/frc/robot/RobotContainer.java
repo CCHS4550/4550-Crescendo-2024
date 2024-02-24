@@ -34,7 +34,7 @@ public class RobotContainer {
     Elevator elevator = new Elevator();
     Shooter shooter = new Shooter();
     Intake intake = new Intake();
-    Climber climber = new Climber();
+//     Climber climber = new Climber();
     Wrist wrist = new Wrist();
 
     /** Event map for path planner */
@@ -68,22 +68,22 @@ public class RobotContainer {
 
         diagnosticsInit();
         // NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
-        NamedCommands.registerCommand("Shoot", shooter.shoot());
-        NamedCommands.registerCommand("Intake", intake.intake(0.5));
-        NamedCommands
-                .registerCommand("Target Intake",
-                        parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)));
+        // NamedCommands.registerCommand("Shoot", shooter.shoot());
+        // NamedCommands.registerCommand("Intake", intake.intake(0.5));
+        // NamedCommands
+        //         .registerCommand("Target Intake",
+        //                 parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
+        //                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)));
 
-        NamedCommands
-                .registerCommand("Target Shoot",
-                        parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)));
+        // NamedCommands
+        //         .registerCommand("Target Shoot",
+        //                 parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
+        //                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)));
 
-        NamedCommands
-                .registerCommand("Target Amp",
-                        parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)));
+        // NamedCommands
+        //         .registerCommand("Target Amp",
+        //                 parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
+        //                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)));
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();

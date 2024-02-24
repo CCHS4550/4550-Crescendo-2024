@@ -128,7 +128,7 @@ public class Constants {
         public static final int WRIST = 14;
         public static final boolean WRIST_REVERSED = false;
 
-        public static final int CLIMBER_RIGHT = 98;
+        public static final int CLIMBER_RIGHT = 98 ;
         public static final boolean CLIMBER_RIGHT_REVERSED = false;
 
         public static final int CLIMBER_LEFT = 99;

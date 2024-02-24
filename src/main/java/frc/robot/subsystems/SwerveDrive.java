@@ -466,15 +466,15 @@ public class SwerveDrive extends SubsystemBase {
                 // 3")[6]/1000.0));
                 poseEstimator.update(getRotation2d(), swerveModulePositions);
 
-                Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
-                                .getEstimatedGlobalPose(getPose());
-                if (estimatedPoseOptional.isPresent()) {
-                        EstimatedRobotPose estimatedRobotPose = estimatedPoseOptional.get();
-                        poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
-                                        estimatedRobotPose.timestampSeconds,
-                                        Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
-                                                        estimatedRobotPose.estimatedPose.toPose2d()));
-                }
+                // Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
+                //                 .getEstimatedGlobalPose(getPose());
+                // if (estimatedPoseOptional.isPresent()) {
+                //         EstimatedRobotPose estimatedRobotPose = estimatedPoseOptional.get();
+                //         poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
+                //                         estimatedRobotPose.timestampSeconds,
+                //                         Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
+                //                                         estimatedRobotPose.estimatedPose.toPose2d()));
+                // }
 
                 // Should do the same thing as above x
                 // estimatedPoseOptional.ifPresent(est -> {
