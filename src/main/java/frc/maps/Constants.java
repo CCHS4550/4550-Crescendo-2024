@@ -105,24 +105,25 @@ public class Constants {
          * Get all these values from electrical
          */
         public static final int SHOOTER_TOP = 16;
-        public static final boolean SHOOTER_TOP_REVERSED = false;
+        public static final boolean SHOOTER_TOP_REVERSED = true;
 
         public static final int SHOOTER_BOTTOM = 15;
         public static final boolean SHOOTER_BOTTOM_REVERSED = false;
 
-        public static final int INDEXER = 13;
+        public static final int INDEXER = 21;
         public static final boolean INDEXER_REVERSED = false;
+ 
 
-        public static final int INTAKE_RIGHT = 10;
+         public static final int INTAKE_RIGHT = 12;
         public static final boolean INTAKE_RIGHT_REVERSED = false;
 
-        public static final int INTAKE_LEFT = 11;
+        public static final int INTAKE_LEFT = 9;
         public static final boolean INTAKE_LEFT_REVERSED = false;
 
-        public static final int ELEVATOR_RIGHT = 9;
+        public static final int ELEVATOR_RIGHT = 11;
         public static final boolean ELEVATOR_RIGHT_REVERSED = false;
 
-        public static final int ELEVATOR_LEFT = 12;
+        public static final int ELEVATOR_LEFT = 10;
         public static final boolean ELEVATOR_LEFT_REVERSED = false;
 
         public static final int WRIST = 14;

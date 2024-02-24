@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
+import frc.controlschemes.MechanismScheme;
 // import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
 import frc.maps.Constants;
@@ -57,6 +59,7 @@ public class RobotContainer {
 
         // initialize controller schemes here
         SwerveDriveScheme.configure(swerveDrive, 0);
+        MechanismScheme.configure(intake, shooter, elevator, wrist, 1);
 
         // CharacterizingScheme.configure(swerveDrive, 0);
 

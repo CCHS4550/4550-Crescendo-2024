@@ -23,15 +23,16 @@ public class Shooter extends SubsystemBase {
             IdleMode.kBrake, Constants.MotorConstants.INDEXER_REVERSED);
 
     public Shooter() {
-        shooterTop.follow(shooterBottom);
+        // shooterTop.follow(shooterBottom);
     }
 
     public void setShooterSpeed(double speed) {
         shooterBottom.set(speed);
+        shooterTop.set(speed);
     }
 
-    public void setIndexerSpeed(double speed) {
-        indexer.set(speed);
+    public Command setIndexerSpeed(double speed) {
+       return this.run(()-> indexer.set(speed));
     }
 
     public Command shoot() {
@@ -39,7 +40,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command index() {
-        return this.run(() -> indexer.set(0.5));
+        return this.run(() -> indexer.set(1));
     }
     public Command indexOneSecond() {
         WaitCommand timer = new WaitCommand(1.0);
