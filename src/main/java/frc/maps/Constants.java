@@ -104,13 +104,13 @@ public class Constants {
          * TODO
          * Get all these values from electrical
          */
-        public static final int SHOOTER_TOP = 99;
+        public static final int SHOOTER_TOP = 16;
         public static final boolean SHOOTER_TOP_REVERSED = false;
 
-        public static final int SHOOTER_BOTTOM = 99;
+        public static final int SHOOTER_BOTTOM = 15;
         public static final boolean SHOOTER_BOTTOM_REVERSED = false;
 
-        public static final int INDEXER = 99;
+        public static final int INDEXER = 13;
         public static final boolean INDEXER_REVERSED = false;
 
         public static final int INTAKE_RIGHT = 10;
@@ -125,10 +125,10 @@ public class Constants {
         public static final int ELEVATOR_LEFT = 12;
         public static final boolean ELEVATOR_LEFT_REVERSED = false;
 
-        public static final int WRIST = 99;
+        public static final int WRIST = 14;
         public static final boolean WRIST_REVERSED = false;
 
-        public static final int CLIMBER_RIGHT = 99;
+        public static final int CLIMBER_RIGHT = 98;
         public static final boolean CLIMBER_RIGHT_REVERSED = false;
 
         public static final int CLIMBER_LEFT = 99;
