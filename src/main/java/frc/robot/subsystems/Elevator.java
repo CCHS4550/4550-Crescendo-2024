@@ -50,7 +50,7 @@ public class Elevator extends SubsystemBase {
 
     private TrapezoidProfile.State setPoint, goal;
 
-    // DigitalInput limitSwitch = new DigitalInput(0);
+    DigitalInput limitSwitch = new DigitalInput(1);
 
     public Elevator() {
         elevatorMotorFeedforward = new ElevatorFeedforward(
@@ -125,23 +125,23 @@ public class Elevator extends SubsystemBase {
     }
 
     //Sets the elevator to target a setpoint
-//     public Command elevatorToSetpoint(double setpoint) {
-//         return this.run(
-//                 () -> this.targetPosition(setpoint)).until(
-//                         () -> (getSetpoint().position == getGoal().position))
-//                 .onlyIf(() -> (limitSwitch.get() == false));
-//     }
+    public Command elevatorToSetpoint(double setpoint) {
+        return this.run(
+                () -> this.targetPosition(setpoint)).until(
+                        () -> (getSetpoint().position == getGoal().position))
+                .onlyIf(() -> (limitSwitch.get() == false));
+    }
 
-//    // homes the elevator
-//    public Command home() {
-//     return sequence(
-//             this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
-//               .until(() -> (limitSwitch.get())),
-//             elevatorToSetpoint(1),
-//             waitSeconds(1),
-//             elevatorToSetpoint(0)
-//     );
-//     }
+   // homes the elevator
+   public Command home() {
+    return sequence(
+            this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
+              .until(() -> (limitSwitch.get())),
+            elevatorToSetpoint(1),
+            waitSeconds(1),
+            elevatorToSetpoint(0)
+    );
+    }
     
     public double elevatorElevation(){
         return Math.sin(ElevatorConstants.ELEVATOR_ANGLE)*elevatorMotorOne.getPosition();

@@ -109,6 +109,10 @@ public class Wrist extends SubsystemBase {
         wristMotor.setVoltage(volts.magnitude());
     }
 
+    public Command setWristDutyCycle(double speed){
+       return this.run( () ->wristMotor.set(speed));
+    }
+
     public void setSetpoint(TrapezoidProfile.State setPoint) {
         this.setPoint = setPoint;
     }

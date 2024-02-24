@@ -110,11 +110,10 @@ public class Constants {
         public static final int SHOOTER_BOTTOM = 15;
         public static final boolean SHOOTER_BOTTOM_REVERSED = false;
 
-        public static final int INDEXER = 21;
+        public static final int INDEXER = 13;
         public static final boolean INDEXER_REVERSED = false;
- 
 
-         public static final int INTAKE_RIGHT = 12;
+        public static final int INTAKE_RIGHT = 12;
         public static final boolean INTAKE_RIGHT_REVERSED = false;
 
         public static final int INTAKE_LEFT = 9;
@@ -129,23 +128,21 @@ public class Constants {
         public static final int WRIST = 14;
         public static final boolean WRIST_REVERSED = false;
 
-        public static final int CLIMBER_RIGHT = 98 ;
+        public static final int CLIMBER_RIGHT = 98;
         public static final boolean CLIMBER_RIGHT_REVERSED = false;
 
         public static final int CLIMBER_LEFT = 99;
         public static final boolean CLIMBER_LEFT_REVERSED = false;
-
-        
 
     }
 
     public static class SwerveConstants {
 
         // Absolute Encoder Ports
-        public static final int FRONT_RIGHT_ABSOLUTE_ENCODER = 3;
-        public static final int FRONT_LEFT_ABSOLUTE_ENCODER = 0;
+        public static final int FRONT_RIGHT_ABSOLUTE_ENCODER = 0;
+        public static final int FRONT_LEFT_ABSOLUTE_ENCODER = 1;
         public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 2;
-        public static final int BACK_LEFT_ABSOLUTE_ENCODER = 1;
+        public static final int BACK_LEFT_ABSOLUTE_ENCODER = 3;
 
         public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.968 - Math.PI;
         public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 1.752 - Math.PI;
@@ -242,36 +239,40 @@ public class Constants {
 
     public class RedFieldPositionConstants {
         public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(5.5, 15.2), new Rotation2d(0));
-        public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(15.85, 4.4), new Rotation2d(60));  
+        public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(15.85, 4.4), new Rotation2d(60));
         public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(15.85, 6.7), new Rotation2d(300));
         public static Pose2d SPEAKER_MIDDLE = new Pose2d(new Translation2d(16.25, 5.5), new Rotation2d(0));
-        public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT};
+        public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT };
         public static Pose2d AMP = new Pose2d(new Translation2d(14.65, 7.65), new Rotation2d(90));
         public static Pose2d SOURCE = new Pose2d(new Translation2d(1.13, .96), new Rotation2d(240));
 
+        public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(12.4, 4.9),
+                new Rotation2d(Units.degreesToRadians(60)));
+        public static Pose2d STAGE_BOTTOM = new Pose2d(new Translation2d(12.4, 3.4),
+                new Rotation2d(Units.degreesToRadians(300)));
+        public static Pose2d STAGE_SIDE = new Pose2d(new Translation2d(10.7, 4.1),
+                new Rotation2d(Units.degreesToRadians(180)));
 
-        public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(12.4, 4.9), new Rotation2d(Units.degreesToRadians(60)));
-        public static Pose2d STAGE_BOTTOM = new Pose2d(new Translation2d(12.4, 3.4), new Rotation2d(Units.degreesToRadians(300)));
-        public static Pose2d STAGE_SIDE = new Pose2d(new Translation2d(10.7, 4.1), new Rotation2d(Units.degreesToRadians(180)));
-        
     }
 
     public class BlueFieldPositionConstants {
-            public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(1.35, 5.55), new Rotation2d(180));
-            public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(0.7, 6.7), new Rotation2d(240));
-            public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(.75, 4.40), new Rotation2d(120));
-            public static Pose2d SPEAKER_MIDDLE = new Pose2d(new Translation2d(0.25, 5.5), new Rotation2d(0));
-            public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT };
-            public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
-            public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
-            // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
-            // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
-            // public static Rotation2d STAGE_FRONT = new Rotation2d(0);
-            public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(4.4, 4.9),
-                            new Rotation2d(Units.degreesToRadians(120)));//idk if this is important-> //AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_STAGE_TOP).get().toPose2d().transformBy(new Transform2d(2.0, 0.0,new Rotation2d(0.0)));
-            public static Pose2d STAGE_BOTTOM = new Pose2d(new Translation2d(4.4, 3.2),
-                            new Rotation2d(Units.degreesToRadians(240)));
-            public static Pose2d STAGE_SIDE = new Pose2d(new Translation2d(5.9, 4.1), new Rotation2d(0));
+        public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(1.35, 5.55), new Rotation2d(180));
+        public static Pose2d SPEAKER_LEFT = new Pose2d(new Translation2d(0.7, 6.7), new Rotation2d(240));
+        public static Pose2d SPEAKER_RIGHT = new Pose2d(new Translation2d(.75, 4.40), new Rotation2d(120));
+        public static Pose2d SPEAKER_MIDDLE = new Pose2d(new Translation2d(0.25, 5.5), new Rotation2d(0));
+        public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_LEFT, SPEAKER_RIGHT };
+        public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
+        public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
+        // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
+        // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);
+        // public static Rotation2d STAGE_FRONT = new Rotation2d(0);
+        public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(4.4, 4.9),
+                new Rotation2d(Units.degreesToRadians(120)));// idk if this is important->
+                                                             // //AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_STAGE_TOP).get().toPose2d().transformBy(new
+                                                             // Transform2d(2.0, 0.0,new Rotation2d(0.0)));
+        public static Pose2d STAGE_BOTTOM = new Pose2d(new Translation2d(4.4, 3.2),
+                new Rotation2d(Units.degreesToRadians(240)));
+        public static Pose2d STAGE_SIDE = new Pose2d(new Translation2d(5.9, 4.1), new Rotation2d(0));
     }
 
     public class XboxConstants {
@@ -331,12 +332,13 @@ public class Constants {
                 new Rotation3d(0, 0, 0));
         public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME, ROBOT_TO_CAM);
     }
+
     /**
      * Gotten from here
      * https://firstfrc.blob.core.windows.net/frc2024/FieldAssets/2024LayoutMarkingDiagram.pdf
      */
-    public static class AprilTags{
-         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
+    public static class AprilTags {
+        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
                 .loadAprilTagLayoutField();
 
         public static int BLUE_SOURCE_LEFT = 1;
@@ -354,16 +356,17 @@ public class Constants {
         public static int RED_STAGE_SIDE = 13;
         public static int BLUE_STAGE_SIDE = 14;
         public static int BLUE_STAGE_TOP = 15;
-        public static int BLUE_STAGE_BOTTOM = 16;   
+        public static int BLUE_STAGE_BOTTOM = 16;
     }
 
     public static Pose2d mirrorPose(Pose2d bluePose) {
         return new Pose2d(
-            Constants.AprilTags.aprilTagFieldLayout.getFieldLength()- bluePose.getX(),
-            bluePose.getY(),
-            Rotation2d.fromRadians(Math.PI - bluePose.getRotation().getRadians()));
-      }
-    public static class ElevatorConstants{
+                Constants.AprilTags.aprilTagFieldLayout.getFieldLength() - bluePose.getX(),
+                bluePose.getY(),
+                Rotation2d.fromRadians(Math.PI - bluePose.getRotation().getRadians()));
+    }
+
+    public static class ElevatorConstants {
         public static double ELEVATOR_HEIGHT = 19.345;
         public static double ELEVATOR_ANGLE = 0.611;
     }

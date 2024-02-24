@@ -4,6 +4,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -57,15 +58,10 @@ public class SwerveDriveScheme implements ControlScheme {
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = -controller.getLeftY() * .75;
-            // * (controller.axisGreaterThan(Constants.XboxConstants.RT, 0.5)? 0.5
-            // : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
-            // * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
+            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.05);
+            
 
-            double ySpeed = -controller.getLeftX() * .75;
-            // * (OI.axis(0, Constants.XboxConstants.RT) > 0.5 ? 0.5
-            // : (OI.axis(0, Constants.XboxConstants.LT) > 0.5 ? (4 / 3) : 1))
-            // * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL;
+            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.05);
 
             double turnSpeed = 0;
             if (!orientationLocked) {
