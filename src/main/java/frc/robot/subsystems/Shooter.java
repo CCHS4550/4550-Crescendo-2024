@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command index() {
-        return this.run(() -> indexer.set(1));
+        return this.run(() -> indexer.set(0.2));
     }
     public Command indexOneSecond() {
         WaitCommand timer = new WaitCommand(1.0);
