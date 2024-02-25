@@ -288,6 +288,11 @@ public class SwerveDrive extends SubsystemBase {
          * Resets chassis gyro to 0. For all gyro purposes, "heading" refers to the
          * facing direction of the gyro.
          */
+
+         public void spinMotor(double speed){
+                frontRight.setDriveVelocity(speed);
+                frontRight.setTurnPosition(speed);
+         }
         public void zeroHeading() {
                 gyro.reset();
         }
