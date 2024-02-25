@@ -55,6 +55,7 @@ public class Elevator extends SubsystemBase {
     DigitalInput limitSwitch = new DigitalInput(1);
 
     public Elevator() {
+        resetEncoders();
         elevatorMotorFeedforward = new ElevatorFeedforward(
                 Constants.FeedForwardConstants.ELEVATOR_KS,
                 Constants.FeedForwardConstants.ELEVATOR_KG,
