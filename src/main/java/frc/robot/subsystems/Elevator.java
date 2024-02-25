@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -88,6 +90,15 @@ public class Elevator extends SubsystemBase {
     public void setElevatorVoltage(Measure<Voltage> volts) {
         elevatorMotorOne.setVoltage(volts.magnitude());
         elevatorMotorTwo.setVoltage(volts.magnitude());
+    }
+
+    public void setElevatorSpeed(double speed){
+          elevatorMotorOne.set(speed);
+          elevatorMotorTwo.set(speed);
+    }
+
+    public Command setElevatorDutyCycle(DoubleSupplier speed){
+        return this.run(() -> setElevatorSpeed(speed.getAsDouble()));
     }
 
     public void setSetpoint(TrapezoidProfile.State setPoint) {
