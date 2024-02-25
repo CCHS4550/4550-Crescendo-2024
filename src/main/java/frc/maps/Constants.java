@@ -144,10 +144,10 @@ public class Constants {
         public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 2;
         public static final int BACK_LEFT_ABSOLUTE_ENCODER = 3;
 
-        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.968 - Math.PI;
-        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 1.752 - Math.PI;
-        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.623 - Math.PI;
-        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 2.378 - Math.PI;
+        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.53;
+        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 3.90;
+        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.78;
+        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.249;
 
         // Robot Constants (change with SysId)
         // max speed in free sprint: used in getting velocities of swerve modules

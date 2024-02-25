@@ -634,10 +634,10 @@ public class SwerveDrive extends SubsystemBase {
                 abs_Enc_BR_Offset_Entry.setDouble(backRight.getAbsoluteEncoderRadiansOffset());
                 abs_Enc_BL_Offset_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansOffset());
 
-                abs_Enc_FR_Entry.setDouble(frontRight.getAbsoluteEncoderRadiansOffset());
-                abs_Enc_FL_Entry.setDouble(frontLeft.getAbsoluteEncoderRadiansOffset());
-                abs_Enc_BR_Entry.setDouble(backRight.getAbsoluteEncoderRadiansOffset());
-                abs_Enc_BL_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansOffset());
+                abs_Enc_FR_Entry.setDouble(frontRight.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_FL_Entry.setDouble(frontLeft.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_BR_Entry.setDouble(backRight.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_BL_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansNoOffset());
 
                 enc_FR_pos_Entry.setDouble(frontRight.getTurnPosition());
                 enc_FL_pos_Entry.setDouble(frontLeft.getTurnPosition());
@@ -701,6 +701,15 @@ public class SwerveDrive extends SubsystemBase {
 
 public Command halt(){
                 return Commands.runOnce(()-> {}, this);
+        }
+
+
+
+        public void setspeeds(double speed){
+               frontRight.setDriveVelocity(speed);
+                frontLeft.setDriveVelocity(speed);
+                backRight.setDriveVelocity(speed);
+                backLeft.setDriveVelocity(speed);
         }
 }
 

@@ -63,7 +63,7 @@ public class SwerveModule extends SubsystemBase {
         // turningPIDController = new SparkPIDController(.5, 0, 0);
         // turningPIDController = new SparkPIDController();
 
-        turningPIDController = new PIDController(1, 0, 0);
+        turningPIDController = new PIDController(0.5, 0, 0);
         turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivingPidController = new PIDController(0.5, 0, 0);
@@ -194,10 +194,11 @@ public class SwerveModule extends SubsystemBase {
 
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, encoderRotation);
         // Minimizes side drift when driving
-        state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
+        // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
         setDriveVelocity(state.speedMetersPerSecond);
         setTurnPosition(state.angle.getRadians());
+        // setTurnPosition();
 
     }
 

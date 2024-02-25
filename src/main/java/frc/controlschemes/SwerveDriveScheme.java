@@ -1,5 +1,6 @@
 package frc.controlschemes;
 
+import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import java.util.function.BooleanSupplier;
@@ -66,7 +67,7 @@ public class SwerveDriveScheme implements ControlScheme {
             double turnSpeed = 0;
             if (!orientationLocked) {
                 // turnSpeed = -OI.axis(port, Constants.XboxConstants.R_JOYSTICK_HORIZONTAL);
-                turnSpeed = -controller.getRightX();
+                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.09);
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                         * 2;
@@ -136,34 +137,8 @@ public class SwerveDriveScheme implements ControlScheme {
 
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
-        
-        // controller.povUp().
 
-        // controller.rightBumper().whileTrue(run(() -> climber.runClimberRight(1), climber));
-
-        // controller.leftBumper().whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-        // runOnce(() -> OI.setRumble(0, 0.5))));
-
-        // new JoystickButton(controllers[port], ControlMap.A_BUTTON)
-        // .onTrue(new InstantCommand(() -> swerveDrive.zeroHeading()));
-        // new JoystickButton(controllers[port], ControlMap.Y_BUTTON)
-        // .onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-        // runOnce(() ->controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
-        // null));
-
-        // new JoystickButton(controllers[port], ControlMap.LB_BUTTON)
-        // .whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
-        // new JoystickButton(controllers[port], ControlMap.X_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleOrientationLock(swerveDrive)))
-        // .onFalse(new InstantCommand(() -> toggleOrientationLock(swerveDrive)));
-
-        // new JoystickButton(controllers[port], ControlMap.RB_BUTTON).whileTrue(run(()
-        // -> climber.runClimberRight(1), climber));
-
+                controller.rightBumper().onTrue(run( () -> swerveDrive.setspeeds(0.2), swerveDrive));
     }
 
      /**
