@@ -42,12 +42,12 @@ public class MechanismScheme implements ControlScheme {
 
     public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
                 intake.setDefaultCommand(run(() -> intake.runIntake(Math.abs(controller.getLeftY()) >= 0.1 ? controller.getLeftY() : 0),intake));
-        controller.axisGreaterThan(Constants.XboxConstants.LT, 0.05).whileTrue(wrist.setWristDutyCycle(0.5));
+        // controller.axisGreaterThan(Constants.XboxConstants.LT, 0.05).whileTrue(wrist.setWristDutyCycle(0.5));
         // controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.rev()).whileFalse(run(() -> shooter.setShooterSpeed(0)));
         controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.shoot()).whileFalse(run(() -> shooter.setShooterSpeed(0)));
         // controller.axisGreaterThan(Constants.XboxConstants.LT, 0.05).whileTrue( shooter.setIndexerSpeed(0.5)).onFalse(shooter.setIndexerSpeed(0));
-        controller.x().whileTrue(shooter.index());
-       elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(controller.getRightY(), 0.09)));
+        controller.x().whileTrue(shooter.index()).whileFalse(shooter.halt());
+       elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(controller.getRightY(), 0.09), () -> elevator.getLimitSwitch()));
         // SequentialCommandGroup autoShoot =  (SequentialCommandGroup) sequence(
         //         wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)), shooter.rev(), shooter.indexOneSecond());
         // buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),

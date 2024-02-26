@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkBase.ControlType;
@@ -98,8 +99,11 @@ public class Elevator extends SubsystemBase {
           elevatorMotorLeft.set(speed);
     }
 
-    public Command setElevatorDutyCycle(DoubleSupplier speed){
-        return this.run(() -> setElevatorSpeed(speed.getAsDouble())).onlyIf(() -> limitSwitch.get() == false);
+    public Command setElevatorDutyCycle(DoubleSupplier speed, BooleanSupplier limitSwitchPressed){
+        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> limitSwitch.get() && speed.getAsDouble() > 0);
+    }
+    public boolean getLimitSwitch(){
+        return limitSwitch.get();
     }
 
     public void setSetpoint(TrapezoidProfile.State setPoint) {
@@ -136,6 +140,9 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Elevator Right Encoder", elevatorMotorRight.getPosition());
         SmartDashboard.putNumber("Elevator Left Encoder", elevatorMotorLeft.getPosition());
         SmartDashboard.putBoolean("Limit Switch", limitSwitch.get());
+        if(limitSwitch.get()){
+            resetEncoders();
+        }
     }
 
     //Sets the elevator to target a setpoint
@@ -159,7 +166,7 @@ public class Elevator extends SubsystemBase {
 
     public Command dutyHome(){
          return sequence(
-            this.run(() -> setElevatorDutyCycle(() -> -0.2))
+            this.run(() -> setElevatorDutyCycle(() -> -0.2, () -> limitSwitch.get()))
               .until(() -> (limitSwitch.get())),
             elevatorToSetpoint(1),
             waitSeconds(1),
