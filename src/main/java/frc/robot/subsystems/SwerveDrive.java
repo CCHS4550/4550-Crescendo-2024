@@ -176,7 +176,7 @@ public class SwerveDrive extends SubsystemBase {
         // ** NetworkTableEntry for the encoders of the turn motors */
         private GenericEntry abs_Enc_FR_Offset_Entry, abs_Enc_FL_Offset_Entry, abs_Enc_BR_Offset_Entry,
                         abs_Enc_BL_Offset_Entry;
-        private GenericEntry abs_Enc_FR_Entry, abs_Enc_FL_Entry, abs_Enc_BR_Entry, abs_Enc_BL_Entry;
+        private GenericEntry abs_Enc_FR_Raw_Entry, abs_Enc_FL_Raw_Entry, abs_Enc_BR_Raw_Entry, abs_Enc_BL_Raw_Entry;
 
         private GenericEntry enc_FR_pos_Entry, enc_FL_pos_Entry, enc_BR_pos_Entry, enc_BL_pos_Entry;
         // private GenericEntry enc_FR_vel_Entry, enc_FL_vel_Entry, enc_BR_vel_Entry,
@@ -613,16 +613,16 @@ public class SwerveDrive extends SubsystemBase {
                 enc_BL_pos_Entry = Shuffleboard.getTab("Encoders").getLayout(turn_encoders_positions.getTitle())
                                 .add(backLeft.getName(), backLeft.getTurnPosition()).getEntry();
 
-                abs_Enc_FR_Entry = Shuffleboard.getTab("Encoders")
+                abs_Enc_FR_Raw_Entry = Shuffleboard.getTab("Encoders")
                                 .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(frontRight.getName(), frontRight.getAbsoluteEncoderRadiansNoOffset()).getEntry();
-                abs_Enc_FL_Entry = Shuffleboard.getTab("Encoders")
+                abs_Enc_FL_Raw_Entry = Shuffleboard.getTab("Encoders")
                                 .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(frontLeft.getName(), frontLeft.getAbsoluteEncoderRadiansNoOffset()).getEntry();
-                abs_Enc_BR_Entry = Shuffleboard.getTab("Encoders")
+                abs_Enc_BR_Raw_Entry = Shuffleboard.getTab("Encoders")
                                 .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(backRight.getName(), backRight.getAbsoluteEncoderRadiansNoOffset()).getEntry();
-                abs_Enc_BL_Entry = Shuffleboard.getTab("Encoders")
+                abs_Enc_BL_Raw_Entry = Shuffleboard.getTab("Encoders")
                                 .getLayout(absolute_encoders_no_offset_list.getTitle())
                                 .add(backLeft.getName(), backLeft.getAbsoluteEncoderRadiansNoOffset()).getEntry();
 
@@ -634,10 +634,10 @@ public class SwerveDrive extends SubsystemBase {
                 abs_Enc_BR_Offset_Entry.setDouble(backRight.getAbsoluteEncoderRadiansOffset());
                 abs_Enc_BL_Offset_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansOffset());
 
-                abs_Enc_FR_Entry.setDouble(frontRight.getAbsoluteEncoderRadiansNoOffset());
-                abs_Enc_FL_Entry.setDouble(frontLeft.getAbsoluteEncoderRadiansNoOffset());
-                abs_Enc_BR_Entry.setDouble(backRight.getAbsoluteEncoderRadiansNoOffset());
-                abs_Enc_BL_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_FR_Raw_Entry.setDouble(frontRight.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_FL_Raw_Entry.setDouble(frontLeft.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_BR_Raw_Entry.setDouble(backRight.getAbsoluteEncoderRadiansNoOffset());
+                abs_Enc_BL_Raw_Entry.setDouble(backLeft.getAbsoluteEncoderRadiansNoOffset());
 
                 enc_FR_pos_Entry.setDouble(frontRight.getTurnPosition());
                 enc_FL_pos_Entry.setDouble(frontLeft.getTurnPosition());
