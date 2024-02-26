@@ -51,7 +51,7 @@ Pathfinding.setPathfinder(new LocalADStar());
 
         Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
         if (isReal()) {
-            // Logger.addDataReceiver(new WPILOGWriter("/U")); // Log to a USB stick
+            // Logger.addDataReceiver(n?ew WPILOGWriter("/U")); // Log to a USB stick
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
             // new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
         } else {

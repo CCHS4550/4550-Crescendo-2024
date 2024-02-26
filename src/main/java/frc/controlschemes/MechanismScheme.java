@@ -5,6 +5,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -46,6 +47,7 @@ public class MechanismScheme implements ControlScheme {
         controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.shoot()).whileFalse(run(() -> shooter.setShooterSpeed(0)));
         // controller.axisGreaterThan(Constants.XboxConstants.LT, 0.05).whileTrue( shooter.setIndexerSpeed(0.5)).onFalse(shooter.setIndexerSpeed(0));
         controller.x().whileTrue(shooter.index());
+       elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(controller.getRightY(), 0.09)));
         // SequentialCommandGroup autoShoot =  (SequentialCommandGroup) sequence(
         //         wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)), shooter.rev(), shooter.indexOneSecond());
         // buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),

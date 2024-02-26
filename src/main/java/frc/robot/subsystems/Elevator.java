@@ -89,7 +89,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setElevatorVoltage(Measure<Voltage> volts) {
-        // elevatorMotorOne.setVoltage(volts.magnitude());
+        elevatorMotorRight.setVoltage(volts.magnitude());
         elevatorMotorLeft.setVoltage(volts.magnitude());
     }
 
@@ -99,7 +99,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command setElevatorDutyCycle(DoubleSupplier speed){
-        return this.run(() -> setElevatorSpeed(speed.getAsDouble()));
+        return this.run(() -> setElevatorSpeed(speed.getAsDouble())).onlyIf(() -> limitSwitch.get() == false);
     }
 
     public void setSetpoint(TrapezoidProfile.State setPoint) {
