@@ -7,6 +7,8 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonUtils;
 
@@ -109,8 +111,8 @@ public class Wrist extends SubsystemBase {
         wristMotor.setVoltage(volts.magnitude());
     }
 
-    public Command setWristDutyCycle(double speed){
-       return this.run( () ->wristMotor.set(speed));
+    public Command setWristDutyCycle(DoubleSupplier speed){
+       return this.run( () ->wristMotor.set(speed.getAsDouble()));
     }
 
     public void setSetpoint(TrapezoidProfile.State setPoint) {

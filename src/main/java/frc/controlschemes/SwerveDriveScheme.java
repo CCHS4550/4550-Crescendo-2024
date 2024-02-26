@@ -67,7 +67,7 @@ public class SwerveDriveScheme implements ControlScheme {
             double turnSpeed = 0;
             if (!orientationLocked) {
                 // turnSpeed = -OI.axis(port, Constants.XboxConstants.R_JOYSTICK_HORIZONTAL);
-                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.09);
+                turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.09);
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                         * 2;
@@ -99,7 +99,8 @@ public class SwerveDriveScheme implements ControlScheme {
             // Convert chassis speeds to individual module states
             moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
-            swerveDrive.setModuleStates(moduleStates);
+            // swerveDrive.setModuleStates(moduleStates);
+            swerveDrive.spinMotor(turnSpeed);
 
         }, swerveDrive).withName("Swerve Controller Command"));
 
