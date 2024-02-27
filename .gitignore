@@ -178,3 +178,4 @@ logs/
 ctre_sim/
 
 .gradle
+*.class
