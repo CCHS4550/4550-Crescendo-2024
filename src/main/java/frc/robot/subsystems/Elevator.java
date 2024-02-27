@@ -99,8 +99,8 @@ public class Elevator extends SubsystemBase {
           elevatorMotorLeft.set(speed);
     }
 
-    public Command setElevatorDutyCycle(DoubleSupplier speed, BooleanSupplier limitSwitchPressed){
-        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> limitSwitch.get() && speed.getAsDouble() > 0);
+    public Command setElevatorDutyCycle(DoubleSupplier speed){
+        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> limitSwitch.get() && speed.getAsDouble() < 0);
     }
     public boolean getLimitSwitch(){
         return limitSwitch.get();
@@ -166,7 +166,7 @@ public class Elevator extends SubsystemBase {
 
     public Command dutyHome(){
          return sequence(
-            this.run(() -> setElevatorDutyCycle(() -> -0.2, () -> limitSwitch.get()))
+            this.run(() -> setElevatorDutyCycle(() -> -0.2))
               .until(() -> (limitSwitch.get())),
             elevatorToSetpoint(1),
             waitSeconds(1),

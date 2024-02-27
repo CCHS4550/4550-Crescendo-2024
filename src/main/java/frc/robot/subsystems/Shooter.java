@@ -36,11 +36,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command shoot() {
-        return this.run(() -> setShooterSpeed(1));
+        return this.run(() -> setShooterSpeed(0.3));
     }
 
     public Command index() {
-        return this.run(() -> indexer.set(0.2));
+        return this.runEnd(() -> indexer.set(0.4), () -> indexer.set(0));
     }
     public Command indexOneSecond() {
         WaitCommand timer = new WaitCommand(1.0);

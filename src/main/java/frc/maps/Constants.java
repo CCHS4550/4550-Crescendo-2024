@@ -120,10 +120,10 @@ public class Constants {
         public static final boolean INTAKE_LEFT_REVERSED = false;
 
         public static final int ELEVATOR_RIGHT = 11;
-        public static final boolean ELEVATOR_RIGHT_REVERSED = false;
+        public static final boolean ELEVATOR_RIGHT_REVERSED = true;
 
         public static final int ELEVATOR_LEFT = 10;
-        public static final boolean ELEVATOR_LEFT_REVERSED = true;
+        public static final boolean ELEVATOR_LEFT_REVERSED = false;
 
         public static final int WRIST = 14;
         public static final boolean WRIST_REVERSED = false;
