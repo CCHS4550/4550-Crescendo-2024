@@ -136,7 +136,7 @@ public class Wrist extends SubsystemBase {
         return goal;
     }
 
-    public double getWristPosition() {
+    public double getWristPositionRadians() {
         return edu.wpi.first.math.util.Units.rotationsToRadians(wristMotor.getPosition());
     }
 
