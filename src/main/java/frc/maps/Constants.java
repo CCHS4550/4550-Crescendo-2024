@@ -113,10 +113,10 @@ public class Constants {
         public static final int INDEXER = 13;
         public static final boolean INDEXER_REVERSED = false;
 
-        public static final int INTAKE_RIGHT = 12;
+        public static final int INTAKE_BACK = 12;
         public static final boolean INTAKE_RIGHT_REVERSED = false;
 
-        public static final int INTAKE_LEFT = 9;
+        public static final int INTAKE_FRONT = 9;
         public static final boolean INTAKE_LEFT_REVERSED = false;
 
         public static final int ELEVATOR_RIGHT = 11;
