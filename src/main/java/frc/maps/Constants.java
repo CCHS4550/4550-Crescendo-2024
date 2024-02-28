@@ -202,10 +202,10 @@ public class Constants {
         public static final double TURNKV = 0;
 
         // * TODO SysId these values */
-        public static final double ELEVATOR_KS = 0;
-        public static final double ELEVATOR_KG = 0;
-        public static final double ELEVATOR_KV = 0;
-        public static final double ELEVATOR_KA = 0;
+        public static final double ELEVATOR_KS = 0.16566;
+        public static final double ELEVATOR_KG = 0.079705;
+        public static final double ELEVATOR_KV = 0.0019722;
+        public static final double ELEVATOR_KA = 0.00022559;
 
         public static final double WRIST_KS = 0;
         public static final double WRIST_KG = 0;
