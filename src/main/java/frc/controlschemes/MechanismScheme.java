@@ -49,7 +49,8 @@ public class MechanismScheme implements ControlScheme {
     wrist.setDefaultCommand(wrist.setWristDutyCycle(() -> MathUtil.applyDeadband(controller.getLeftY(), 0.05)));
     
         controller.x().whileTrue(shooter.index());
-        controller.a().whileTrue(intake.intake(-0.5));
+        controller.a().whileTrue(intake.intake(-0.4));
+        controller.b().whileTrue(intake.intake(0.4));
        elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
         // SequentialCommandGroup autoShoot =  (SequentialCommandGroup) sequence(
         //         wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)), shooter.rev(), shooter.indexOneSecond());
