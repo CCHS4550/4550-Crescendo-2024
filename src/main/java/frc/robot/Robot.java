@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import javax.xml.crypto.Data;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -19,6 +21,7 @@ import org.littletonrobotics.urcl.URCL;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 // import edu.wpi.first.wpilibj.DataLogManager;
 // import edu.wpi.first.wpilibj.PowerDistribution;
 // import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -63,8 +66,7 @@ Pathfinding.setPathfinder(new LocalADStar());
                                                                                                   // new log
         }
 
-        Logger.start(); 
-        // DataLogManager.start();
+        Logger.start();
         URCL.start();
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
