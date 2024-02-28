@@ -13,24 +13,31 @@ import frc.maps.RobotMap;
 import frc.robot.Robot;
 
 public class Intake extends SubsystemBase {
-    private CCSparkMax intakeTop = new CCSparkMax("Intake Top", "IT", Constants.MotorConstants.INTAKE_RIGHT, MotorType.kBrushless,
-            IdleMode.kBrake, Constants.MotorConstants.INTAKE_RIGHT_REVERSED);
-    private CCSparkMax intakeBottom = new CCSparkMax("Intake Bottom", "IB", Constants.MotorConstants.INTAKE_LEFT,
-            MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.INTAKE_LEFT_REVERSED);
+        private CCSparkMax intakeBack = new CCSparkMax("Intake Top", "IT", Constants.MotorConstants.INTAKE_BACK,
+                        MotorType.kBrushless,
+                        IdleMode.kBrake, Constants.MotorConstants.INTAKE_RIGHT_REVERSED);
+        private CCSparkMax intakeFront = new CCSparkMax("Intake Bottom", "IB", Constants.MotorConstants.INTAKE_FRONT,
+                        MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.INTAKE_LEFT_REVERSED);
 
-    public Intake(){}
+        public Intake() {
+        }
 
-    public void runIntake(double speed){
-        intakeBottom.set(speed);
-        intakeTop.set(speed);
-    }
+        public void runIntake(double speed) {
+                if (Math.abs(speed) <= 0.05) {
+                        intakeFront.set(0);
+                        intakeBack.set(0);
+                } else {
+                        intakeFront.set(speed);
+                        intakeBack.set(speed + 0.1);
+                }
+        }
 
-    public Command intake(double speed){
-        return this.runEnd(() -> runIntake(speed), () -> runIntake(0));
-    }
-    public Command halt(){
-                return Commands.runOnce(()-> {}, this);
+        public Command intake(double speed) {
+                return this.runEnd(() -> runIntake(speed), () -> runIntake(0));
+        }
+
+        public Command halt() {
+                return Commands.runOnce(() -> {
+                }, this);
         }
 }
-
-

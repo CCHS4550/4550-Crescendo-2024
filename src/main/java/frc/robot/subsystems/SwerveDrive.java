@@ -195,7 +195,7 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 2);
 
         SysIdRoutine sysIdRoutine = new SysIdRoutine(
-                        new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5)),
+                        new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5), (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
                         new SysIdRoutine.Mechanism(
                                         (voltage) -> setDriveVoltages(voltage),
                                         null, // No log consumer, since data is recorded by URCL
