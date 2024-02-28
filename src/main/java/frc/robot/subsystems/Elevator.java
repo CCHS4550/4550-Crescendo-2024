@@ -34,7 +34,7 @@ import frc.maps.Constants.ElevatorConstants;
 public class Elevator extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(5)),
+            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4)),
             new SysIdRoutine.Mechanism(
                     (voltage) -> setElevatorVoltage(voltage),
                     null, // No log consumer, since data is recorded by URCL
@@ -53,7 +53,8 @@ public class Elevator extends SubsystemBase {
 
     private TrapezoidProfile.State setPoint, goal;
 
-    DigitalInput limitSwitch = new DigitalInput(1);
+    DigitalInput limitSwitchBottom = new DigitalInput(1);
+    DigitalInput limitSwitchTop = new DigitalInput(2);
 
     public Elevator() {
         resetEncoders();
@@ -100,10 +101,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command setElevatorDutyCycle(DoubleSupplier speed){
-        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> limitSwitch.get() && speed.getAsDouble() < 0);
+        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> (limitSwitchBottom.get() && speed.getAsDouble() < 0) || (limitSwitchTop.get() && speed.getAsDouble() > 0));
     }
-    public boolean getLimitSwitch(){
-        return limitSwitch.get();
+    public boolean getLimitSwitchBottom(){
+        return limitSwitchBottom.get();
     }
 
     public void setSetpoint(TrapezoidProfile.State setPoint) {
@@ -139,8 +140,9 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Elevator Right Encoder", elevatorMotorRight.getPosition());
         SmartDashboard.putNumber("Elevator Left Encoder", elevatorMotorLeft.getPosition());
-        SmartDashboard.putBoolean("Limit Switch", limitSwitch.get());
-        if(limitSwitch.get()){
+        SmartDashboard.putBoolean("Limit Switch Bottom", limitSwitchBottom.get());
+        SmartDashboard.putBoolean("Limit Switch Top", limitSwitchTop.get());
+        if(limitSwitchBottom.get()){
             resetEncoders();
         }
     }
@@ -150,14 +152,14 @@ public class Elevator extends SubsystemBase {
         return this.run(
                 () -> this.targetPosition(setpoint)).until(
                         () -> (getSetpoint().position == getGoal().position))
-                .onlyIf(() -> (limitSwitch.get() == false));
+                .onlyIf(() -> (limitSwitchBottom.get() == false));
     }
 
    // homes the elevator
    public Command home() {
     return sequence(
             this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
-              .until(() -> (limitSwitch.get())),
+              .until(() -> (limitSwitchBottom.get())),
             elevatorToSetpoint(1),
             waitSeconds(1),
             elevatorToSetpoint(0)
@@ -167,7 +169,7 @@ public class Elevator extends SubsystemBase {
     public Command dutyHome(){
          return sequence(
             this.run(() -> setElevatorDutyCycle(() -> -0.2))
-              .until(() -> (limitSwitch.get())),
+              .until(() -> (limitSwitchBottom.get())),
             elevatorToSetpoint(1),
             waitSeconds(1),
             elevatorToSetpoint(0)
