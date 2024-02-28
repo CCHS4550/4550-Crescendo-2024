@@ -10,6 +10,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -34,7 +36,7 @@ import frc.maps.Constants.ElevatorConstants;
 public class Elevator extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4)),
+            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),(state) -> Logger.recordOutput("SysIdTestState", state.toString())),
             new SysIdRoutine.Mechanism(
                     (voltage) -> setElevatorVoltage(voltage),
                     null, // No log consumer, since data is recorded by URCL

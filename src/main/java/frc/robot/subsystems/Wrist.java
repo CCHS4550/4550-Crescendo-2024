@@ -40,7 +40,7 @@ import frc.maps.RobotMap;
 public class Wrist extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(5)),
+        new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),(state) -> Logger.recordOutput("SysIdTestState", state.toString())),
             new SysIdRoutine.Mechanism(
                     (voltage) -> setWristVoltage(voltage),
                     null, // No log consumer, since data is recorded by URCL
@@ -59,8 +59,6 @@ public class Wrist extends SubsystemBase {
     private TrapezoidProfile profile;
 
     private TrapezoidProfile.State setPoint, goal;
-
-    DigitalInput limitSwitch = new DigitalInput(0);
 
     public Wrist() {
         wristMotorFeedforward = new ElevatorFeedforward(
@@ -152,20 +150,9 @@ public class Wrist extends SubsystemBase {
     public Command wristToSetpoint(double setpoint) {
         return this.run(
                 () -> this.targetPosition(setpoint)).until(
-                        () -> (getSetpoint().position == getGoal().position))
-                .onlyIf(() -> (limitSwitch.get() == false));
+                        () -> (getSetpoint().position == getGoal().position));
     }
 
-   // homes the elevator
-   public Command home() {
-    return sequence(
-            this.run(() -> setWristVoltage(Volts.of(wristMotorFeedforward.calculate(-0.5))))
-              .until(() -> (limitSwitch.get())),
-            wristToSetpoint(1),
-            waitSeconds(1),
-            wristToSetpoint(0)
-    );
-}
 
     /**
      * Used only in characterizing. Don't touch this.
