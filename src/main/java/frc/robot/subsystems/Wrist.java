@@ -92,6 +92,13 @@ public class Wrist extends SubsystemBase {
 
     }
 
+     //Sets the elevator to target a setpoint
+    public Command wristToSetpoint(double setpoint) {
+        return this.run(
+                () -> this.targetPosition(setpoint)).until(
+                        () -> (getSetpoint().position == getGoal().position));
+    }
+
     public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator){
         Pose2d robotPose = swerveDrive.getPose();
         Pose2d speakerPose = new Pose2d();
@@ -145,14 +152,6 @@ public class Wrist extends SubsystemBase {
     public void periodic() {
 
     }
-
-    //Sets the elevator to target a setpoint
-    public Command wristToSetpoint(double setpoint) {
-        return this.run(
-                () -> this.targetPosition(setpoint)).until(
-                        () -> (getSetpoint().position == getGoal().position));
-    }
-
 
     /**
      * Used only in characterizing. Don't touch this.

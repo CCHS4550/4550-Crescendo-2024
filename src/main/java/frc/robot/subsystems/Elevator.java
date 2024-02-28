@@ -87,9 +87,27 @@ public class Elevator extends SubsystemBase {
 
         elevatorMotorRight.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
                 ArbFFUnits.kVoltage);
-
         elevatorMotorLeft.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
                 ArbFFUnits.kVoltage);
+    }
+
+    //Sets the elevator to target a setpoint
+    public Command elevatorToSetpoint(double setpoint) {
+        return this.run(
+                () -> this.targetPosition(setpoint)).until(
+                        () -> (getSetpoint().position == getGoal().position))
+                .onlyIf(() -> (limitSwitchBottom.get() == false));
+    }
+
+   // homes the elevator
+   public Command home() {
+    return sequence(
+            this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
+              .until(() -> (limitSwitchBottom.get())),
+            elevatorToSetpoint(1),
+            waitSeconds(1),
+            elevatorToSetpoint(0)
+    );
     }
 
     public void setElevatorVoltage(Measure<Voltage> volts) {
@@ -97,14 +115,6 @@ public class Elevator extends SubsystemBase {
         elevatorMotorLeft.setVoltage(volts.magnitude());
     }
 
-    public void setElevatorSpeed(double speed){
-          elevatorMotorRight.set(speed);
-          elevatorMotorLeft.set(speed);
-    }
-
-    public Command setElevatorDutyCycle(DoubleSupplier speed){
-        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> (limitSwitchBottom.get() && speed.getAsDouble() < 0) || (limitSwitchTop.get() && speed.getAsDouble() > 0));
-    }
     public boolean getLimitSwitchBottom(){
         return limitSwitchBottom.get();
     }
@@ -149,34 +159,9 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    //Sets the elevator to target a setpoint
-    public Command elevatorToSetpoint(double setpoint) {
-        return this.run(
-                () -> this.targetPosition(setpoint)).until(
-                        () -> (getSetpoint().position == getGoal().position))
-                .onlyIf(() -> (limitSwitchBottom.get() == false));
-    }
+    
 
-   // homes the elevator
-   public Command home() {
-    return sequence(
-            this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
-              .until(() -> (limitSwitchBottom.get())),
-            elevatorToSetpoint(1),
-            waitSeconds(1),
-            elevatorToSetpoint(0)
-    );
-    }
-
-    public Command dutyHome(){
-         return sequence(
-            this.run(() -> setElevatorDutyCycle(() -> -0.2))
-              .until(() -> (limitSwitchBottom.get())),
-            elevatorToSetpoint(1),
-            waitSeconds(1),
-            elevatorToSetpoint(0)
-    );
-    }
+   
     
     public double elevatorElevation(){
         return Math.sin(ElevatorConstants.ELEVATOR_ANGLE)*elevatorMotorRight.getPosition();
@@ -203,4 +188,24 @@ public class Elevator extends SubsystemBase {
     public Command halt(){
                 return Commands.runOnce(()-> {}, this);
         }
+
+
+
+    //Duty Cycle Code
+    public void setElevatorSpeed(double speed){
+          elevatorMotorRight.set(speed);
+          elevatorMotorLeft.set(speed);
+    }
+ public Command dutyHome(){
+         return sequence(
+            this.run(() -> setElevatorDutyCycle(() -> -0.2))
+              .until(() -> (limitSwitchBottom.get())),
+            elevatorToSetpoint(1),
+            waitSeconds(1),
+            elevatorToSetpoint(0)
+    );
+    }
+    public Command setElevatorDutyCycle(DoubleSupplier speed){
+        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> (limitSwitchBottom.get() && speed.getAsDouble() < 0) || (limitSwitchTop.get() && speed.getAsDouble() > 0));
+    }
 }
