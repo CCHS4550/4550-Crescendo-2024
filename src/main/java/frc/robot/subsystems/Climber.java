@@ -15,12 +15,16 @@ import frc.maps.Constants;
 public class Climber extends SubsystemBase{
     private CCSparkMax climberMotorRight = new CCSparkMax("Climber One", "CO", Constants.MotorConstants.CLIMBER_RIGHT, MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.CLIMBER_RIGHT_REVERSED);
     private CCSparkMax climberMotorLeft = new CCSparkMax("Climber Two", "CT", Constants.MotorConstants.CLIMBER_LEFT, MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.CLIMBER_LEFT_REVERSED);
-    public void upClimb() {
+    public void upClimbRight() {
         climberMotorRight.set(.5);
+    }
+    public void upClimbLeft() {
         climberMotorLeft.set(.5);
     }
-    public void downClimb() {   
+    public void downClimbRight() {   
         climberMotorRight.set(-.5);
+    }
+    public void downClimbLeft() {   
         climberMotorLeft.set(-.5);
     }
     public Command halt(){
