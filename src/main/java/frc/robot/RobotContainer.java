@@ -62,7 +62,7 @@ public class RobotContainer {
         // SwerveDriveScheme.configure(swerveDrive, 0);
         MechanismScheme.configure(intake, shooter, elevator, wrist, 1);
 
-        CharacterizingScheme.configure(swerveDrive, elevator, 0);
+        CharacterizingScheme.configure(swerveDrive, elevator, wrist, 0);
 
         // CharacterizingScheme.configure(swerveDrive, 0);
 

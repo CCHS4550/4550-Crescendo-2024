@@ -96,7 +96,7 @@ public class Elevator extends SubsystemBase {
         return this.run(
                 () -> this.targetPosition(setpoint)).until(
                         () -> (getSetpoint().position == getGoal().position))
-                .onlyIf(() -> (limitSwitchBottom.get() == false));
+                .onlyWhile(() -> (limitSwitchBottom.get() == false && limitSwitchTop.get() == false));
     }
 
    // homes the elevator
