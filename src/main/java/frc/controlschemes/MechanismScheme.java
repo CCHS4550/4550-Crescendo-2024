@@ -66,8 +66,9 @@ public class MechanismScheme implements ControlScheme {
         // buttonBoard.button(5).whileTrue(shooter.index());
         // buttonBoard.button(6).toggleOnTrue(shooter.rev());
         // buttonBoard.button(7).whileTrue(shooter.shoot());
-        // buttonBoard.button(8).whileTrue(climber.climb());
-        // buttonBoard.button(9).onTrue(autoShoot);
+        // buttonBoard.button(8).whileTrue(climber.upClimb());
+        // buttonBoard.button(9).whileTrue(climber.downClimb());
+        // buttonBoard.button(10).onTrue(autoShoot);
         // buttonBoard.button(11)
         //         .onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(), wrist.halt(), climber.halt()));
 
