@@ -30,4 +30,5 @@ public class Climber extends SubsystemBase{
     public Command halt(){
         return Commands.runOnce(()-> {}, this);
     }
+    //we are cool
 }
