@@ -21,6 +21,18 @@ public class Climber extends SubsystemBase{
     public void upClimbLeft() {
         climberMotorLeft.set(.5);
     }
+    public void climbUp(){
+        climberMotorRight.set(0.5);
+        climberMotorLeft.set(0.5);
+
+    }
+    public void climbDown(){
+        climberMotorRight.set(-0.5);
+        climberMotorLeft.set(-0.5);
+
+    }
+    
+    
     public void downClimbRight() {   
         climberMotorRight.set(-.5);
     }
@@ -30,5 +42,13 @@ public class Climber extends SubsystemBase{
     public Command halt(){
         return Commands.runOnce(()-> {}, this);
     }
+    public Command upClimb(){
+
+        return Commands.run(()-> climbUp());
+    }
+    public Command downClimb(){
+        return Commands.run(()-> climbDown());
+    }
+    
     //we are cool
 }

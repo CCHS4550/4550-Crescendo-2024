@@ -24,10 +24,10 @@ public class MechanismScheme implements ControlScheme {
     private static CommandGenericHID buttonBoard;
     public static CommandXboxController controller;
 
-    public static void configure(Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, int port) {
+    public static void configure(Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, int port, Climber climber) {
         // buttonBoard = new CommandGenericHID(port);
         controller = new CommandXboxController(port);
-        configureButtons(port, intake, shooter, elevator, wrist );
+        configureButtons(port, intake, shooter, elevator, wrist, climber );
         // arm.setDefaultCommand(Commands.run(() -> arm.moveArm(OI.axis(1,
         // ControlMap.L_JOYSTICK_VERTICAL) * 0.5,
         // OI.axis(1, ControlMap.R_JOYSTICK_VERTICAL) * 0.5), arm));
@@ -40,7 +40,7 @@ public class MechanismScheme implements ControlScheme {
         // intake)).onFalse(Commands.run(() -> intake.toggleReverse(false), intake));
     }
 
-    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
+    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, Climber climber) {
                 // intake.setDefaultCommand(run(() -> intake.runIntake(Math.abs(controller.getLeftY()) >= 0.1 ? controller.getLeftY() : 0),intake));
     
         
