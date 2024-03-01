@@ -18,6 +18,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -36,13 +37,15 @@ import frc.maps.Constants.ElevatorConstants;
 public class Elevator extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),(state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),
+                    (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
             new SysIdRoutine.Mechanism(
                     (voltage) -> setElevatorVoltage(voltage),
                     null, // No log consumer, since data is recorded by URCL
                     this));
 
-    private CCSparkMax elevatorMotorRight = new CCSparkMax("Elevator One", "EO", Constants.MotorConstants.ELEVATOR_RIGHT,
+    private CCSparkMax elevatorMotorRight = new CCSparkMax("Elevator One", "EO",
+            Constants.MotorConstants.ELEVATOR_RIGHT,
             MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_RIGHT_REVERSED);
     private CCSparkMax elevatorMotorLeft = new CCSparkMax("Elevator Two", "ET", Constants.MotorConstants.ELEVATOR_LEFT,
             MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.ELEVATOR_LEFT_REVERSED);
@@ -55,9 +58,12 @@ public class Elevator extends SubsystemBase {
 
     private TrapezoidProfile.State setPoint, goal;
 
+    private DoubleSupplier input;
+
     DigitalInput limitSwitchBottom = new DigitalInput(1);
     DigitalInput limitSwitchTop = new DigitalInput(2);
 
+    PIDController elevatorPid = new PIDController(1, 0, 0);
     public Elevator() {
         resetEncoders();
         elevatorMotorFeedforward = new ElevatorFeedforward(
@@ -70,44 +76,53 @@ public class Elevator extends SubsystemBase {
         profile = new TrapezoidProfile(constraints);
         setPoint = new TrapezoidProfile.State();
         goal = new TrapezoidProfile.State();
+
     }
 
     public void targetPosition(double position) {
         setGoal(position);
 
-        TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
+        // TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
+        TrapezoidProfile.State nextSetpoint = profile.calculate(0.03, getSetpoint(), getGoal());
 
         double feedForwardPower = elevatorMotorFeedforward.calculate(nextSetpoint.velocity);
+        // double feedForwardPower = elevatorMotorFeedforward.calculate(nextSetpoint.position);
 
         setSetpoint(nextSetpoint);
 
         SmartDashboard.putNumber("Trapezoid Position", nextSetpoint.position);
 
+        double pidCalc = elevatorPid.calculate(elevatorMotorRight.getPosition(), position);
+
+
         // double elevatorPower = elevatorPidController.calculate(currentPosition);
 
-        elevatorMotorRight.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
-                ArbFFUnits.kVoltage);
-        elevatorMotorLeft.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
-                ArbFFUnits.kVoltage);
+        // elevatorMotorRight.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
+        //         ArbFFUnits.kVoltage);
+        // elevatorMotorLeft.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
+        //         ArbFFUnits.kVoltage);
+
+        elevatorMotorRight.setVoltage( feedForwardPower + pidCalc);
+        elevatorMotorLeft.setVoltage(feedForwardPower + pidCalc);
+
     }
 
-    //Sets the elevator to target a setpoint
+    // Sets the elevator to target a setpoint
     public Command elevatorToSetpoint(double setpoint) {
         return this.run(
                 () -> this.targetPosition(setpoint)).until(
-                        () -> (getSetpoint().position == getGoal().position))
-                .onlyWhile(() -> (limitSwitchBottom.get() == false && limitSwitchTop.get() == false));
+                        () -> (Math.abs(setpoint - elevatorMotorRight.getPosition())) < 0.3)
+                .onlyWhile(() -> (limitSwitchBottom.get() == false || limitSwitchTop.get() == false));
     }
 
-   // homes the elevator
-   public Command home() {
-    return sequence(
-            this.run(() -> setElevatorVoltage(Volts.of(elevatorMotorFeedforward.calculate(-0.5))))
-              .until(() -> (limitSwitchBottom.get())),
-            elevatorToSetpoint(1),
-            waitSeconds(1),
-            elevatorToSetpoint(0)
-    );
+    // homes the elevator
+    public Command home() {
+        return sequence(
+                this.run(() -> setElevatorSpeed(-0.2))
+                        .until(() -> (limitSwitchBottom.get())),
+                elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP / 5),
+                waitSeconds(1),
+                elevatorToSetpoint(0));
     }
 
     public void setElevatorVoltage(Measure<Voltage> volts) {
@@ -115,7 +130,12 @@ public class Elevator extends SubsystemBase {
         elevatorMotorLeft.setVoltage(volts.magnitude());
     }
 
-    public boolean getLimitSwitchBottom(){
+    public void setElevatorSpeed(double speed) {
+        elevatorMotorRight.set(speed);
+        elevatorMotorLeft.set(speed);
+    }
+   
+    public boolean getLimitSwitchBottom() {
         return limitSwitchBottom.get();
     }
 
@@ -154,18 +174,15 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Elevator Left Encoder", elevatorMotorLeft.getPosition());
         SmartDashboard.putBoolean("Limit Switch Bottom", limitSwitchBottom.get());
         SmartDashboard.putBoolean("Limit Switch Top", limitSwitchTop.get());
-        if(limitSwitchBottom.get()){
+        if (limitSwitchBottom.get()) {
             resetEncoders();
         }
     }
 
-    
-
-   
-    
-    public double elevatorElevation(){
-        return Math.sin(ElevatorConstants.ELEVATOR_ANGLE)*elevatorMotorRight.getPosition();
+    public double elevatorElevation() {
+        return Math.sin(ElevatorConstants.ELEVATOR_ANGLE) * elevatorMotorRight.getPosition();
     }
+
     /**
      * Used only in characterizing. Don't touch this.
      * 
@@ -185,27 +202,41 @@ public class Elevator extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
-    public Command halt(){
-                return Commands.runOnce(()-> {}, this);
-        }
 
+    public Command halt() {
+        return Commands.runOnce(() -> {
+        }, this);
+    }
 
+    // Duty Cycle Code
+    public Command dutyHome() {
+        return sequence(
+                this.run(() -> setElevatorDutyCycle(() -> -0.2))
+                        .until(() -> (limitSwitchBottom.get())),
+                elevatorToSetpoint(1),
+                waitSeconds(1),
+                elevatorToSetpoint(0));
+    }
 
-    //Duty Cycle Code
-    public void setElevatorSpeed(double speed){
-          elevatorMotorRight.set(speed);
-          elevatorMotorLeft.set(speed);
+    public Command setElevatorDutyCycle(DoubleSupplier speed) {
+        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0))
+                .until(() -> (limitSwitchBottom.get() && speed.getAsDouble() < 0 || limitSwitchTop.get() && speed.getAsDouble() > 0));
     }
- public Command dutyHome(){
-         return sequence(
-            this.run(() -> setElevatorDutyCycle(() -> -0.2))
-              .until(() -> (limitSwitchBottom.get())),
-            elevatorToSetpoint(1),
-            waitSeconds(1),
-            elevatorToSetpoint(0)
-    );
+
+     public void setElevatorVoltageSpeed(double input){
+        double ffValue = elevatorMotorFeedforward.calculate(input);
+        SmartDashboard.putNumber("FF", ffValue);
+        elevatorMotorRight.setVoltage(ffValue);
+        elevatorMotorLeft.setVoltage(ffValue);
     }
-    public Command setElevatorDutyCycle(DoubleSupplier speed){
-        return this.runEnd(() -> setElevatorSpeed(speed.getAsDouble()), () -> setElevatorSpeed(0)).until(() -> (limitSwitchBottom.get() && speed.getAsDouble() < 0) || (limitSwitchTop.get() && speed.getAsDouble() > 0));
+
+    public Command runElevatorVoltage(Measure<Voltage> volts){
+        return this.runEnd(() -> setElevatorVoltage(volts), ()-> setElevatorVoltage(Volts.of(0))).until(() -> (limitSwitchBottom.get() && volts.magnitude() < 0));
     }
+
+    public Command runElevatorVoltageSpeed(DoubleSupplier input){
+        // this.input = input;
+        return this.runEnd(() -> setElevatorVoltageSpeed(input.getAsDouble()), ()-> setElevatorVoltageSpeed(0)).until(() -> (limitSwitchBottom.get() && input.getAsDouble() < 0));
+    }
+
 }

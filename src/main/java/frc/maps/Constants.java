@@ -235,6 +235,8 @@ public class Constants {
 
         public static double ELEVATOR_HUMAN_PLAYER = 0;
         public static double WRIST_HUMAN_PLAYER = 0;
+
+        public static double ELEVATOR_TOP = 77.9 - 2;
     }
 
     public class RedFieldPositionConstants {

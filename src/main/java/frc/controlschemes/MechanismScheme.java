@@ -1,5 +1,6 @@
 package frc.controlschemes;
 
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
@@ -50,8 +51,11 @@ public class MechanismScheme implements ControlScheme {
     
         controller.x().whileTrue(shooter.index());
         controller.a().whileTrue(intake.intake(-0.4));
-        controller.b().whileTrue(intake.intake(0.4));
-       elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
+        // controller.b().whileTrue(intake.intake(0.4));
+        controller.b().onTrue(elevator.home());
+        controller.y().onTrue(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP));
+        elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
+    // elevator.setDefaultCommand( elevator.runElevatorVoltageSpeed(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09) * 77));
         // SequentialCommandGroup autoShoot =  (SequentialCommandGroup) sequence(
         //         wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)), shooter.rev(), shooter.indexOneSecond());
         // buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
