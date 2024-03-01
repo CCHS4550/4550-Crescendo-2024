@@ -28,7 +28,7 @@ public class MechanismScheme implements ControlScheme {
     public static void configure(Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, int port) {
         // buttonBoard = new CommandGenericHID(port);
         controller = new CommandXboxController(port);
-        configureButtons(port, intake, shooter, elevator, wrist );
+        configureButtons(port, intake, shooter, elevator, wrist);
         // arm.setDefaultCommand(Commands.run(() -> arm.moveArm(OI.axis(1,
         // ControlMap.L_JOYSTICK_VERTICAL) * 0.5,
         // OI.axis(1, ControlMap.R_JOYSTICK_VERTICAL) * 0.5), arm));
@@ -42,30 +42,37 @@ public class MechanismScheme implements ControlScheme {
     }
 
     public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
-                // intake.setDefaultCommand(run(() -> intake.runIntake(Math.abs(controller.getLeftY()) >= 0.1 ? controller.getLeftY() : 0),intake));
-    
-        
-    
-        controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.shoot()).whileFalse(run(() -> shooter.setShooterSpeed(0)));
-    wrist.setDefaultCommand(wrist.setWristDutyCycle(() -> MathUtil.applyDeadband(controller.getLeftY(), 0.05)));
-    
+        // intake.setDefaultCommand(run(() ->
+        // intake.runIntake(Math.abs(controller.getLeftY()) >= 0.1 ?
+        // controller.getLeftY() : 0),intake));
+
+        controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.shoot())
+                .whileFalse(run(() -> shooter.setShooterSpeed(0)));
+        wrist.setDefaultCommand(wrist.setWristDutyCycle(() -> MathUtil.applyDeadband(controller.getLeftY(), 0.05)));
+
         controller.x().whileTrue(shooter.index());
         controller.a().whileTrue(intake.intake(-0.4));
         // controller.b().whileTrue(intake.intake(0.4));
         controller.b().onTrue(elevator.home());
         controller.y().onTrue(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP));
-        elevator.setDefaultCommand( elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
-    // elevator.setDefaultCommand( elevator.runElevatorVoltageSpeed(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09) * 77));
-        // SequentialCommandGroup autoShoot =  (SequentialCommandGroup) sequence(
-        //         wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)), shooter.rev(), shooter.indexOneSecond());
+        elevator.setDefaultCommand(
+                elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
+        // elevator.setDefaultCommand( elevator.runElevatorVoltageSpeed(() ->
+        // MathUtil.applyDeadband(-controller.getRightY(), 0.09) * 77));
+        // SequentialCommandGroup autoShoot = (SequentialCommandGroup) sequence(
+        // wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)),
+        // shooter.rev(), shooter.indexOneSecond());
         // buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
-        //         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target Intake"));
+        // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target
+        // Intake"));
 
         // buttonBoard.button(2).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
-        //         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target Shoot"));
+        // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target
+        // Shoot"));
 
         // buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
-        //         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target Amp"));
+        // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target
+        // Amp"));
         // buttonBoard.button(4).whileTrue(intake.intake(0.5));
         // buttonBoard.button(5).whileTrue(shooter.index());
         // buttonBoard.button(6).toggleOnTrue(shooter.rev());
@@ -73,7 +80,8 @@ public class MechanismScheme implements ControlScheme {
         // buttonBoard.button(8).whileTrue(climber.climb());
         // buttonBoard.button(9).onTrue(autoShoot);
         // buttonBoard.button(11)
-        //         .onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(), wrist.halt(), climber.halt()));
+        // .onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(),
+        // wrist.halt(), climber.halt()));
 
     }
 
