@@ -23,10 +23,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,12 +42,12 @@ import frc.maps.RobotMap;
 public class Wrist extends SubsystemBase {
 
     SysIdRoutine sysIdRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),(state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+            new SysIdRoutine.Config(Volts.per(Second).of(1), Volts.of(5), Seconds.of(4),
+                    (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
             new SysIdRoutine.Mechanism(
                     (voltage) -> setWristVoltage(voltage),
                     null, // No log consumer, since data is recorded by URCL
-                    this)
-            );
+                    this));
 
     private CCSparkMax wristMotor = new CCSparkMax("Wrist Motor", "WM", Constants.MotorConstants.WRIST,
             MotorType.kBrushless, IdleMode.kBrake, Constants.MotorConstants.WRIST_REVERSED);
@@ -60,6 +62,8 @@ public class Wrist extends SubsystemBase {
 
     private TrapezoidProfile.State setPoint, goal;
 
+    private GenericEntry wristPositionEntry;
+
     public Wrist() {
         wristMotorFeedforward = new ElevatorFeedforward(
                 RobotMap.WRIST_KS,
@@ -72,52 +76,51 @@ public class Wrist extends SubsystemBase {
         profile = new TrapezoidProfile(constraints);
         setPoint = new TrapezoidProfile.State();
         goal = new TrapezoidProfile.State();
+
+        wristPositionEntry = Shuffleboard.getTab("Encoders").add("Wrist Position", wristMotor.getPosition()).getEntry();
     }
 
     public void targetPosition(double position) {
         setGoal(position);
-
         TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
-
         double feedForwardPower = wristMotorFeedforward.calculate(nextSetpoint.velocity);
-
         setSetpoint(nextSetpoint);
-
         Logger.recordOutput("Wrist/Trapezoid Position", nextSetpoint.position);
+        double pidCalc = wristPidController.calculate(wristMotor.getPosition(), position);
+        wristMotor.setVoltage(feedForwardPower + pidCalc);
 
         // double elevatorPower = elevatorPidController.calculate(currentPosition);
 
-        wristMotor.getPIDController().setReference(position, ControlType.kPosition, 0, feedForwardPower,
-                ArbFFUnits.kVoltage);
-
+        // wristMotor.getPIDController().setReference(position, ControlType.kPosition,
+        // 0, feedForwardPower,
+        // ArbFFUnits.kVoltage);
     }
 
-     //Sets the elevator to target a setpoint
+    /**
+     * Sets the elevator to target a setpoint
+     */
     public Command wristToSetpoint(double setpoint) {
         return this.run(
                 () -> this.targetPosition(setpoint)).until(
-                        () -> (getSetpoint().position == getGoal().position));
+                        () -> (Math.abs(wristMotor.getPosition() - setpoint) < 0.1));
     }
 
-    public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator){
+    public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator) {
         Pose2d robotPose = swerveDrive.getPose();
         Pose2d speakerPose = new Pose2d();
         double height = 78 - elevator.elevatorElevation();
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-                    speakerPose = RedFieldPositionConstants.SPEAKER_MIDDLE;
-                } else {
-                    speakerPose = BlueFieldPositionConstants.SPEAKER_MIDDLE;
-                }
+            speakerPose = RedFieldPositionConstants.SPEAKER_MIDDLE;
+        } else {
+            speakerPose = BlueFieldPositionConstants.SPEAKER_MIDDLE;
+        }
         double distanceToSpeaker = PhotonUtils.getDistanceToPose(robotPose, speakerPose);
-        double wristAngle = Math.atan(height/distanceToSpeaker);
+        double wristAngle = Math.atan(height / distanceToSpeaker);
         return wristAngle;
     }
+
     public void setWristVoltage(Measure<Voltage> volts) {
         wristMotor.setVoltage(volts.magnitude());
-    }
-
-    public Command setWristDutyCycle(DoubleSupplier speed){
-       return this.run( () ->wristMotor.set(speed.getAsDouble()));
     }
 
     public void setSetpoint(TrapezoidProfile.State setPoint) {
@@ -150,7 +153,7 @@ public class Wrist extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        wristPositionEntry.setDouble(wristMotor.getPosition());
     }
 
     /**
@@ -172,7 +175,13 @@ public class Wrist extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
-    public Command halt(){
-                return Commands.runOnce(()-> {}, this);
-        }
+
+    public Command halt() {
+        return Commands.runOnce(() -> {
+        }, this);
+    }
+
+    public Command setWristDutyCycle(DoubleSupplier speed) {
+        return this.run(() -> wristMotor.set(speed.getAsDouble()));
+    }
 }
