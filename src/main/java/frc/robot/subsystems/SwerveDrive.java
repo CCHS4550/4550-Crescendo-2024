@@ -361,11 +361,11 @@ public class SwerveDrive extends SubsystemBase {
 
         @Override
         public void periodic() {
-                SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
+                // SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
 
-                SmartDashboard.putBoolean("Event Test", test);
+                // SmartDashboard.putBoolean("Event Test", test);
 
-                m_field.setRobotPose(poseEstimator.getEstimatedPosition());
+                // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
                 Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
 
                 poseEstimator.update(getRotation2d(), swerveModulePositions);
@@ -374,7 +374,7 @@ public class SwerveDrive extends SubsystemBase {
 
                 updateOdometer();
 
-                m_field.setRobotPose(poseEstimator.getEstimatedPosition());
+                // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
         }
 
         /**

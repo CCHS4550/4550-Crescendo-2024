@@ -59,10 +59,10 @@ public class RobotContainer {
         led = new Leds(RobotMap.LED_PORT, RobotMap.LED_LENGTH);
 
         // initialize controller schemes here
-        // SwerveDriveScheme.configure(swerveDrive, 0);
-        MechanismScheme.configure(intake, shooter, elevator, wrist, 1);
+        SwerveDriveScheme.configure(swerveDrive, 0);
+        // MechanismScheme.configure(intake, shooter, elevator, wrist, 1);
 
-        CharacterizingScheme.configure(swerveDrive, elevator, wrist, 0);
+        // CharacterizingScheme.configure(swerveDrive, elevator, wrist, 0);
 
         // CharacterizingScheme.configure(swerveDrive, 0);
 
@@ -74,7 +74,7 @@ public class RobotContainer {
 
         diagnosticsInit();
         // NamedCommands.registerCommand("Test", elevator.elevatorToSetpoint(0));
-        // NamedCommands.registerCommand("Shoot", shooter.shoot());
+        // NamedCommands.registerCommand("Shoot", shooter.shootForTime(1));
         // NamedCommands.registerCommand("Intake", intake.intake(0.5));
         // NamedCommands
         //         .registerCommand("Target Intake",
@@ -115,13 +115,13 @@ public class RobotContainer {
         // autoCommands.addOption("Move Straight",
         // swerveDrive.moveCommand().withName("Move Straight"));
 
-        Shuffleboard.getTab("Diagnostics").add("SwerveDrive", swerveDrive);
-        // Shuffleboard.getTab("Config").add("Run Auto",
-        // getAutoCommand()).withWidget(BuiltInWidgets.kCommand);
+        Shuffleboard.getTab("Subsystems").add("SwerveDrive", swerveDrive);
+        Shuffleboard.getTab("Subsystems").add("Elevator", elevator);
+        Shuffleboard.getTab("Subsystems").add("Shooter", shooter);
+        // Shuffleboard.getTab("Subsystems").add();
     }
 
     public Command getAutoCommand() {
-        // return autoCommands.get();
         return autoChooser.getSelected();
     }
 }

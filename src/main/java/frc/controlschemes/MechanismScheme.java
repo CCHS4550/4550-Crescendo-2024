@@ -17,7 +17,6 @@ import frc.maps.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Climber;
 
@@ -48,7 +47,7 @@ public class MechanismScheme implements ControlScheme {
 
         controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.shoot())
                 .whileFalse(run(() -> shooter.setShooterSpeed(0)));
-        wrist.setDefaultCommand(wrist.setWristDutyCycle(() -> MathUtil.applyDeadband(controller.getLeftY(), 0.05)));
+        wrist.setDefaultCommand(wrist.setWristDutyCycle(() -> MathUtil.applyDeadband(controller.getLeftY(), 0.1)));
 
         controller.x().whileTrue(shooter.index());
         controller.a().whileTrue(intake.intake(-0.4));
@@ -57,8 +56,7 @@ public class MechanismScheme implements ControlScheme {
         controller.y().onTrue(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP));
         elevator.setDefaultCommand(
                 elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
-        // elevator.setDefaultCommand( elevator.runElevatorVoltageSpeed(() ->
-        // MathUtil.applyDeadband(-controller.getRightY(), 0.09) * 77));
+    
         // SequentialCommandGroup autoShoot = (SequentialCommandGroup) sequence(
         // wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)),
         // shooter.rev(), shooter.indexOneSecond());

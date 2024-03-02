@@ -144,7 +144,7 @@ public class Constants {
         public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 2;
         public static final int BACK_LEFT_ABSOLUTE_ENCODER = 3;
 
-        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.53;
+        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.41;
         public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 3.90;
         public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.78;
         public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.249;
@@ -175,16 +175,19 @@ public class Constants {
         // Robot Dimensions (relative to wheel locations)
         // Since this robot is a square, no need for 2 values. In a non-square chassis,
         // 2 values needed.
-        public static final double WHEEL_BASE = Units.inchesToMeters(24); // from drive shaft to drive shaft. Previous
-                                                                          // was
-                                                                          // 27
 
-        /** FR FL BR BL. Same as order of swerve module states */
+        //Front to back
+        public static final double WHEEL_BASE = Units.inchesToMeters(19.25); // from drive shaft to drive shaft. Previous
+                                                                          // was
+        //Right to Left                                                            // 27
+        public static final double TRACK_WITDTH = Units.inchesToMeters(22.25);
+
+         /** FR FL BR BL. Same as order of swerve module states */
         public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                new Translation2d(WHEEL_BASE / 2, -WHEEL_BASE / 2),
-                new Translation2d(WHEEL_BASE / 2, WHEEL_BASE / 2),
-                new Translation2d(-WHEEL_BASE / 2, -WHEEL_BASE / 2),
-                new Translation2d(-WHEEL_BASE / 2, WHEEL_BASE / 2));
+                new Translation2d(WHEEL_BASE / 2, -TRACK_WITDTH / 2),
+                new Translation2d(WHEEL_BASE / 2, TRACK_WITDTH / 2),
+                new Translation2d(-WHEEL_BASE / 2, -TRACK_WITDTH / 2),
+                new Translation2d(-WHEEL_BASE / 2, TRACK_WITDTH / 2));
     }
 
     /* To Do */

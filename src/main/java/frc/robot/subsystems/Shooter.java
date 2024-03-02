@@ -31,8 +31,8 @@ public class Shooter extends SubsystemBase {
         shooterTop.set(speed);
     }
 
-    public Command setIndexerSpeed(double speed) {
-       return this.run(()-> indexer.set(speed));
+    public void setIndexerSpeed(double speed) {
+       indexer.set(speed);
     }
 
     public Command shoot() {
@@ -40,16 +40,16 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command index() {
-        return this.runEnd(() -> indexer.set(0.5), () -> indexer.set(0));
+        return this.runEnd(() -> setIndexerSpeed(0.5), () -> setIndexerSpeed(0)).withName("Index");
     }
-    public Command indexOneSecond() {
-        WaitCommand timer = new WaitCommand(1.0);
-        return deadline(timer, index());
+    public Command indexForTime(double seconds) {
+        return index().withTimeout(seconds);
     }
     
-    public Command ShootOneSecond() {
-        WaitCommand timer = new WaitCommand(1.0);
-        return deadline(timer, shoot());
+    public Command shootForTime(double seconds) {
+        // WaitCommand timer = new WaitCommand(1.0);
+        // return deadline(timer, shoot());
+        return shoot().withTimeout(seconds);
     }
 
     public Command rev() {

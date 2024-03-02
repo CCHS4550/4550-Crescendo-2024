@@ -36,6 +36,10 @@ public class Intake extends SubsystemBase {
                 return this.runEnd(() -> runIntake(speed), () -> runIntake(0));
         }
 
+        public Command intakeForTime(double time){
+                return intake(0.4).withTimeout(time).withName("Intake For Time");
+        }
+
         public Command halt() {
                 return Commands.runOnce(() -> {
                 }, this);

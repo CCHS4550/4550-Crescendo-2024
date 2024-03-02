@@ -59,15 +59,15 @@ public class SwerveDriveScheme implements ControlScheme {
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.05);
+            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
             
 
-            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.05);
+            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
 
             double turnSpeed = 0;
             if (!orientationLocked) {
                 // turnSpeed = -OI.axis(port, Constants.XboxConstants.R_JOYSTICK_HORIZONTAL);
-                turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.09);
+                turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.15);
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                         * 2;
@@ -93,14 +93,14 @@ public class SwerveDriveScheme implements ControlScheme {
                 // Relative to robot
                 chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turnSpeed);
             }
-            chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+            // chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
 
             SwerveModuleState[] moduleStates;
             // Convert chassis speeds to individual module states
             moduleStates = Constants.SwerveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
 
-            // swerveDrive.setModuleStates(moduleStates);
-            swerveDrive.spinMotor(turnSpeed);
+            swerveDrive.setModuleStates(moduleStates);
+            // swerveDrive.spinMotor(turnSpeed);
 
         }, swerveDrive).withName("Swerve Controller Command"));
 
