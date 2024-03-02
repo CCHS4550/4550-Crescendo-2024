@@ -21,6 +21,7 @@ import frc.helpers.OI;
 import frc.maps.Constants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Wrist;
 
 /**
  * Control scheme for swerve drive. Includes movement, the toggle between
@@ -41,7 +42,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port        The controller port of the driving controller.
      */
-    public static void configure(SwerveDrive swerveDrive, int port) {
+    public static void configure(SwerveDrive swerveDrive, int port, Wrist wrist) {
         Shuffleboard.getTab("Diagnostics").getLayout("Swerve", "List").add("isCentric", fieldCentric)
                 .withWidget(BuiltInWidgets.kBooleanBox);
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
@@ -126,7 +127,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param port        The controller port of the driving controller.
      */
     private static void configureButtons(SwerveDrive swerveDrive, Climber climber, int port) {
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
+        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)s
         // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
 
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
@@ -153,9 +154,8 @@ public class SwerveDriveScheme implements ControlScheme {
         // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
 
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
-        // controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-        //         runOnce(() -> OI.setRumble(0, 0.5))));
-
+        // controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()), wrist.wristToSetpoint(Units.degreesToRadians(56.3)),runOnce(() -> OI.setRumble(0, 0.5))));
+        
         // controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
         //         runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)), null));
 
