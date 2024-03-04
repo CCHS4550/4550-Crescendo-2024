@@ -222,8 +222,8 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setTurnPosition(DoubleSupplier angle) {
-        Logger.recordOutput("Turning/position", getTurnPosition());
-        Logger.recordOutput("Turning/desired", angle.getAsDouble());
+        Logger.recordOutput("Turning/position"+this.getName(), getTurnPosition());
+        Logger.recordOutput("Turning/desired"+this.getName(), angle.getAsDouble());
         double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), angle.getAsDouble());
         // turnMotor.setVoltage(turnOutput);
         turnMotor.set(turnOutput);
