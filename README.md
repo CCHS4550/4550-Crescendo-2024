@@ -14,8 +14,8 @@ If you have any questions about the code, feel free to reach out to me</br>
 **Special Thanks To**
 * DeltaDizzy
 * Oliver Howe
-* Archduke Tim
+* ArchdukeTim
 * JS
 * Tyler
 * Creeon
-*THEBIGTHREE
+* THEBIGTHREE
