@@ -145,7 +145,7 @@ public class Constants {
         public static final int BACK_LEFT_ABSOLUTE_ENCODER = 3;
 
         public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.55;
-        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 3.60;
+        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.613;
         public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.77;
         public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.184;
 

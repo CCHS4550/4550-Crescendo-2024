@@ -41,6 +41,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -195,7 +196,8 @@ public class SwerveDrive extends SubsystemBase {
                         .withSize(2, 2);
 
         SysIdRoutine sysIdRoutine = new SysIdRoutine(
-                        new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5), (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
+                        new SysIdRoutine.Config(VoltsPerSecond.of(1), Volts.of(5), Seconds.of(5),
+                                        (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
                         new SysIdRoutine.Mechanism(
                                         (voltage) -> setDriveVoltages(voltage),
                                         null, // No log consumer, since data is recorded by URCL
@@ -216,7 +218,7 @@ public class SwerveDrive extends SubsystemBase {
                                 new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
                 poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.DRIVE_KINEMATICS,
-                                new Rotation2d(0), swerveModulePositions, new Pose2d(0,0, new Rotation2d(0)));
+                                new Rotation2d(0), swerveModulePositions, new Pose2d(0, 0, new Rotation2d(0)));
 
                 xPID = new PIDController(1, .1, 0);
                 yPID = new PIDController(1, .1, 0);
@@ -289,10 +291,11 @@ public class SwerveDrive extends SubsystemBase {
          * facing direction of the gyro.
          */
 
-         public void spinMotor(double speed){
+        public void spinMotor(double speed) {
                 frontRight.setDriveVelocity(speed);
-                frontRight.setTurnPosition(() ->speed);
-         }
+                frontRight.setTurnPosition(() -> speed);
+        }
+
         public void zeroHeading() {
                 gyro.reset();
         }
@@ -313,44 +316,30 @@ public class SwerveDrive extends SubsystemBase {
          */
         public Rotation2d getRotation2d() {
                 return gyro.getRotation2d();
-                }
+        }
 
         /**
-         * Returns the nearest speaker pose for for team
+         * Returns the nearest speaker pose for for alliance color
          * 
          */
         public Pose2d getNearestSpeakerPose() {
+
                 Pose2d[] poses = new Pose2d[3];
-                if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
                         poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
                 } else {
                         poses = Constants.BlueFieldPositionConstants.SPEAKER_POSES;
                 }
                 return getPose().nearest(new ArrayList<>(Arrays.asList(poses)));
-                }
-                // Pose2d currentPose = getPose();
-                // double minimumDist = Integer.MAX_VALUE;
-                // Pose2d closest = null;
-                // for(Pose2d pose : poses) {
-                //         double dist = Math.sqrt(Math.pow(currentPose.getX() - pose.getX(), 2) + Math.pow(currentPose.getY() - pose.getY(), 2));
-                //         if(dist < minimumDist) {
-                //                 minimumDist = dist;
-                //                 closest = pose;
-                //         }
-                // }
-                // return getPose().nearest(new ArrayList<>(
-                //                 Arrays.asList(DriverStation.getAlliance().get() == DriverStation.Alliance.Red
-                //                                 ? poses = Constants.RedFieldPositionConstants.SPEAKER_POSES
-                //                                 : Constants.RedFieldPositionConstants.SPEAKER_POSES)));
+        }
 
-                
-                // return closest;
-
-                
-
-        public Pose2d getNearestStagePose(){
-                 Pose2d[] poses = new Pose2d[3];
-                if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        /**
+         * Returns the nearest stage pose for for alliance color
+         * 
+         */
+        public Pose2d getNearestStagePose() {
+                Pose2d[] poses = new Pose2d[3];
+                if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
                         poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
                 } else {
                         poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
@@ -359,11 +348,23 @@ public class SwerveDrive extends SubsystemBase {
                 return getPose().nearest(new ArrayList<>(Arrays.asList(poses)));
         }
 
+        public Pose2d getAmpPose() {
+                // if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) ==
+                // DriverStation.Alliance.Red) {
+                // return Constants.RedFieldPositionConstants.AMP;
+                // }
+                // return Constants.BlueFieldPositionConstants.AMP;
+
+                return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+                                ? Constants.RedFieldPositionConstants.AMP
+                                : Constants.BlueFieldPositionConstants.AMP;
+
+        }
+
         @Override
         public void periodic() {
                 // SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
 
-                // SmartDashboard.putBoolean("Event Test", test);
 
                 // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
                 Logger.recordOutput("SwerveModuleStates/MeasuredOutputs", getCurrentModuleStates());
@@ -374,7 +375,7 @@ public class SwerveDrive extends SubsystemBase {
 
                 updateOdometer();
 
-                // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
+                m_field.setRobotPose(poseEstimator.getEstimatedPosition());
         }
 
         /**
@@ -461,37 +462,33 @@ public class SwerveDrive extends SubsystemBase {
 
         public void updateOdometer() {
                 updateModulePositions();
-                Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
-                SmartDashboard.putNumber("Angle", getRotation2d().getDegrees());
-                // if(LimelightHelpers.getBotPose2d("Limelight3") < 1){
-                // }
-                // if(LimelightHelpers.)
 
-                // poseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d("Limelight3"),
-                // Timer.getFPGATimestamp() - (LimelightHelpers.getBotPose("Limelight
-                // 3")[6]/1000.0));
+                SmartDashboard.putNumber("Angle", getRotation2d().getDegrees());
                 poseEstimator.update(getRotation2d(), swerveModulePositions);
 
-                // Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
-                //                 .getEstimatedGlobalPose(getPose());
                 // if (estimatedPoseOptional.isPresent()) {
-                //         EstimatedRobotPose estimatedRobotPose = estimatedPoseOptional.get();
-                //         poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
-                //                         estimatedRobotPose.timestampSeconds,
-                //                         Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
-                //                                         estimatedRobotPose.estimatedPose.toPose2d()));
+                // EstimatedRobotPose estimatedRobotPose = estimatedPoseOptional.get();
+                // poseEstimator.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
+                // estimatedRobotPose.timestampSeconds,
+                // Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
+                // estimatedRobotPose.estimatedPose.toPose2d()));
                 // }
 
                 // Should do the same thing as above x
-                // estimatedPoseOptional.ifPresent(est -> {
-                // var estPose = est.estimatedPose.toPose2d();
-                // // Change our trust in the measurement based on the tags we can see
-                // var estStdDevs = Constants.CAMERA_ONE.FRONT_CAMERA.getEstimationStdDevs(
-                // est.estimatedPose.toPose2d());
 
-                // poseEstimator.addVisionMeasurement(
-                // est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                // });
+                Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
+                                .getEstimatedGlobalPose(getPose());
+                estimatedPoseOptional.ifPresent(est -> {
+                        var estPose = est.estimatedPose.toPose2d();
+                        // Change our trust in the measurement based on the tags we can see
+                        var estStdDevs = Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
+                                        estPose);
+
+                        poseEstimator.addVisionMeasurement(
+                                        estPose, est.timestampSeconds, estStdDevs);
+                });
+
+                Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
         }
 
         public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -546,10 +543,10 @@ public class SwerveDrive extends SubsystemBase {
                 PathPlannerPath path = new PathPlannerPath(
                                 bezierPoints,
                                 Constants.SwerveConstants.AUTO_PATH_CONSTRAINTS, // The constraints for this
-                                                                                         // path. If using a
-                                                                                         // differential drivetrain, the
-                                                                                         // angular constraints have no
-                                                                                         // effect.
+                                                                                 // path. If using a
+                                                                                 // differential drivetrain, the
+                                                                                 // angular constraints have no
+                                                                                 // effect.
                                 desiredEndState // Goal end state. You can set a
                                                 // holonomic rotation here. If using
                                                 // a differential drivetrain, the
@@ -576,24 +573,28 @@ public class SwerveDrive extends SubsystemBase {
                 return AutoBuilder.followPath(path);
         }
 
-        /**Generates a path to go to target pose
+        /**
+         * Generates a path to go to target pose
+         * 
          * @param targetPose the pose that you want to go to. Position and Rotation
          * @return An auto built command to get from current pose to target pose
          */
-/** TODO add rumble */
+        /** TODO add rumble */
         public Command generatePathFindToPose(Pose2d targetPose) {
                 Command pathfindingCommand = AutoBuilder.pathfindToPose(
                                 targetPose,
                                 Constants.SwerveConstants.AUTO_PATH_CONSTRAINTS,
                                 0.0, // Goal end velocity in meters/sec
-                                0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+                                0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                                    // before attempting to rotate.
                 );
                 return pathfindingCommand;
         }
 
-        public Command pathFindToPathThenFollow(String pathName){
+        public Command pathFindToPathThenFollow(String pathName) {
                 PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-               return AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), 0);
+                return AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI),
+                                0);
         }
 
         public void initShuffleBoardEncoders() {
@@ -687,7 +688,7 @@ public class SwerveDrive extends SubsystemBase {
          */
         public void setDriveVoltages(Measure<Voltage> volts) {
                 for (SwerveModule s : swerveModules) {
-                        s.setTurnPosition(() ->0);
+                        s.setTurnPosition(() -> 0);
                         s.setDriveVoltage(volts.in(Volts));
                 }
         }
@@ -705,14 +706,13 @@ public class SwerveDrive extends SubsystemBase {
                 return gyro.getRoll();
         }
 
-public Command halt(){
-                return Commands.runOnce(()-> {}, this);
+        public Command halt() {
+                return Commands.runOnce(() -> {
+                }, this);
         }
 
-
-
-        public void setspeeds(double speed){
-               frontRight.setDriveVelocity(speed);
+        public void setspeeds(double speed) {
+                frontRight.setDriveVelocity(speed);
                 frontLeft.setDriveVelocity(speed);
                 backRight.setDriveVelocity(speed);
                 backLeft.setDriveVelocity(speed);

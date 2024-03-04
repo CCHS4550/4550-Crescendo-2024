@@ -36,32 +36,6 @@ public class Vision {
                 Constants.AprilTags.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera,
                 robotToCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-
-        // // ----- Simulation
-        // if (Robot.isSimulation()) {
-        //     // Create the vision system simulation which handles cameras and targets on the
-        //     // field.
-        //     visionSim = new VisionSystemSim("main");
-        //     // Add all the AprilTags inside the tag layout as visible targets to this
-        //     // simulated field.
-        //     visionSim.addAprilTags(Constants.Vision.aprilTagFieldLayout);
-        //     // Create simulated camera properties. These can be set to mimic your actual
-        //     // camera.
-        //     var cameraProp = new SimCameraProperties();
-        //     cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-        //     cameraProp.setCalibError(0.35, 0.10);
-        //     cameraProp.setFPS(15);
-        //     cameraProp.setAvgLatencyMs(50);
-        //     cameraProp.setLatencyStdDevMs(15);
-        //     // Create a PhotonCameraSim which will update the linked PhotonCamera's values
-        //     // with visible
-        //     // targets.
-        //     cameraSim = new PhotonCameraSim(camera, cameraProp);
-        //     // Add the simulated camera to view the targets on this simulated field.
-        //     visionSim.addCamera(cameraSim, Constants.Vision.ROBOT_TO_CAM);
-
-        //     cameraSim.enableDrawWireframe(true);
-        // }
     }
 
     public PhotonPipelineResult getLatestResult() {
@@ -82,20 +56,11 @@ public class Vision {
         var visionEst = photonEstimator.update();
         double latestTimestamp = camera.getLatestResult().getTimestampSeconds();
         boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
-        // if (Robot.isSimulation()) {
-        //     visionEst.ifPresentOrElse(
-        //             est -> getSimDebugField()
-        //                     .getObject("VisionEstimation")
-        //                     .setPose(est.estimatedPose.toPose2d()),
-        //             () -> {
-        //                 if (newResult)
-        //                     getSimDebugField().getObject("VisionEstimation").setPoses();
-        //             });
-        // }
         if (newResult)
             lastEstTimestamp = latestTimestamp;
         return visionEst;
     }
+
     /**
      * The standard deviations of the estimated pose from
      * {@link #getEstimatedGlobalPose()}, for use
@@ -132,23 +97,4 @@ public class Vision {
         return estStdDevs;
     }
 
-
-    // ----- Simulation
-
-    // public void simulationPeriodic(Pose2d robotSimPose) {
-    //     visionSim.update(robotSimPose);
-    // }
-
-    // /** Reset pose history of the robot in the vision system simulation. */
-    // public void resetSimPose(Pose2d pose) {
-    //     if (Robot.isSimulation())
-    //         visionSim.resetRobotPose(pose);
-    // }
-
-    // /** A Field2d for visualizing our robot and objects on the field. */
-    // public Field2d getSimDebugField() {
-    //     if (!Robot.isSimulation())
-    //         return null;
-    //     return visionSim.getDebugField();
-    // }
 }
