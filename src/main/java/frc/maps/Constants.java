@@ -126,7 +126,7 @@ public class Constants {
         public static final boolean ELEVATOR_LEFT_REVERSED = false;
 
         public static final int WRIST = 14;
-        public static final boolean WRIST_REVERSED = false;
+        public static final boolean WRIST_REVERSED = true;
 
         public static final int CLIMBER_RIGHT = 98;
         public static final boolean CLIMBER_RIGHT_REVERSED = false;
@@ -144,10 +144,10 @@ public class Constants {
         public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 2;
         public static final int BACK_LEFT_ABSOLUTE_ENCODER = 3;
 
-        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.41;
-        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 3.90;
-        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.78;
-        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.249;
+        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.55;
+        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 3.60;
+        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.77;
+        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.184;
 
         // Robot Constants (change with SysId)
         // max speed in free sprint: used in getting velocities of swerve modules
@@ -197,23 +197,23 @@ public class Constants {
     public class FeedForwardConstants {
 
         // TODO Do sysid to get values
-        public static final double DRIVE_KS = 0.14222;
-        public static final double DRIVE_KV = 2.5769;
-        public static final double DRIVE_KA = 0.29973;
+        public static final double DRIVE_KS = 0.19268;
+        public static final double DRIVE_KV = 2.642;
+        public static final double DRIVE_KA = 0.55965;
 
         public static final double TURNKS = 0;
         public static final double TURNKV = 0;
 
         // * TODO SysId these values */
-        public static final double ELEVATOR_KS = 0.16566;
-        public static final double ELEVATOR_KG = 0.079705;
-        public static final double ELEVATOR_KV = 0.0019722;
-        public static final double ELEVATOR_KA = 0.00022559;
+        public static final double ELEVATOR_KS = 0.17092;
+        public static final double ELEVATOR_KG = 0.075178;
+        public static final double ELEVATOR_KV = 0.0019272;
+        public static final double ELEVATOR_KA = 0.00029478;
 
-        public static final double WRIST_KS = 0;
-        public static final double WRIST_KG = 0;
-        public static final double WRIST_KV = 0;
-        public static final double WRIST_KA = 0;
+        public static final double WRIST_KS = 0.2487;
+        public static final double WRIST_KG = 0.018916;
+        public static final double WRIST_KV = 0.0018868;
+        public static final double WRIST_KA = 0.00020233;
     }
 
     public class FieldPositionConstants {
@@ -231,15 +231,17 @@ public class Constants {
         public static double WRIST_INTAKE = 0;
 
         public static double ELEVATOR_SHOOT = 0;
-        public static double WRIST_SHOOT = 0;
+        public static double WRIST_SHOOT = 12.500043869018555;
 
-        public static double ELEVATOR_AMP = 0;
-        public static double WRIST_AMP = 0;
+        public static double ELEVATOR_AMP = 75;
+        public static double WRIST_AMP = 40.7;
 
         public static double ELEVATOR_HUMAN_PLAYER = 0;
         public static double WRIST_HUMAN_PLAYER = 0;
 
-        public static double ELEVATOR_TOP = 77.9 - 2;
+        public static double ELEVATOR_TOP = 75;
+
+        public static double WRIST_TRAVEL = 15.0;
     }
 
     public class RedFieldPositionConstants {

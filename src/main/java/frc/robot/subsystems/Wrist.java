@@ -23,8 +23,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -60,13 +62,17 @@ public class Wrist extends SubsystemBase {
 
     private GenericEntry wristPositionEntry;
 
+    // private DigitalInput elevatorBottom = new DigitalInput(1);
+
+    private DigitalInput wristSwitch = new DigitalInput(3);
+
     public Wrist() {
         wristMotorFeedforward = new ElevatorFeedforward(
                 RobotMap.WRIST_KS,
                 RobotMap.WRIST_KG,
                 RobotMap.WRIST_KV,
                 RobotMap.WRIST_KA);
-        wristPidController = new PIDController(0.3, 0, 0);
+        wristPidController = new PIDController(1.3, 0, 0);
 
         constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
         profile = new TrapezoidProfile(constraints);
@@ -96,11 +102,14 @@ public class Wrist extends SubsystemBase {
      * Sets the elevator to target a setpoint
      */
     public Command wristToSetpoint(double setpoint) {
-        return this.run(
-                () -> this.targetPosition(setpoint)).until(
+        return this.runEnd(
+                () -> this.targetPosition(setpoint), () -> setWristVoltage(Volts.of(0))).until(
                         () -> (Math.abs(wristMotor.getPosition() - setpoint) < 0.1));
     }
 
+    public Command home(){
+        return setWristDutyCycle(() -> -0.3);
+    }
     public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator) {
         Pose2d robotPose = swerveDrive.getPose();
         Pose2d speakerPose = new Pose2d();
@@ -150,6 +159,10 @@ public class Wrist extends SubsystemBase {
     @Override
     public void periodic() {
         wristPositionEntry.setDouble(wristMotor.getPosition());
+        SmartDashboard.putBoolean("Wrist Switch", wristSwitch.get());
+        if(wristSwitch.get()){
+            resetEncoders();
+        }
     }
 
     /**
@@ -178,6 +191,11 @@ public class Wrist extends SubsystemBase {
     }
 
     public Command setWristDutyCycle(DoubleSupplier speed) {
-        return this.run(() -> wristMotor.set(speed.getAsDouble()));
+        return this.runEnd(() -> wristMotor.set(speed.getAsDouble()), () -> wristMotor.set(0)).until(() -> wristSwitch.get() && speed.getAsDouble() < 0);
+    }
+
+    public Command setWristVoltageCycle(DoubleSupplier speed) {
+        return this.run(() -> wristMotor.setVoltage(wristMotorFeedforward.calculate(speed.getAsDouble())))
+                .until(() -> wristSwitch.get() && speed.getAsDouble() > 0);
     }
 }

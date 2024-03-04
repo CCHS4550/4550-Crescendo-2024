@@ -14,6 +14,8 @@ import frc.maps.Constants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 /**
@@ -64,11 +66,10 @@ public class SwerveModule extends SubsystemBase {
         // turningPIDController = new SparkPIDController(.5, 0, 0);
         // turningPIDController = new SparkPIDController();
 
-        turningPIDController = new PIDController(0.5, 0, 0);
+        turningPIDController = new PIDController(1, 0, 0);
         // turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         turningPIDController.enableContinuousInput(0, 2 * Math.PI);
-
-        drivingPidController = new PIDController(0.5, 0, 0);
+        drivingPidController = new PIDController(1, 0, 0);
 
         // possibly kA values too, if sysid provides those
         driveFeedforward = new SimpleMotorFeedforward(Constants.FeedForwardConstants.DRIVE_KS,
@@ -204,7 +205,7 @@ public class SwerveModule extends SubsystemBase {
         // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
         setDriveVelocity(state.speedMetersPerSecond);
-        setTurnPosition(state.angle.getRadians());
+        setTurnPosition(() -> state.angle.getRadians());
         // setTurnPosition();
 
     }
@@ -213,15 +214,17 @@ public class SwerveModule extends SubsystemBase {
         // These are both in m/s
         double driveOutput = drivingPidController.calculate(driveMotor.getEncoder().getVelocity(), velocity);
         // Feed forward
-        // double driveFF = driveFeedforward.calculate(velocity);
+        double driveFF = driveFeedforward.calculate(velocity);
 
-        // driveMotor.setVoltage(driveOutput + driveFF);
-        driveMotor.set(velocity);
+        driveMotor.setVoltage(driveOutput + driveFF);
+        // driveMotor.set(velocity);
         // driveMotor.set(driveOutput);
     }
 
-    public void setTurnPosition(double angle) {
-        double turnOutput = turningPIDController.calculate(getTurnPosition(), angle);
+    public void setTurnPosition(DoubleSupplier angle) {
+        Logger.recordOutput("Turning/position", getTurnPosition());
+        Logger.recordOutput("Turning/desired", angle.getAsDouble());
+        double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), angle.getAsDouble());
         // turnMotor.setVoltage(turnOutput);
         turnMotor.set(turnOutput);
         /* TODO Change back */

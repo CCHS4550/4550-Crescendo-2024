@@ -2,9 +2,12 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.wpilibj2.command.Commands.deadline;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -19,8 +22,8 @@ public class Shooter extends SubsystemBase {
     private CCSparkMax shooterBottom = new CCSparkMax("Shooter Bottom", "SB", Constants.MotorConstants.SHOOTER_BOTTOM,
             MotorType.kBrushless, IdleMode.kCoast, Constants.MotorConstants.SHOOTER_BOTTOM_REVERSED);
 
-    private CCSparkMax indexer = new CCSparkMax("index", "in", Constants.MotorConstants.INDEXER, MotorType.kBrushless,
-            IdleMode.kBrake, Constants.MotorConstants.INDEXER_REVERSED);
+
+    private SlewRateLimiter shooterSlewRateLimiter = new SlewRateLimiter(0.5,-1,0);
 
     public Shooter() {
         // shooterTop.follow(shooterBottom);
@@ -31,25 +34,13 @@ public class Shooter extends SubsystemBase {
         shooterTop.set(speed);
     }
 
-    public void setIndexerSpeed(double speed) {
-       indexer.set(speed);
+    public Command shoot(DoubleSupplier speed) {
+        return this.runEnd(() -> setShooterSpeed(shooterSlewRateLimiter.calculate(speed.getAsDouble())), () -> setShooterSpeed(0));
     }
 
-    public Command shoot() {
-        return this.run(() -> setShooterSpeed(0.3));
-    }
-
-    public Command index() {
-        return this.runEnd(() -> setIndexerSpeed(0.5), () -> setIndexerSpeed(0)).withName("Index");
-    }
-    public Command indexForTime(double seconds) {
-        return index().withTimeout(seconds);
-    }
     
-    public Command shootForTime(double seconds) {
-        // WaitCommand timer = new WaitCommand(1.0);
-        // return deadline(timer, shoot());
-        return shoot().withTimeout(seconds);
+    public Command shootForTime(double speed, double seconds) {
+        return shoot(() -> speed).withTimeout(seconds);
     }
 
     public Command rev() {

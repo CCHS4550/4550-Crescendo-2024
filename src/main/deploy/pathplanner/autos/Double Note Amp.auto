@@ -20,12 +20,6 @@
                 "data": {
                   "pathName": "Double Note Amp.1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Target Amp"
-                }
               }
             ]
           }

@@ -68,7 +68,7 @@ public class Elevator extends SubsystemBase {
     DigitalInput limitSwitchBottom = new DigitalInput(1);
     DigitalInput limitSwitchTop = new DigitalInput(2);
 
-    PIDController elevatorPid = new PIDController(1, 0, 0);
+    PIDController elevatorPid = new PIDController(.5, 0, 0);
 
     public Elevator() {
         resetEncoders();
@@ -98,7 +98,7 @@ public class Elevator extends SubsystemBase {
 
         // TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(),
         // getGoal());
-        TrapezoidProfile.State nextSetpoint = profile.calculate(0.03, getSetpoint(), getGoal());
+        TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
 
         double feedForwardPower = elevatorMotorFeedforward.calculate(nextSetpoint.velocity);
         // double feedForwardPower =
@@ -108,6 +108,7 @@ public class Elevator extends SubsystemBase {
 
         SmartDashboard.putNumber("Trapezoid Position", nextSetpoint.position);
 
+        SmartDashboard.putNumber("Setpoint", getSetpoint().position);
         double pidCalc = elevatorPid.calculate(elevatorMotorRight.getPosition(), position);
 
         // double elevatorPower = elevatorPidController.calculate(currentPosition);
@@ -126,20 +127,14 @@ public class Elevator extends SubsystemBase {
 
     // Sets the elevator to target a setpoint
     public Command elevatorToSetpoint(double setpoint) {
-        return this.run(
-                () -> this.targetPosition(setpoint)).until(
-                        () -> (Math.abs(setpoint - elevatorMotorRight.getPosition())) < 0.3)
-                .onlyWhile(() -> (limitSwitchBottom.get() == false || limitSwitchTop.get() == false));
+        return this.runEnd(
+                () -> this.targetPosition(setpoint), () -> setElevatorSpeed(0)).until(
+                        () -> ((Math.abs(setpoint - elevatorMotorRight.getPosition())) < 0.1));
     }
 
     // homes the elevator
     public Command home() {
-        return sequence(
-                this.run(() -> setElevatorSpeed(-0.2))
-                        .until(() -> (limitSwitchBottom.get())),
-                elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP / 5),
-                waitSeconds(1),
-                elevatorToSetpoint(0));
+        return sequence(setElevatorDutyCycle(() -> -0.7));
     }
 
     public void setElevatorVoltage(Measure<Voltage> volts) {
@@ -180,12 +175,12 @@ public class Elevator extends SubsystemBase {
         return constraints;
     }
 
-  
-
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Elevator Right Encoder", elevatorMotorRight.getPosition());
-        // SmartDashboard.putNumber("Elevator Left Encoder", elevatorMotorLeft.getPosition());
+        // SmartDashboard.putNumber("Elevator Right Encoder",
+        // elevatorMotorRight.getPosition());
+        // SmartDashboard.putNumber("Elevator Left Encoder",
+        // elevatorMotorLeft.getPosition());
         SmartDashboard.putBoolean("Limit Switch Bottom", limitSwitchBottom.get());
         SmartDashboard.putBoolean("Limit Switch Top", limitSwitchTop.get());
         updateShuffleBoardEncoders();
@@ -206,7 +201,7 @@ public class Elevator extends SubsystemBase {
         return Math.sin(ElevatorConstants.ELEVATOR_ANGLE) * elevatorMotorRight.getPosition();
     }
 
-      public void resetEncoders() {
+    public void resetEncoders() {
         elevatorMotorRight.reset();
         elevatorMotorLeft.reset();
     }
@@ -239,10 +234,9 @@ public class Elevator extends SubsystemBase {
     // Duty Cycle Code
     public Command dutyHome() {
         return sequence(
-                this.run(() -> setElevatorDutyCycle(() -> -0.2))
-                        .until(() -> (limitSwitchBottom.get())),
-                elevatorToSetpoint(1),
-                waitSeconds(1),
+                // setElevatorDutyCycle(() -> -0.2),
+                // elevatorToSetpoint(20),
+                // waitSeconds(1),
                 elevatorToSetpoint(0));
     }
 
@@ -252,22 +246,24 @@ public class Elevator extends SubsystemBase {
                         || limitSwitchTop.get() && speed.getAsDouble() > 0));
     }
 
-    public void setElevatorVoltageSpeed(double input) {
-        double ffValue = elevatorMotorFeedforward.calculate(input);
-        SmartDashboard.putNumber("FF", ffValue);
-        elevatorMotorRight.setVoltage(ffValue);
-        elevatorMotorLeft.setVoltage(ffValue);
-    }
+    // public void setElevatorVoltageSpeed(double input) {
+    // double ffValue = elevatorMotorFeedforward.calculate(input);
+    // SmartDashboard.putNumber("FF", ffValue);
+    // elevatorMotorRight.setVoltage(ffValue);
+    // elevatorMotorLeft.setVoltage(ffValue);
+    // }
 
-    public Command runElevatorVoltage(Measure<Voltage> volts) {
-        return this.runEnd(() -> setElevatorVoltage(volts), () -> setElevatorVoltage(Volts.of(0)))
-                .until(() -> (limitSwitchBottom.get() && volts.magnitude() < 0));
-    }
+    // public Command runElevatorVoltage(Measure<Voltage> volts) {
+    // return this.runEnd(() -> setElevatorVoltage(volts), () ->
+    // setElevatorVoltage(Volts.of(0)))
+    // .until(() -> (limitSwitchBottom.get() && volts.magnitude() < 0));
+    // }
 
-    public Command runElevatorVoltageSpeed(DoubleSupplier input) {
-        // this.input = input;
-        return this.runEnd(() -> setElevatorVoltageSpeed(input.getAsDouble()), () -> setElevatorVoltageSpeed(0))
-                .until(() -> (limitSwitchBottom.get() && input.getAsDouble() < 0));
-    }
+    // public Command runElevatorVoltageSpeed(DoubleSupplier input) {
+    // // this.input = input;
+    // return this.runEnd(() -> setElevatorVoltageSpeed(input.getAsDouble()), () ->
+    // setElevatorVoltageSpeed(0))
+    // .until(() -> (limitSwitchBottom.get() && input.getAsDouble() < 0));
+    // }
 
 }

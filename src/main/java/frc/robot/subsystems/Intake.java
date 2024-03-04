@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -32,12 +34,12 @@ public class Intake extends SubsystemBase {
                 }
         }
 
-        public Command intake(double speed) {
-                return this.runEnd(() -> runIntake(speed), () -> runIntake(0));
+        public Command intake(DoubleSupplier speed) {
+                return this.runEnd(() -> runIntake(speed.getAsDouble()), () -> runIntake(0));
         }
 
         public Command intakeForTime(double time){
-                return intake(0.4).withTimeout(time).withName("Intake For Time");
+                return intake(() -> 0.4).withTimeout(time).withName("Intake For Time");
         }
 
         public Command halt() {

@@ -291,7 +291,7 @@ public class SwerveDrive extends SubsystemBase {
 
          public void spinMotor(double speed){
                 frontRight.setDriveVelocity(speed);
-                frontRight.setTurnPosition(speed);
+                frontRight.setTurnPosition(() ->speed);
          }
         public void zeroHeading() {
                 gyro.reset();
@@ -462,6 +462,7 @@ public class SwerveDrive extends SubsystemBase {
         public void updateOdometer() {
                 updateModulePositions();
                 Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
+                SmartDashboard.putNumber("Angle", getRotation2d().getDegrees());
                 // if(LimelightHelpers.getBotPose2d("Limelight3") < 1){
                 // }
                 // if(LimelightHelpers.)
@@ -686,7 +687,7 @@ public class SwerveDrive extends SubsystemBase {
          */
         public void setDriveVoltages(Measure<Voltage> volts) {
                 for (SwerveModule s : swerveModules) {
-                        s.setTurnPosition(0);
+                        s.setTurnPosition(() ->0);
                         s.setDriveVoltage(volts.in(Volts));
                 }
         }

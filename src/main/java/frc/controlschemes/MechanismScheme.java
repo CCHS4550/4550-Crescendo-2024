@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 import frc.maps.Constants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Wrist;
@@ -22,12 +23,13 @@ import frc.robot.subsystems.Climber;
 
 public class MechanismScheme implements ControlScheme {
     private static CommandGenericHID buttonBoard;
-    public static CommandXboxController controller;
+    // public static CommandXboxController controller;
 
-    public static void configure(Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, int port) {
-        // buttonBoard = new CommandGenericHID(port);
-        controller = new CommandXboxController(port);
-        configureButtons(port, intake, shooter, elevator, wrist);
+    public static void configure(Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, Indexer indexer,
+            int port) {
+        buttonBoard = new CommandGenericHID(port);
+        // controller = new CommandXboxController(3);
+        configureButtons(port, intake, shooter, elevator, wrist, indexer);
         // arm.setDefaultCommand(Commands.run(() -> arm.moveArm(OI.axis(1,
         // ControlMap.L_JOYSTICK_VERTICAL) * 0.5,
         // OI.axis(1, ControlMap.R_JOYSTICK_VERTICAL) * 0.5), arm));
@@ -40,46 +42,75 @@ public class MechanismScheme implements ControlScheme {
         // intake)).onFalse(Commands.run(() -> intake.toggleReverse(false), intake));
     }
 
-    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist) {
+    public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist,
+            Indexer indexer) {
         // intake.setDefaultCommand(run(() ->
         // intake.runIntake(Math.abs(controller.getLeftY()) >= 0.1 ?
         // controller.getLeftY() : 0),intake));
 
-        controller.axisGreaterThan(Constants.XboxConstants.RT, 0.05).whileTrue(shooter.shoot())
-                .whileFalse(run(() -> shooter.setShooterSpeed(0)));
-        wrist.setDefaultCommand(wrist.setWristDutyCycle(() -> MathUtil.applyDeadband(controller.getLeftY(), 0.1)));
+        // controller.axisGreaterThan(Constants.XboxConstants.RT,
+        // 0.05).whileTrue(shooter.shoot())
+        // .whileFalse(run(() -> shooter.setShooterSpeed(0)));
+        // wrist.setDefaultCommand(wrist.setWristDutyCycle(() ->
+        // MathUtil.applyDeadband(controller.getLeftY(), 0.1)));
 
-        controller.x().whileTrue(shooter.index());
-        controller.a().whileTrue(intake.intake(-0.4));
-        // controller.b().whileTrue(intake.intake(0.4));
-        controller.b().onTrue(elevator.home());
-        controller.y().onTrue(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP));
-        elevator.setDefaultCommand(
-                elevator.setElevatorDutyCycle(() -> MathUtil.applyDeadband(-controller.getRightY(), 0.09)));
-    
-        // SequentialCommandGroup autoShoot = (SequentialCommandGroup) sequence(
-        // wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator)),
-        // shooter.rev(), shooter.indexOneSecond());
-        // buttonBoard.button(1).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
-        // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)).withName("Target
-        // Intake"));
+        // controller.x().whileTrue(shooter.index());
+        // controller.leftBumper().whileTrue(intake.intake(-0.7));
+        // // controller.a().onTrue(wrist.targetPosition(0));
+        // controller.rightBumper().whileTrue(intake.intake(0.7));
+        // controller.b().onTrue(elevator.home());
+        // controller.y().onTrue(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_TOP));
+        // elevator.setDefaultCommand(
+        Command ampScore = sequence(
+                parallel(sequence(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)),
+                        elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)),
+                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP),
+                parallel(indexer.indexForTime(0.3, 0.3), shooter.shootForTime(0.3, 1))).withName("Amp Score");
+
+        Command autoShoot = sequence(parallel(shooter.shootForTime(-0.1, 0.1), indexer.indexForTime(-0.1, 0.2)),
+                shooter.shootForTime(1, 1.5),
+                parallel(shooter.shootForTime(1, 0.3), indexer.indexForTime(0.3, 0.3))).withName("Auto Shoot");
+
+        Command subWooferShoot = sequence(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT), autoShoot).withName("Subwoofer Shoot");
+
+        // this is the good stuff
+        buttonBoard.button(1).whileTrue(elevator.setElevatorDutyCycle(() -> 0.3));
+        buttonBoard.button(2).whileTrue(elevator.setElevatorDutyCycle(() -> -0.3));
+        buttonBoard.button(3).whileTrue(wrist.setWristDutyCycle(() -> 0.3));
+        buttonBoard.button(4).whileTrue(wrist.setWristDutyCycle(() -> -0.3));
+        buttonBoard.button(5).onTrue(sequence(elevator.home(), wrist.home()));
+
+
+        buttonBoard.button(9)
+                .whileTrue((sequence(parallel(intake.intake(() -> -1), indexer.index(() -> 0.3)))));
+
+        // amp
+        buttonBoard.button(10)
+                .onTrue(ampScore);
+
+        // buttonBoard.button(12).onTrue(sequence(parallel(sequence(wrist.wristToSetpoint(15.0),shooter.indexForTime(-0.1,
+        // 0.3)), elevator.elevatorToSetpoint(75)),
+        // wrist.wristToSetpoint(43)));
+
+        buttonBoard.button(12)
+                .onTrue(sequence(
+                        parallel(sequence(wrist.wristToSetpoint(15.0), indexer.indexForTime(-0.1, 0.3)),
+                                elevator.elevatorToSetpoint(75)),
+                        parallel(wrist.wristToSetpoint(22.4), shooter.shootForTime(1, 2)),
+                        indexer.indexForTime(0.3, 0.3)));
+
+        // intake.setDefaultCommand(intake.intake(() ->
+        // MathUtil.applyDeadband(controller.getLeftY(), 0.1)));
+
+        Command targetAmp = sequence(
+                parallel(sequence(wrist.wristToSetpoint(15.0), indexer.indexForTime(-0.1, 0.3)),
+                        elevator.elevatorToSetpoint(75)),
+                parallel(wrist.wristToSetpoint(22.4), shooter.shootForTime(1, 2)),
+                indexer.indexForTime(0.3, 0.3));
 
         // buttonBoard.button(2).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_SHOOT),
         // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT)).withName("Target
-        // Shoot"));
-
-        // buttonBoard.button(3).onTrue(parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
-        // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP)).withName("Target
-        // Amp"));
-        // buttonBoard.button(4).whileTrue(intake.intake(0.5));
-        // buttonBoard.button(5).whileTrue(shooter.index());
-        // buttonBoard.button(6).toggleOnTrue(shooter.rev());
-        // buttonBoard.button(7).whileTrue(shooter.shoot());
-        // buttonBoard.button(8).whileTrue(climber.climb());
-        // buttonBoard.button(9).onTrue(autoShoot);
-        // buttonBoard.button(11)
-        // .onTrue(parallel(intake.halt(), shooter.halt(), elevator.halt(),
-        // wrist.halt(), climber.halt()));
+        // Shoot"))
 
     }
 

@@ -48,26 +48,29 @@ public class SwerveDriveScheme implements ControlScheme {
                 .withWidget(BuiltInWidgets.kToggleSwitch);
 
         SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT,
-                -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
+                -Constants.SwerveConstants.DRIVE_RATE_LIMIT - 2, 0);
         SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT,
-                -Constants.SwerveConstants.DRIVE_RATE_LIMIT, 0);
-        SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT);
+                -Constants.SwerveConstants.DRIVE_RATE_LIMIT - 2, 0);
+        SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 2);
 
-        PIDController orientationLockPID = new PIDController(.5, 0, 0);
+        PIDController orientationLockPID = new PIDController(.1, 0, 0);
+        orientationLockPID.enableContinuousInput(-Math.PI, Math.PI);
         controller = new CommandXboxController(port);
 
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
-            
+            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.1) * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND;
 
-            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
+            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.1) * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND;
 
             double turnSpeed = 0;
-            if (!orientationLocked) {
+            // || Math.abs(controller.getRightX()) > 0.15
+            if (!orientationLocked ) {
                 // turnSpeed = -OI.axis(port, Constants.XboxConstants.R_JOYSTICK_HORIZONTAL);
-                turnSpeed = MathUtil.applyDeadband(controller.getRightX(), 0.15);
+                orientationLockAngle = swerveDrive.getRotation2d().getRadians();
+                turnSpeed = MathUtil.applyDeadband(-controller.getRightX(), 0.11);
+                
             } else {
                 turnSpeed = orientationLockPID.calculate(swerveDrive.getRotation2d().getRadians(), orientationLockAngle)
                         * 2;
@@ -126,46 +129,48 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param port        The controller port of the driving controller.
      */
     private static void configureButtons(SwerveDrive swerveDrive, Climber climber, int port) {
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
+        controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
 
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
-        controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-                runOnce(() -> OI.setRumble(0, 0.5))));
+        // controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
+        // runOnce(() -> OI.setRumble(0, 0.5))));
 
-        controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-                runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5))));
+        // controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle
+        // to Shoot"),
+        // runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5))));
 
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
 
-                controller.rightBumper().onTrue(run( () -> swerveDrive.setspeeds(0.2), swerveDrive));
+        controller.rightBumper().onTrue(run(() -> swerveDrive.setspeeds(0.2), swerveDrive));
     }
 
-     /**
+    /**
      * Configures buttons and their respective commands.
      * 
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port        The controller port of the driving controller.
      */
     private static void configureButtons(SwerveDrive swerveDrive, int port) {
-        // new JoystickButton(controllers[port], ControlMap.B_BUTTON)
-        // .onTrue(new InstantCommand(() -> toggleFieldCentric()));
 
+        controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
         // controller.b().onTrue(sequence(swerveDrive.generatePathFindToPose(swerveDrive.getNearestSpeakerPose()),
-        //         runOnce(() -> OI.setRumble(0, 0.5))));
+        // runOnce(() -> OI.setRumble(0, 0.5))));
 
-        // controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle to Shoot"),
-        //         runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)), null));
+        // controller.y().onTrue(sequence(swerveDrive.pathFindToPathThenFollow("Middle
+        // to Shoot"),
+        // runOnce(() -> controller.getHID().setRumble(RumbleType.kBothRumble, 0.5)),
+        // null));
 
-        // controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
-        //         .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
+        controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
+        .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
 
-        // controller.rightBumper().whileTrue(run(() -> climber.runClimberRight(1), climber));
+        // controller.rightBumper().whileTrue(run(() -> climber.runClimberRight(1),
+        // climber));
 
-        // controller.leftBumper().whileTrue(run(() -> climber.runClimberLeft(1), climber));
-
+        // controller.leftBumper().whileTrue(run(() -> climber.runClimberLeft(1),
+        // climber));
 
     }
 
