@@ -68,11 +68,11 @@ public class Wrist extends SubsystemBase {
 
     public Wrist() {
         wristMotorFeedforward = new ElevatorFeedforward(
-                RobotMap.WRIST_KS,
-                RobotMap.WRIST_KG,
-                RobotMap.WRIST_KV,
-                RobotMap.WRIST_KA);
-        wristPidController = new PIDController(1.3, 0, 0);
+                Constants.FeedForwardConstants.WRIST_KS,
+                Constants.FeedForwardConstants.WRIST_KG,
+                Constants.FeedForwardConstants.WRIST_KV,
+                Constants.FeedForwardConstants.WRIST_KA);
+        wristPidController = new PIDController(1.2, 0, 0);
 
         constraints = new Constraints(MetersPerSecond.of(1), MetersPerSecondPerSecond.of(0.5));
         profile = new TrapezoidProfile(constraints);
@@ -104,12 +104,13 @@ public class Wrist extends SubsystemBase {
     public Command wristToSetpoint(double setpoint) {
         return this.runEnd(
                 () -> this.targetPosition(setpoint), () -> setWristVoltage(Volts.of(0))).until(
-                        () -> (Math.abs(wristMotor.getPosition() - setpoint) < 0.1));
+                        () -> (Math.abs(wristMotor.getPosition() - setpoint) <= 0.3));
     }
 
-    public Command home(){
-        return setWristDutyCycle(() -> -0.3);
+    public Command home() {
+        return setWristDutyCycle(() -> -0.4);
     }
+
     public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator) {
         Pose2d robotPose = swerveDrive.getPose();
         Pose2d speakerPose = new Pose2d();
@@ -160,7 +161,7 @@ public class Wrist extends SubsystemBase {
     public void periodic() {
         wristPositionEntry.setDouble(wristMotor.getPosition());
         SmartDashboard.putBoolean("Wrist Switch", wristSwitch.get());
-        if(wristSwitch.get()){
+        if (wristSwitch.get()) {
             resetEncoders();
         }
     }
@@ -191,7 +192,8 @@ public class Wrist extends SubsystemBase {
     }
 
     public Command setWristDutyCycle(DoubleSupplier speed) {
-        return this.runEnd(() -> wristMotor.set(speed.getAsDouble()), () -> wristMotor.set(0)).until(() -> wristSwitch.get() && speed.getAsDouble() < 0);
+        return this.runEnd(() -> wristMotor.set(speed.getAsDouble()), () -> wristMotor.set(0))
+                .until(() -> wristSwitch.get() && speed.getAsDouble() < 0);
     }
 
     public Command setWristVoltageCycle(DoubleSupplier speed) {

@@ -24,18 +24,18 @@ public class Intake extends SubsystemBase {
         public Intake() {
         }
 
-        public void runIntake(double speed) {
+        public void setIntakeVoltage(double speed) {
                 if (Math.abs(speed) <= 0.05) {
                         intakeFront.set(0);
                         intakeBack.set(0);
                 } else {
-                        intakeFront.set(speed);
-                        intakeBack.set(speed + 0.1);
+                        intakeFront.setVoltage(speed * 12);
+                        intakeBack.setVoltage((speed + 0.1) * 12);
                 }
         }
 
         public Command intake(DoubleSupplier speed) {
-                return this.runEnd(() -> runIntake(speed.getAsDouble()), () -> runIntake(0));
+                return this.runEnd(() -> setIntakeVoltage(speed.getAsDouble()), () -> setIntakeVoltage(0));
         }
 
         public Command intakeForTime(double time){

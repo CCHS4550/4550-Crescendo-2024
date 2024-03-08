@@ -68,7 +68,7 @@ public class Elevator extends SubsystemBase {
     DigitalInput limitSwitchBottom = new DigitalInput(1);
     DigitalInput limitSwitchTop = new DigitalInput(2);
 
-    PIDController elevatorPid = new PIDController(.5, 0, 0);
+    PIDController elevatorPid = new PIDController(.8, 0, 0);
 
     public Elevator() {
         resetEncoders();
@@ -96,17 +96,12 @@ public class Elevator extends SubsystemBase {
     public void targetPosition(double position) {
         setGoal(position);
 
-        // TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(),
-        // getGoal());
         TrapezoidProfile.State nextSetpoint = profile.calculate(0.02, getSetpoint(), getGoal());
 
         double feedForwardPower = elevatorMotorFeedforward.calculate(nextSetpoint.velocity);
-        // double feedForwardPower =
-        // elevatorMotorFeedforward.calculate(nextSetpoint.position);
+        
 
         setSetpoint(nextSetpoint);
-
-        SmartDashboard.putNumber("Trapezoid Position", nextSetpoint.position);
 
         SmartDashboard.putNumber("Setpoint", getSetpoint().position);
         double pidCalc = elevatorPid.calculate(elevatorMotorRight.getPosition(), position);
@@ -129,7 +124,7 @@ public class Elevator extends SubsystemBase {
     public Command elevatorToSetpoint(double setpoint) {
         return this.runEnd(
                 () -> this.targetPosition(setpoint), () -> setElevatorSpeed(0)).until(
-                        () -> ((Math.abs(setpoint - elevatorMotorRight.getPosition())) < 0.1));
+                        () -> ((Math.abs(setpoint - elevatorMotorRight.getPosition())) < 0.3));
     }
 
     // homes the elevator
@@ -177,10 +172,6 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Elevator Right Encoder",
-        // elevatorMotorRight.getPosition());
-        // SmartDashboard.putNumber("Elevator Left Encoder",
-        // elevatorMotorLeft.getPosition());
         SmartDashboard.putBoolean("Limit Switch Bottom", limitSwitchBottom.get());
         SmartDashboard.putBoolean("Limit Switch Top", limitSwitchTop.get());
         updateShuffleBoardEncoders();

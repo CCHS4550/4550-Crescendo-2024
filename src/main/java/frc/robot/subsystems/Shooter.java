@@ -1,18 +1,12 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.wpilibj2.command.Commands.deadline;
-
 import java.util.function.DoubleSupplier;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 
@@ -29,13 +23,13 @@ public class Shooter extends SubsystemBase {
         // shooterTop.follow(shooterBottom);
     }
 
-    public void setShooterSpeed(double speed) {
-        shooterBottom.set(speed);
-        shooterTop.set(speed);
+    public void setShooterVoltage(double speed) {
+        shooterBottom.setVoltage(speed * 12);
+        shooterTop.setVoltage(speed * 12);
     }
 
     public Command shoot(DoubleSupplier speed) {
-        return this.runEnd(() -> setShooterSpeed(shooterSlewRateLimiter.calculate(speed.getAsDouble())), () -> setShooterSpeed(0));
+        return this.runEnd(() -> setShooterVoltage(shooterSlewRateLimiter.calculate(speed.getAsDouble())), () -> setShooterVoltage(0));
     }
 
     
@@ -44,7 +38,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command rev() {
-        return this.run(() -> setShooterSpeed(1));
+        return this.run(() -> setShooterVoltage(1));
     }
     public Command halt(){
                 return Commands.runOnce(()-> {}, this);

@@ -17,12 +17,12 @@ public class Indexer extends SubsystemBase{
     public Indexer() {
     }
 
-    public void setIndexerSpeed(double speed) {
-        indexer.set(speed);
+    public void setIndexerVoltage(double speed) {
+        indexer.setVoltage(speed * 12.0);
     }
 
     public Command index(DoubleSupplier speed) {
-        return this.runEnd(() -> setIndexerSpeed(speed.getAsDouble()), () -> setIndexerSpeed(0)).withName("Index");
+        return this.runEnd(() -> setIndexerVoltage(speed.getAsDouble()), () -> setIndexerVoltage(0)).withName("Index");
     }
 
     public Command indexForTime(double speed, double seconds) {

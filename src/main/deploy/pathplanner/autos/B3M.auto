@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7092733979225159,
+      "y": 4.396666526794434
+    },
+    "rotation": -62.70042355137398
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Middle Three Piece.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Middle Three Piece.2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Middle Three Piece.3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Middle Three Piece.4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": true
+}

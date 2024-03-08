@@ -257,8 +257,8 @@ public class SwerveDrive extends SubsystemBase {
                                                           // ChassisSpeeds
                                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your Constants class
-                                                new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-                                                new PIDConstants(1, 0.5, 0.0), // Rotation PID constants
+                                                new PIDConstants(0.5, 0.2, 0.0), // Translation PID constants
+                                                new PIDConstants(0.7, 0.0, 0.0), // Rotation PID constants
                                                 Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max
                                                                                                                          // module
                                                                                                                          // speed,
@@ -363,7 +363,7 @@ public class SwerveDrive extends SubsystemBase {
 
         @Override
         public void periodic() {
-                // SmartDashboard.putNumber("Robot Heading", getRotation2d().getRadians());
+                
 
 
                 // m_field.setRobotPose(poseEstimator.getEstimatedPosition());
@@ -376,6 +376,10 @@ public class SwerveDrive extends SubsystemBase {
                 updateOdometer();
 
                 m_field.setRobotPose(poseEstimator.getEstimatedPosition());
+
+                SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
+                SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
+                SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
         }
 
         /**

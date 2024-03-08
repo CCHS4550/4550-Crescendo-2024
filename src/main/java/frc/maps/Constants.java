@@ -1,5 +1,8 @@
 package frc.maps;
 
+import static edu.wpi.first.units.Units.Inch;
+import static edu.wpi.first.units.Units.Inches;
+
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -153,7 +156,6 @@ public class Constants {
         // max speed in free sprint: used in getting velocities of swerve modules
         public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL = 4.72;
 
-        // new
 
         // Velocity Limits
         public static final double MAX_DRIVE_SPEED_METERS_PER_SECOND = 5;
@@ -210,10 +212,10 @@ public class Constants {
         public static final double ELEVATOR_KV = 0.0019272;
         public static final double ELEVATOR_KA = 0.00029478;
 
-        public static final double WRIST_KS = 0.2487;
-        public static final double WRIST_KG = 0.018916;
-        public static final double WRIST_KV = 0.0018868;
-        public static final double WRIST_KA = 0.00020233;
+        public static final double WRIST_KS = 0.17091;
+        public static final double WRIST_KG = 0.32638;
+        public static final double WRIST_KV = 0.0017181;
+        public static final double WRIST_KA = 0.00024211;
     }
 
     public class FieldPositionConstants {
@@ -231,17 +233,18 @@ public class Constants {
         public static double WRIST_INTAKE = 0;
 
         public static double ELEVATOR_SHOOT = 0;
-        public static double WRIST_SHOOT = 12.500043869018555;
+        public static double WRIST_SHOOT = 15.619040489196777;
+        // public static double WRIST_SHOOT = 8.714315414428711;
 
-        public static double ELEVATOR_AMP = 75;
-        public static double WRIST_AMP = 40.7;
+        public static double ELEVATOR_AMP = 76.5;
+        public static double WRIST_AMP = 51.02395248413086;
 
         public static double ELEVATOR_HUMAN_PLAYER = 0;
         public static double WRIST_HUMAN_PLAYER = 0;
 
         public static double ELEVATOR_TOP = 75;
 
-        public static double WRIST_TRAVEL = 15.0;
+        public static double WRIST_TRAVEL = 20;
     }
 
     public class RedFieldPositionConstants {
@@ -320,7 +323,7 @@ public class Constants {
     }
 
     public static class Vision {
-        public static final String CAMERA_NAME = "YOUR CAMERA NAME";
+        public static final String CAMERA_NAME = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up
         // from center.
 
@@ -334,9 +337,9 @@ public class Constants {
     }
 
     public static class cameraOne {
-        public static final String CAMERA_ONE_NAME = "LL3";
-        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(0.5, 0.0, 0.5),
-                new Rotation3d(0, 0, 0));
+        public static final String CAMERA_ONE_NAME = "FrontCamera";
+        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Inches.of(9.25), Inches.of(-9.75), Inches.of(14.5)),
+                new Rotation3d(0, Units.degreesToRadians(35.0), Units.degreesToRadians(180)));
         public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME, ROBOT_TO_CAM);
     }
 

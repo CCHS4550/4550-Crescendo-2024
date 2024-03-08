@@ -30,7 +30,7 @@ public class Vision {
     // private PhotonCameraSim cameraSim;
 
     public Vision(String cameraName, Transform3d robotToCam) {
-        camera = new PhotonCamera(Constants.Vision.CAMERA_NAME);
+        camera = new PhotonCamera(cameraName);
 
         photonEstimator = new PhotonPoseEstimator(
                 Constants.AprilTags.aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera,

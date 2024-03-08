@@ -67,7 +67,6 @@ public class SwerveModule extends SubsystemBase {
         // turningPIDController = new SparkPIDController();
 
         turningPIDController = new PIDController(0.5, 0, 0);
-        // turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
         turningPIDController.enableContinuousInput(0, 2 * Math.PI);
         drivingPidController = new PIDController(1, 0, 0);
 
@@ -100,23 +99,6 @@ public class SwerveModule extends SubsystemBase {
     public double getDriveVoltagee() {
         return driveMotor.getAppliedOutput();
     }
-
-    // /**
-    // * Gets the speed of the drive motor. Obtained using max speed given 12V of
-    // * power.
-    // *
-    // * @return The speed of the drive motor in m/s.
-    // */
-    // public double getDriveVelocity() {
-    // return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 *
-    // driveMotor.getBusVoltage();
-    // // return RobotMap.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL / 12.0 *
-    // driveMotor.get();
-    // }
-
-    // public double getDriveVel(){
-    // return driveMotor.getVelocity();
-    // }
 
     /**
      * Gets the speed of the turn motor.
@@ -152,7 +134,7 @@ public class SwerveModule extends SubsystemBase {
      */
     public double getAbsoluteEncoderRadiansOffset() {
         return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition()) - absoluteEncoderOffset;
-        // return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition());
+
     }
 
     /**
@@ -164,7 +146,6 @@ public class SwerveModule extends SubsystemBase {
      */
     public double getAbsoluteEncoderRadiansNoOffset() {
         return Units.rotationsToRadians(absoluteEncoder.getAbsolutePosition());
-        // return absoluteEncoder.getAbsolutePosition();
     }
 
     /**
@@ -174,7 +155,6 @@ public class SwerveModule extends SubsystemBase {
     public void resetEncoders() {
         driveMotor.reset();
         turnMotor.setPosition(getAbsoluteEncoderRadiansOffset());
-        // turnMotor.reset();
     }
 
     /**
@@ -202,7 +182,7 @@ public class SwerveModule extends SubsystemBase {
 
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, encoderRotation);
         // Minimizes side drift when driving
-        // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
+        state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
 
         setDriveVelocity(state.speedMetersPerSecond);
         setTurnPosition(() -> state.angle.getRadians());
@@ -217,13 +197,9 @@ public class SwerveModule extends SubsystemBase {
         double driveFF = driveFeedforward.calculate(velocity);
 
         driveMotor.setVoltage(driveOutput + driveFF);
-        // driveMotor.set(velocity);
-        // driveMotor.set(driveOutput);
     }
 
     public void setTurnPosition(DoubleSupplier angle) {
-        Logger.recordOutput("Turning/position"+this.getName(), getTurnPosition());
-        Logger.recordOutput("Turning/desired"+this.getName(), angle.getAsDouble());
         double turnOutput = turningPIDController.calculate(getAbsoluteEncoderRadiansOffset(), angle.getAsDouble());
         // turnMotor.setVoltage(turnOutput);
         turnMotor.set(turnOutput);
@@ -308,8 +284,6 @@ public class SwerveModule extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(this.getName() + " Drive Velocity", getDriveEncoderVelocity());
-        SmartDashboard.putNumber(this.getName() + "Velocity", getTurnVelocity());
     }
 
 }
