@@ -60,7 +60,6 @@ public class RobotContainer {
 
         Command runIntake = parallel(intake.intake(() -> -1), indexer.index(() -> 0.3));
 
-
         public RobotContainer() {
                 // initialize subsytems here
 
@@ -74,13 +73,13 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Home", wrist.home());
                 NamedCommands.registerCommand("Shoot", autoShoot);
                 NamedCommands.registerCommand("Run Intake", runIntake);
-                NamedCommands
-                                .registerCommand("Target Intake",
-                                                parallel(elevator.elevatorToSetpoint(
-                                                                Constants.MechanismPositions.ELEVATOR_INTAKE),
-                                                                wrist.wristToSetpoint(
-                                                                                Constants.MechanismPositions.WRIST_INTAKE)));
-
+                // NamedCommands
+                // .registerCommand("Target Intake",
+                // parallel(elevator.elevatorToSetpoint(
+                // Constants.MechanismPositions.ELEVATOR_INTAKE),
+                // wrist.wristToSetpoint(
+                // Constants.MechanismPositions.WRIST_INTAKE)));
+                NamedCommands.registerCommand("Target Intake", sequence(elevator.home(), wrist.home()));
                 NamedCommands
                                 .registerCommand("Target Shoot",
                                                 parallel(elevator.elevatorToSetpoint(

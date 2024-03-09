@@ -116,9 +116,9 @@ public class Wrist extends SubsystemBase {
         Pose2d speakerPose = new Pose2d();
         double height = 78 - elevator.elevatorElevation();
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            speakerPose = RedFieldPositionConstants.SPEAKER_MIDDLE;
+            speakerPose = RedFieldPositionConstants.SPEAKER_FRONT;
         } else {
-            speakerPose = BlueFieldPositionConstants.SPEAKER_MIDDLE;
+            speakerPose = BlueFieldPositionConstants.SPEAKER_FRONT;
         }
         double distanceToSpeaker = PhotonUtils.getDistanceToPose(robotPose, speakerPose);
         double wristAngle = Math.atan(height / distanceToSpeaker);

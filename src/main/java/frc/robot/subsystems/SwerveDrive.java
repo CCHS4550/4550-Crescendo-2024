@@ -203,6 +203,10 @@ public class SwerveDrive extends SubsystemBase {
                                         null, // No log consumer, since data is recorded by URCL
                                         this));
 
+
+
+
+        public Rotation2d initialAngle = new Rotation2d(0);
         /**
          * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
          * account for gyro calibration time.
@@ -257,8 +261,8 @@ public class SwerveDrive extends SubsystemBase {
                                                           // ChassisSpeeds
                                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your Constants class
-                                                new PIDConstants(0.5, 0.2, 0.0), // Translation PID constants
-                                                new PIDConstants(0.7, 0.0, 0.0), // Rotation PID constants
+                                                new PIDConstants(0.3, 0.2, 0.0), // Translation PID constants
+                                                new PIDConstants(0.3, 0.0, 0.0), // Rotation PID constants
                                                 Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max
                                                                                                                          // module
                                                                                                                          // speed,
@@ -330,7 +334,11 @@ public class SwerveDrive extends SubsystemBase {
                 } else {
                         poses = Constants.BlueFieldPositionConstants.SPEAKER_POSES;
                 }
-                return getPose().nearest(new ArrayList<>(Arrays.asList(poses)));
+                Pose2d nearest = getPose().nearest(Arrays.asList(poses));
+                SmartDashboard.putNumber("Nearest X", nearest.getX());
+                SmartDashboard.putNumber("Nearest Y", nearest.getY());
+                return nearest;
+                // return getPose().nearest(new ArrayList<>(Arrays.asList(poses)));
         }
 
         /**
@@ -721,6 +729,12 @@ public class SwerveDrive extends SubsystemBase {
                 backRight.setDriveVelocity(speed);
                 backLeft.setDriveVelocity(speed);
         }
+
+public void setInitialAngle(){
+
+}
+
+
 }
 
 // // Mutable holder for unit-safe voltage values, persisted to avoid

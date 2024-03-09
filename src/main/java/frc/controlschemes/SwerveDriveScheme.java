@@ -3,6 +3,7 @@ package frc.controlschemes;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -32,7 +33,7 @@ public class SwerveDriveScheme implements ControlScheme {
         return fieldCentric;
     };
 
-    private static double driveSpeedModifier = 0.75;
+    private static DoubleSupplier driveSpeedModifier = () -> 0.75;
 
     private static double turnSpeedModifier = 0.75;
 
@@ -48,10 +49,10 @@ public class SwerveDriveScheme implements ControlScheme {
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
                 .withWidget(BuiltInWidgets.kToggleSwitch);
 
-        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT,
-                -Constants.SwerveConstants.DRIVE_RATE_LIMIT - 3, 0);
-        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT,
-                -Constants.SwerveConstants.DRIVE_RATE_LIMIT - 3, 0);
+        SlewRateLimiter xRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
+                -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
+        SlewRateLimiter yRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2,
+                -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
         SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
         PIDController orientationLockPID = new PIDController(.1, 0, 0);
@@ -61,11 +62,11 @@ public class SwerveDriveScheme implements ControlScheme {
         swerveDrive.setDefaultCommand(new RunCommand(() -> {
 
             // Set x, y, and turn speed based on joystick inputs
-            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.03)
-                    * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier;
+            double xSpeed = MathUtil.applyDeadband(-controller.getLeftY(), 0.0)
+                    * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier.getAsDouble();
 
-            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.03)
-                    * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier;
+            double ySpeed = MathUtil.applyDeadband(-controller.getLeftX(), 0.0)
+                    * Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND * driveSpeedModifier.getAsDouble();
 
             double turnSpeed = 0;
             // || Math.abs(controller.getRightX()) > 0.15
@@ -128,8 +129,8 @@ public class SwerveDriveScheme implements ControlScheme {
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
 
-        controller.rightTrigger().onTrue(runOnce(() -> setFastMode())).onFalse(runOnce(() -> setNormalMode()));
-        controller.leftTrigger().onTrue(runOnce(() -> setSlowMode())).onFalse(runOnce(() -> setNormalMode()));
+        controller.leftTrigger().onTrue(runOnce(() -> setFastMode())).onFalse(runOnce(() -> setNormalMode()));
+        controller.rightTrigger().onTrue(runOnce(() -> setSlowMode())).onFalse(runOnce(() -> setNormalMode()));
 
     }
 
@@ -149,14 +150,14 @@ public class SwerveDriveScheme implements ControlScheme {
     }
 
     private static void setFastMode() {
-        driveSpeedModifier = 1;
+        driveSpeedModifier = () ->1;
     }
 
     private static void setNormalMode() {
-        driveSpeedModifier = 0.75;
+        driveSpeedModifier = ()-> 0.75;
     }
 
     private static void setSlowMode() {
-        driveSpeedModifier = 0.3;
+        driveSpeedModifier = ()-> 0.3;
     }
 }

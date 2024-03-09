@@ -74,7 +74,7 @@ public class MechanismScheme implements ControlScheme {
 
                 // this is the good stuff
                 buttonBoard.button(1)
-                                .whileTrue(((parallel(intake.intake(() -> -1), indexer.index(() -> 0.3)))));
+                                .whileTrue(((parallel(intake.intake(() -> -1), indexer.index(() -> 0.3), shooter.shoot(() -> -.1)))));
                 buttonBoard.button(2).onTrue(sequence(elevator.home(), wrist.home()));
                 buttonBoard.button(3).onTrue(targetShoot);
                 buttonBoard.button(4).whileTrue(parallel(shooter.shoot(() -> -0.1), indexer.index(() -> -0.1), intake.intake(() -> 0.8)));
