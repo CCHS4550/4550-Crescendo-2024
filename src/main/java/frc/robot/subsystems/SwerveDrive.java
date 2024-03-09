@@ -65,7 +65,8 @@ public class SwerveDrive extends SubsystemBase {
 
         // Initializing swerve modules. Must include full CCSparkMax object
         // declarations.
-        private final Field2d m_field = new Field2d();
+        private final Field2d m_field_poseestimator= new Field2d();
+        private final Field2d m_field_getPose= new Field2d();
         private final SwerveModule frontRight = new SwerveModule(
                         new CCSparkMax(
                                         "Front Right Drive",
@@ -207,6 +208,8 @@ public class SwerveDrive extends SubsystemBase {
 
 
         public Rotation2d initialAngle = new Rotation2d(0);
+
+        public Pose2d[] speakerPoses = new Pose2d[3];
         /**
          * Creates a new SwerveDrive object. Delays 1 second before setting gyro to 0 to
          * account for gyro calibration time.
@@ -240,7 +243,7 @@ public class SwerveDrive extends SubsystemBase {
 
                 initShuffleBoardEncoders();
 
-                SmartDashboard.putData("Field", m_field);
+                SmartDashboard.putData("Field", m_field_poseestimator);
                 new Thread(() -> {
                         try {
                                 Thread.sleep(1000);
@@ -287,7 +290,11 @@ public class SwerveDrive extends SubsystemBase {
                                 },
                                 this // Reference to this subsystem to set requirements
                 );
-
+                if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+                        speakerPoses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
+                } else {
+                        speakerPoses = Constants.BlueFieldPositionConstants.SPEAKER_POSES;
+                }
         }
 
         /**
@@ -328,13 +335,9 @@ public class SwerveDrive extends SubsystemBase {
          */
         public Pose2d getNearestSpeakerPose() {
 
-                Pose2d[] poses = new Pose2d[3];
-                if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-                        poses = Constants.RedFieldPositionConstants.SPEAKER_POSES;
-                } else {
-                        poses = Constants.BlueFieldPositionConstants.SPEAKER_POSES;
-                }
-                Pose2d nearest = getPose().nearest(Arrays.asList(poses));
+                
+               
+                Pose2d nearest = getPose().nearest(Arrays.asList(speakerPoses));
                 SmartDashboard.putNumber("Nearest X", nearest.getX());
                 SmartDashboard.putNumber("Nearest Y", nearest.getY());
                 return nearest;
@@ -383,11 +386,14 @@ public class SwerveDrive extends SubsystemBase {
 
                 updateOdometer();
 
-                m_field.setRobotPose(poseEstimator.getEstimatedPosition());
+                m_field_poseestimator.setRobotPose(poseEstimator.getEstimatedPosition());
+                m_field_getPose.setRobotPose(getPose());
 
                 SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
                 SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
                 SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
+
+                SmartDashboard.putNumber("pose to middle", getPose().getTranslation().getDistance(speakerPoses[0].getTranslation()));
         }
 
         /**

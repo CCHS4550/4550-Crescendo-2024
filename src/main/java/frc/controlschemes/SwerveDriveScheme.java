@@ -1,5 +1,6 @@
 package frc.controlschemes;
 
+import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import java.util.function.BooleanSupplier;
@@ -17,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.helpers.ControlScheme;
 import frc.helpers.OI;
 import frc.maps.Constants;
-
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 
 /**
@@ -43,7 +45,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port        The controller port of the driving controller.
      */
-    public static void configure(SwerveDrive swerveDrive, int port) {
+    public static void configure(SwerveDrive swerveDrive, Shooter shooter, Indexer indexer, int port) {
         Shuffleboard.getTab("Diagnostics").getLayout("Swerve", "List").add("isCentric", fieldCentric)
                 .withWidget(BuiltInWidgets.kBooleanBox);
         Shuffleboard.getTab("Diagnostics").addBoolean("Field Centric", fieldCentricSupplier)
@@ -106,7 +108,7 @@ public class SwerveDriveScheme implements ControlScheme {
             swerveDrive.setModuleStates(moduleStates);
 
         }, swerveDrive).withName("Swerve Controller Command"));
-        configureButtons(swerveDrive, port);
+        configureButtons(swerveDrive, shooter, indexer, port);
     }
 
     /**
@@ -115,7 +117,7 @@ public class SwerveDriveScheme implements ControlScheme {
      * @param swerveDrive The SwerveDrive object being configured.
      * @param port        The controller port of the driving controller.
      */
-    private static void configureButtons(SwerveDrive swerveDrive, int port) {
+    private static void configureButtons(SwerveDrive swerveDrive, Shooter shooter, Indexer indexer, int port) {
 
         // controller.b().onTrue(runOnce(() -> toggleFieldCentric()));
         controller.a().onTrue(runOnce(() -> swerveDrive.zeroHeading()));
@@ -128,6 +130,9 @@ public class SwerveDriveScheme implements ControlScheme {
 
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
+
+        controller.rightBumper().onTrue(parallel(shooter.shoot(() -> 0.2), indexer.index(() -> 0.3)));
+
 
         controller.leftTrigger().onTrue(runOnce(() -> setFastMode())).onFalse(runOnce(() -> setNormalMode()));
         controller.rightTrigger().onTrue(runOnce(() -> setSlowMode())).onFalse(runOnce(() -> setNormalMode()));

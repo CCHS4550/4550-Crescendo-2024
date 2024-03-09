@@ -30,7 +30,7 @@ public class Intake extends SubsystemBase {
         public void setIntakeVoltage(DoubleSupplier speed) {
                 double rateLimitedSpeed = intakRateLimiter.calculate(speed.getAsDouble());
                 SmartDashboard.putNumber("Speed", rateLimitedSpeed);
-                if (Math.abs(rateLimitedSpeed) <= 0.05) {
+                if (Math.abs(speed.getAsDouble()) <= 0.05) {
                         intakeFront.set(0);
                         intakeBack.set(0);
                 } else {

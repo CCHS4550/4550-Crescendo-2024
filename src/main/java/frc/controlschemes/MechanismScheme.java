@@ -58,14 +58,18 @@ public class MechanismScheme implements ControlScheme {
                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP));
 
                 Command ampScoreFull = sequence(
-                                parallel(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL),
-                                                elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP),
+                                parallel(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)
+                                                .withTimeout(1),
+                                                elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)
+                                                                .withTimeout(2.5)),
+                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP).withTimeout(2),
                                 parallel(indexer.indexForTime(0.3, 0.6)),
                                 shooter.shootForTime(0.4, 0.6),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL),
+                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL).withTimeout(1.5),
                                 parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
-                                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE)));
+                                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE))
+                                                .withTimeout(2.5),
+                                parallel(elevator.home(), wrist.home()));
 
                 Command targetShoot = parallel(elevator.elevatorToSetpoint(
                                 Constants.MechanismPositions.ELEVATOR_SHOOT),
@@ -74,10 +78,12 @@ public class MechanismScheme implements ControlScheme {
 
                 // this is the good stuff
                 buttonBoard.button(1)
-                                .whileTrue(((parallel(intake.intake(() -> -1), indexer.index(() -> 0.3), shooter.shoot(() -> -.1)))));
+                                .whileTrue(((parallel(intake.intake(() -> -1), indexer.index(() -> 0.3),
+                                                shooter.shoot(() -> -.1)))));
                 buttonBoard.button(2).onTrue(sequence(elevator.home(), wrist.home()));
                 buttonBoard.button(3).onTrue(targetShoot);
-                buttonBoard.button(4).whileTrue(parallel(shooter.shoot(() -> -0.1), indexer.index(() -> -0.1), intake.intake(() -> 0.8)));
+                buttonBoard.button(4).whileTrue(parallel(shooter.shoot(() -> -0.1), indexer.index(() -> -0.1),
+                                intake.intake(() -> 0.8)));
                 buttonBoard.button(5).onTrue(ampScoreFull);
                 // buttonBoard.button(6).onTrue(autoShoot);
                 buttonBoard.button(6).onTrue(parallel(elevator.elevatorToSetpoint(45),

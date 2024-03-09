@@ -64,7 +64,7 @@ public class RobotContainer {
                 // initialize subsytems here
 
                 // initialize controller schemes here
-                SwerveDriveScheme.configure(swerveDrive, 0);
+                SwerveDriveScheme.configure(swerveDrive, shooter, indexer, 0);
                 MechanismScheme.configure(intake, shooter, elevator, wrist, indexer, 1);
 
                 // CharacterizingScheme.configure(swerveDrive, elevator, wrist, 0);
