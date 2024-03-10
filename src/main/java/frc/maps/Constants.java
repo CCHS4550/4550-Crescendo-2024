@@ -238,7 +238,7 @@ public class Constants {
         public static double WRIST_SHOOT = 15.619040489196777;
         // public static double WRIST_SHOOT = 8.714315414428711;
 
-        public static double ELEVATOR_AMP = 77.5;
+        public static double ELEVATOR_AMP = 77;
         public static double WRIST_AMP = 50.5;
 
         public static double ELEVATOR_HUMAN_PLAYER = 0;
@@ -260,7 +260,7 @@ public class Constants {
             public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_AMP, SPEAKER_SOURCE };
             // public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
             public static Pose2d AMP = AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_AMP).get().toPose2d()
-                            .transformBy(new Transform2d(1, 0, new Rotation2d(180)));
+                            .transformBy(new Transform2d(0.1, 0, new Rotation2d(180)));
             public static Pose2d SOURCE = new Pose2d(new Translation2d(15.5, 1), new Rotation2d(300));
             // public static Rotation2d STAGE_LEFT = new Rotation2d(120);
             // public static Rotation2d STAGE_RIGHT = new Rotation2d(240);

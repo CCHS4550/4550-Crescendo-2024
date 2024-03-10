@@ -131,7 +131,8 @@ public class SwerveDriveScheme implements ControlScheme {
         controller.x().onTrue(runOnce(() -> toggleOrientationLock(swerveDrive)))
                 .onFalse(runOnce(() -> toggleOrientationLock(swerveDrive)));
 
-        controller.rightBumper().onTrue(parallel(shooter.shoot(() -> 0.2), indexer.index(() -> 0.3)));
+        controller.rightBumper().whileTrue(parallel(shooter.shoot(() -> 0.2), indexer.index(() -> 0.3)));
+        // controller.leftBumper().onTrue(swerveDrive.generatePathFindToPose(swerveDrive.getAmpPose()));
 
 
         controller.leftTrigger().onTrue(runOnce(() -> setFastMode())).onFalse(runOnce(() -> setNormalMode()));

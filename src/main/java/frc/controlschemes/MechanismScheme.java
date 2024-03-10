@@ -2,6 +2,7 @@ package frc.controlschemes;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -63,8 +64,9 @@ public class MechanismScheme implements ControlScheme {
                                                 elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)
                                                                 .withTimeout(2.5)),
                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP).withTimeout(2),
-                                parallel(indexer.indexForTime(0.3, 0.6)),
-                                shooter.shootForTime(0.4, 0.6),
+                                parallel(indexer.indexForTime(0.3, 0.6),
+                                shooter.shootForTime(0.4, 0.6)),
+                                waitSeconds(0.5),
                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL).withTimeout(1.5),
                                 parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
                                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE))

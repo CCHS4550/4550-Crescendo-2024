@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import frc.maps.RobotMap;
+import frc.robot.Robot;
 
 /**
  * Class for controlling a swerve drive chassis. Consists of 4 SwerveModules and
@@ -225,7 +226,7 @@ public class SwerveDrive extends SubsystemBase {
                                 new Rotation2d(backLeft.getAbsoluteEncoderRadiansOffset()));
 
                 poseEstimator = new SwerveDrivePoseEstimator(Constants.SwerveConstants.DRIVE_KINEMATICS,
-                                new Rotation2d(0), swerveModulePositions, new Pose2d(0, 0, new Rotation2d(0)));
+                                Rotation2d.fromDegrees(gyro.getAngle()).unaryMinus(), swerveModulePositions, new Pose2d(0, 0, new Rotation2d(0)));
 
                 xPID = new PIDController(1, .1, 0);
                 yPID = new PIDController(1, .1, 0);

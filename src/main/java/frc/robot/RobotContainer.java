@@ -58,7 +58,7 @@ public class RobotContainer {
         Command subWooferShoot = sequence(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT), autoShoot)
                         .withName("Subwoofer Shoot");
 
-        Command runIntake = parallel(intake.intake(() -> -1), indexer.index(() -> 0.3));
+        Command runIntake = parallel(intake.intake(() -> -1), indexer.index(() -> 0.3), shooter.shoot(() -> -0.1));
 
         public RobotContainer() {
                 // initialize subsytems here
