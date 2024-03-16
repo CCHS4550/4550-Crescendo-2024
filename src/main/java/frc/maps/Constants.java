@@ -280,8 +280,7 @@ public class Constants {
             public static Pose2d SPEAKER_AMP = AllianceFlipUtil.apply(BlueFieldPositionConstants.SPEAKER_AMP);
             public static Pose2d SPEAKER_SOURCE = AllianceFlipUtil.apply(BlueFieldPositionConstants.SPEAKER_SOURCE);
         public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_AMP, SPEAKER_SOURCE };
-        public static Pose2d AMP = new Pose2d(new Translation2d(14.65, 7.65), new Rotation2d(90));
-        public static Pose2d SOURCE = new Pose2d(new Translation2d(1.13, .96), new Rotation2d(240));
+            public static Pose2d AMP = new Pose2d(new Translation2d(14.6, 7.1), new Rotation2d(90));
 
         public static Pose2d STAGE_TOP = new Pose2d(new Translation2d(12.4, 4.9),
                 new Rotation2d(Units.degreesToRadians(60)));

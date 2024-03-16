@@ -245,6 +245,7 @@ public class SwerveDrive extends SubsystemBase {
                 initShuffleBoardEncoders();
 
                 SmartDashboard.putData("Field", m_field_poseestimator);
+                Shuffleboard.getTab("Tab 6").add(m_field_poseestimator);
                 new Thread(() -> {
                         try {
                                 Thread.sleep(1000);
