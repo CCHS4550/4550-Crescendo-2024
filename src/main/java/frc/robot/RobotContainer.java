@@ -51,6 +51,8 @@ public class RobotContainer {
                         wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP),
                         parallel(indexer.indexForTime(0.3, 0.3), shooter.shootForTime(0.3, 1))).withName("Amp Score");
 
+        Command rev = sequence(parallel(shooter.shootForTime(-0.1, 0.1), indexer.indexForTime(-0.1, 0.2)), shooter.shootForTime(1, 1.5)).withName("Rev");
+        Command shoot = sequence(parallel(shooter.shootForTime(1, 0.3), indexer.indexForTime(0.3, 0.3))).withName("Shoot");
         Command autoShoot = sequence(parallel(shooter.shootForTime(-0.1, 0.1), indexer.indexForTime(-0.1, 0.2)),
                         shooter.shootForTime(1, 1.5),
                         parallel(shooter.shootForTime(1, 0.3), indexer.indexForTime(0.3, 0.3))).withName("Auto Shoot");
@@ -73,6 +75,8 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Home", wrist.home());
                 NamedCommands.registerCommand("Shoot", autoShoot);
                 NamedCommands.registerCommand("Run Intake", runIntake);
+                NamedCommands.registerCommand("Rev", rev);
+                NamedCommands.registerCommand("Shoot", shoot);
                 // NamedCommands
                 // .registerCommand("Target Intake",
                 // parallel(elevator.elevatorToSetpoint(
