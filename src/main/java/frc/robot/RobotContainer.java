@@ -1,7 +1,6 @@
 package frc.robot;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
-import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
 import java.util.HashMap;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.MechanismScheme;
 // import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
@@ -27,20 +25,20 @@ import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
 
 public class RobotContainer {
-        SwerveDrive swerveDrive = new SwerveDrive();
+    SwerveDrive swerveDrive = new SwerveDrive();
         Elevator elevator = new Elevator();
         Shooter shooter = new Shooter();
         Intake intake = new Intake();
         Wrist wrist = new Wrist();
         Indexer indexer = new Indexer();
 
-        /** Event map for path planner */
-        public static HashMap<String, Command> eventMap = new HashMap<>();
-        /** Command List for autos in SmartDashBoard */
+    /** Event map for path planner */
+    public static HashMap<String, Command> eventMap = new HashMap<>();
+    /** Command List for autos in SmartDashBoard */
         private final SendableChooser<Command> autoChooser;
-        // private final LoggedDashboardChooser<Command> autoChooser
+    // private final LoggedDashboardChooser<Command> autoChooser
 
-        Field2d ff;
+    Field2d ff;
 
         Command targetAmp = sequence(parallel(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL),
                         elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)),
@@ -61,18 +59,18 @@ public class RobotContainer {
                         .withName("Subwoofer Shoot");
 
         Command runIntake = parallel(intake.intake(() -> -1), indexer.index(() -> 0.3), shooter.shoot(() -> -0.1));
+    
+    public RobotContainer() {
+        // initialize subsytems here
+        
+        // initialize controller schemes here
+        SwerveDriveScheme.configure(swerveDrive, shooter, indexer, 0);
+MechanismScheme.configure(intake, shooter, elevator, wrist, indexer, 1);
 
-        public RobotContainer() {
-                // initialize subsytems here
+        // CharacterizingScheme.configure(swerveDrive, elevator, wrist, 0);
 
-                // initialize controller schemes here
-                SwerveDriveScheme.configure(swerveDrive, shooter, indexer, 0);
-                MechanismScheme.configure(intake, shooter, elevator, wrist, indexer, 1);
-
-                // CharacterizingScheme.configure(swerveDrive, elevator, wrist, 0);
-
-                diagnosticsInit();
-                NamedCommands.registerCommand("Home", wrist.home());
+        diagnosticsInit();
+NamedCommands.registerCommand("Home", wrist.home());
                 NamedCommands.registerCommand("Shoot", autoShoot);
                 NamedCommands.registerCommand("Run Intake", runIntake);
                 NamedCommands.registerCommand("Rev", rev);
@@ -95,26 +93,41 @@ public class RobotContainer {
                                 .registerCommand("Amp Score",
                                                 ampScore);
 
-                // Build an auto chooser. This will use Commands.none() as the default option.
-                autoChooser = AutoBuilder.buildAutoChooser();
+        // Build an auto chooser. This will use Commands.none() as the default option.
+        autoChooser = AutoBuilder.buildAutoChooser();
 
-                // Another option that allows you to specify the default auto by its name
-                // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+        // Another option that allows you to specify the default auto by its name
+        // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
-                SmartDashboard.putData("Auto Chooser", autoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         }
 
-        public void diagnosticsInit() {
+    public void diagnosticsInit() {
                 Shuffleboard.getTab("Subsystems").add("SwerveDrive", swerveDrive);
                 Shuffleboard.getTab("Subsystems").add("Elevator", elevator);
                 Shuffleboard.getTab("Subsystems").add("Shooter", shooter);
                 Shuffleboard.getTab("Subsystems").add("Wrist", wrist);
-                Shuffleboard.getTab("Subsystems").add("Intake", intake);
+        Shuffleboard.getTab("Subsystems").add("Intake", intake);
                 Shuffleboard.getTab("Subsystems").add("Indexer", indexer);
-        }
+    }
 
-        public Command getAutoCommand() {
-                return autoChooser.getSelected();
-        }
+    public Command getAutoCommand() {
+        // return autoCommands.get();
+        return autoChooser.getSelected();
+    }
+
+    /**
+     * Functionally the same as the Autonomous class method, just less messy.
+     */
+    // public Command followPathPlanner(String pathName) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath(pathName,
+    //             RobotMap.AUTO_PATH_CONSTRAINTS);
+
+    //     return Commands.sequence(
+    //             Commands.waitSeconds(1),
+    //             Commands.runOnce(swerveDrive::resetOdometry, swerveDrive),
+    //             swerveDrive.followTrajectoryCommand(traj, true),
+    //             Commands.runOnce(swerveDrive::stopModules, swerveDrive));
+    // }
 }

@@ -1,6 +1,5 @@
 package frc.maps;
 
-import static edu.wpi.first.units.Units.Inch;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.pathplanner.lib.path.PathConstraints;
@@ -256,7 +255,7 @@ public class Constants {
         public static Pose2d SPEAKER_FRONT = new Pose2d(new Translation2d(1.35, 5.57), new Rotation2d(0));
             public static Pose2d SPEAKER_AMP = new Pose2d(new Translation2d(0.66, 6.7), new Rotation2d(45));
             public static Pose2d SPEAKER_SOURCE = new Pose2d(new Translation2d(.75, 4.40), new Rotation2d(-45));
-
+        public static Pose2d SPEAKER =  new Pose2d(new Translation2d(0,0), new Rotation2d(0));
             public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_AMP, SPEAKER_SOURCE };
             // public static Pose2d AMP = new Pose2d(new Translation2d(1.82, 7.66), new Rotation2d(90));
             public static Pose2d AMP = AprilTags.aprilTagFieldLayout.getTagPose(AprilTags.BLUE_AMP).get().toPose2d()
@@ -279,6 +278,7 @@ public class Constants {
             public static Pose2d SPEAKER_FRONT = AllianceFlipUtil.apply(BlueFieldPositionConstants.SPEAKER_FRONT);
             public static Pose2d SPEAKER_AMP = AllianceFlipUtil.apply(BlueFieldPositionConstants.SPEAKER_AMP);
             public static Pose2d SPEAKER_SOURCE = AllianceFlipUtil.apply(BlueFieldPositionConstants.SPEAKER_SOURCE);
+            public static Pose2d SPEAKER = AllianceFlipUtil.apply(BlueFieldPositionConstants.SPEAKER);
         public static Pose2d[] SPEAKER_POSES = { SPEAKER_FRONT, SPEAKER_AMP, SPEAKER_SOURCE };
             public static Pose2d AMP = new Pose2d(new Translation2d(14.6, 7.1), new Rotation2d(90));
 

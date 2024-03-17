@@ -8,7 +8,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.DoubleSupplier;
 
-import org.littletonrobotics.junction.Logger;
+import javax.swing.SpringLayout.Constraints;
+
 import org.photonvision.PhotonUtils;
 
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -18,8 +19,6 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -35,7 +34,6 @@ import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import frc.maps.Constants.BlueFieldPositionConstants;
 import frc.maps.Constants.RedFieldPositionConstants;
-import frc.maps.RobotMap;
 
 public class Wrist extends SubsystemBase {
 
@@ -114,7 +112,7 @@ public class Wrist extends SubsystemBase {
     public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator) {
         Pose2d robotPose = swerveDrive.getPose();
         Pose2d speakerPose = new Pose2d();
-        double height = 78 - elevator.elevatorElevation();
+        double height = Constants.MechanismPositions.ELEVATOR_AMP - elevator.elevatorElevation();
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
             speakerPose = RedFieldPositionConstants.SPEAKER_FRONT;
         } else {

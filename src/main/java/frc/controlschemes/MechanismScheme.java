@@ -12,6 +12,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Wrist;
 
 public class MechanismScheme implements ControlScheme {
@@ -36,7 +37,7 @@ public class MechanismScheme implements ControlScheme {
         }
 
         public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist,
-                        Indexer indexer) {
+                        Indexer indexer, SwerveDrive swerveDrive) {
                 Command ampScore = sequence(
                                 parallel(sequence(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)),
                                                 elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)),
@@ -52,7 +53,7 @@ public class MechanismScheme implements ControlScheme {
                 // Command targetSubWooferShoot =
                 // sequence(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_SHOOT),
                 // autoShoot).withName("Subwoofer Shoot");
-
+                Command autoWristShoot = sequence(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVEATOR_AMP), wrist.wristToSetpoint(wrist.autoWristAngle(swerveDrive, elevator), shooter.shoot(()-> 0.7))).withName("Auto Wrist Shoot");
                 Command targetAmp = sequence(
                                 parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
                                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)),
