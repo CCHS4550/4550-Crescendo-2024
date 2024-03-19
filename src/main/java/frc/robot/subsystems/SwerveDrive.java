@@ -24,6 +24,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -266,7 +268,7 @@ public class SwerveDrive extends SubsystemBase {
                                                           // ChassisSpeeds
                                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your Constants class
-                                                new PIDConstants(0.3, 0.2, 0.0), // Translation PID constants
+                                                new PIDConstants(0.7, 0, 0.0), // Translation PID constants
                                                 new PIDConstants(0.3, 0.0, 0.0), // Rotation PID constants
                                                 Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max
                                                                                                                          // module
@@ -390,7 +392,7 @@ public class SwerveDrive extends SubsystemBase {
 
                 m_field_poseestimator.setRobotPose(poseEstimator.getEstimatedPosition());
                 m_field_getPose.setRobotPose(getPose());
-
+                
                 SmartDashboard.putNumber("X", poseEstimator.getEstimatedPosition().getX());
                 SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
                 SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
