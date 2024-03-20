@@ -57,7 +57,7 @@ public class SwerveDriveScheme implements ControlScheme {
                 -Constants.SwerveConstants.DRIVE_RATE_LIMIT * 2, 0);
         SlewRateLimiter turnRateLimiter = new SlewRateLimiter(Constants.SwerveConstants.TURN_RATE_LIMIT / 1.5);
 
-        PIDController orientationLockPID = new PIDController(.1, 0, 0);
+        PIDController orientationLockPID = new PIDController(.5, 0, 0);
         orientationLockPID.enableContinuousInput(-Math.PI, Math.PI);
         controller = new CommandXboxController(port);
 

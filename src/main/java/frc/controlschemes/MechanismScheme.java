@@ -3,8 +3,13 @@ package frc.controlschemes;
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.either;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.helpers.ControlScheme;
 import frc.maps.Constants;
@@ -16,6 +21,7 @@ import frc.robot.subsystems.Wrist;
 
 public class MechanismScheme implements ControlScheme {
         private static CommandGenericHID buttonBoard;
+        private static BooleanSupplier inAmpPosition = () -> false;
         // public static CommandXboxController controller;
 
         public static void configure(Intake intake, Shooter shooter, Elevator elevator, Wrist wrist, Indexer indexer,
@@ -54,9 +60,22 @@ public class MechanismScheme implements ControlScheme {
                 // autoShoot).withName("Subwoofer Shoot");
 
                 Command targetAmp = sequence(
-                                parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP),
-                                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)),
-                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP));
+                                parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)
+                                                .withTimeout(2.5),
+                                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)
+                                                .withTimeout(1),
+                                        setInAmpPosition(true)));
+                                // wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP));
+
+                Command finishAmpSequence = sequence(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP).withTimeout(2),
+                                parallel(indexer.indexForTime(0.3, 0.6),
+                                shooter.shootForTime(0.4, 0.6)),
+                                waitSeconds(0.5),
+                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL).withTimeout(1.5),
+                                parallel(elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_INTAKE),
+                                                wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE))
+                                                .withTimeout(2.5),
+                                parallel(elevator.home(), wrist.home(), new InstantCommand()));
 
                 Command ampScoreFull = sequence(
                                 parallel(wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)
@@ -72,35 +91,43 @@ public class MechanismScheme implements ControlScheme {
                                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_INTAKE))
                                                 .withTimeout(2.5),
                                 parallel(elevator.home(), wrist.home()));
+                                
 
                 Command targetShoot = parallel(elevator.elevatorToSetpoint(
                                 Constants.MechanismPositions.ELEVATOR_SHOOT),
                                 wrist.wristToSetpoint(
-                                                Constants.MechanismPositions.WRIST_SHOOT));
+                                                Constants.MechanismPositions.WRIST_SHOOT),
+                                setInAmpPosition(false));
 
                 // this is the good stuff
                 buttonBoard.button(1)
                                 .whileTrue(((parallel(intake.intake(() -> -1), indexer.index(() -> 0.3),
                                                 shooter.shoot(() -> -.1)))));
-                buttonBoard.button(2).onTrue(sequence(elevator.home(), wrist.home()));
+                buttonBoard.button(2).onTrue(parallel(sequence(elevator.home(), wrist.home()), setInAmpPosition(false)));
                 buttonBoard.button(3).onTrue(targetShoot);
                 buttonBoard.button(4).whileTrue(parallel(shooter.shoot(() -> -0.1), indexer.index(() -> -0.1),
                                 intake.intake(() -> 0.8)));
-                buttonBoard.button(5).onTrue(ampScoreFull);
+                // buttonBoard.button(5).onTrue(ampScoreFull);
+                buttonBoard.button(5).onTrue(targetAmp);
                 // buttonBoard.button(6).onTrue(autoShoot);
+                // Climbing
                 buttonBoard.button(6).onTrue(parallel(elevator.elevatorToSetpoint(45),
-                                wrist.wristToSetpoint(34.54)));
-                buttonBoard.button(7).whileTrue(elevator.setElevatorDutyCycle(() -> 0.3));
-                buttonBoard.button(8).whileTrue(elevator.setElevatorDutyCycle(() -> -0.3));
-                buttonBoard.button(9).whileTrue(wrist.setWristDutyCycle(() -> 0.3));
-                buttonBoard.button(10).whileTrue(wrist.setWristDutyCycle(() -> -0.3));
+                                wrist.wristToSetpoint(34.54),
+                                setInAmpPosition(false)));
+                buttonBoard.button(7).whileTrue(parallel(elevator.setElevatorDutyCycle(() -> 0.3), setInAmpPosition(false)));
+                buttonBoard.button(8).whileTrue(parallel(elevator.setElevatorDutyCycle(() -> -0.3), setInAmpPosition(false)));
+                buttonBoard.button(9).whileTrue(parallel(wrist.setWristDutyCycle(() -> 0.3), setInAmpPosition(false)));
+                buttonBoard.button(10).whileTrue(parallel(wrist.setWristDutyCycle(() -> -0.3), setInAmpPosition(false)));
                 buttonBoard.button(11).whileTrue(sequence(indexer.indexForTime(-0.2, 0.1), shooter.shoot(() -> 0.7)));
-                buttonBoard.button(12).onTrue(indexer.indexForTime(0.3, 0.5));
+                // buttonBoard.button(12).onTrue(indexer.indexForTime(0.3, 0.5));
+                buttonBoard.button(12).onTrue(either(finishAmpSequence, indexer.indexForTime(0.3, 0.5), inAmpPosition));
                 // buttonBoard.button(12).onTrue(autoShoot);
                 // amp
                 // buttonBoard.button(10)
                 // .onTrue(ampScore);
-
         }
 
+        private static Command setInAmpPosition(boolean inPos) {
+                return runOnce(() -> inAmpPosition = () -> inPos);
+        }
 }

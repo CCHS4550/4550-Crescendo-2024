@@ -149,10 +149,10 @@ public class Constants {
         public static final int BACK_RIGHT_ABSOLUTE_ENCODER = 2;
         public static final int BACK_LEFT_ABSOLUTE_ENCODER = 3;
 
-        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.55;
-        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.613;
-        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.77;
-        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.184;
+        public static final double FRONT_RIGHT_ABSOLUTE_ENCODER_OFFSET = 6.128;
+        public static final double FRONT_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.605;
+        public static final double BACK_RIGHT_ABSOLUTE_ENCODER_OFFSET = 5.75;
+        public static final double BACK_LEFT_ABSOLUTE_ENCODER_OFFSET = 0.2485;
 
         // Robot Constants (change with SysId)
         // max speed in free sprint: used in getting velocities of swerve modules
@@ -344,8 +344,8 @@ public class Constants {
 
     public static class cameraOne {
         public static final String CAMERA_ONE_NAME = "FrontCamera";
-        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Inches.of(-9.989), Inches.of(-9), Inches.of(14.6)),
-                new Rotation3d(0, Units.degreesToRadians(35.0), Units.degreesToRadians(180)));
+        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Inches.of(-13.989), Inches.of(-9), Inches.of(14.6)),
+                new Rotation3d(0, Units.degreesToRadians(-35.0), Units.degreesToRadians(180)));
         public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME, ROBOT_TO_CAM);
     }
 
