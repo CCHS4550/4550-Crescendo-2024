@@ -39,6 +39,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
@@ -53,9 +54,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.controlschemes.MechanismScheme;
 import frc.helpers.CCSparkMax;
 import frc.maps.Constants;
 import frc.maps.RobotMap;
+import frc.maps.Constants.BlueFieldPositionConstants;
+import frc.maps.Constants.RedFieldPositionConstants;
 import frc.robot.Robot;
 
 /**
@@ -268,8 +272,8 @@ public class SwerveDrive extends SubsystemBase {
                                                           // ChassisSpeeds
                                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live
                                                                  // in your Constants class
-                                                new PIDConstants(0.7, 0, 0.0), // Translation PID constants
-                                                new PIDConstants(0.3, 0.0, 0.0), // Rotation PID constants
+                                                new PIDConstants(1, 0, 0.0), // Translation PID constants
+                                                new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
                                                 Constants.SwerveConstants.MAX_DRIVE_SPEED_METERS_PER_SECOND_THEORETICAL, // Max
                                                                                                                          // module
                                                                                                                          // speed,
@@ -374,6 +378,10 @@ public class SwerveDrive extends SubsystemBase {
                                 ? Constants.RedFieldPositionConstants.AMP
                                 : Constants.BlueFieldPositionConstants.AMP;
 
+                                // return DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+                                // ? Constants.RedFieldPositionConstants.AMP
+                                // : Constants.BlueFieldPositionConstants.AMP;
+
         }
 
         @Override
@@ -397,7 +405,10 @@ public class SwerveDrive extends SubsystemBase {
                 SmartDashboard.putNumber("Y", poseEstimator.getEstimatedPosition().getY());
                 SmartDashboard.putNumber("Rads", poseEstimator.getEstimatedPosition().getRotation().getRadians());
 
-                SmartDashboard.putNumber("pose to middle", getPose().getTranslation().getDistance(speakerPoses[0].getTranslation()));
+                // SmartDashboard.putNumber("pose to middle", getPose().getTranslation().getDistance(speakerPoses[0].getTranslation()));
+                SmartDashboard.putBoolean("inAmpPosition", MechanismScheme.inAmpPosition.getAsBoolean());
+                // SmartDashboard.putNumber("Distance from Tag 4", Constants.cameraOne.FRONT_CAMERA.)
+                MechanismScheme.periodic();
         }
 
         /**
@@ -497,22 +508,40 @@ public class SwerveDrive extends SubsystemBase {
                 // }
 
                 // Should do the same thing as above x
-
+                
                 Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
                                 .getEstimatedGlobalPose(getPose());
                 estimatedPoseOptional.ifPresent(est -> {
-                        var estPose = est.estimatedPose.toPose2d();
+                         var estPose = est.estimatedPose.toPose2d();
                         // Change our trust in the measurement based on the tags we can see
                         var estStdDevs = Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
                                         estPose);
 
                         poseEstimator.addVisionMeasurement(
                                         estPose, est.timestampSeconds, estStdDevs);
+               
                 });
 
-                Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
-        }
 
+                Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
+                
+        }
+        // public double getAutoWristAngle(){
+        //          int tagId = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 7 : 4;
+        //         Pose2d middleSubwoofer;
+        //         if (tagId ==4){
+
+        //                  middleSubwoofer = RedFieldPositionConstants.SPEAKER_FRONT;
+                
+        //         }
+        //         else{
+        //                 middleSubwoofer = BlueFieldPositionConstants.SPEAKER_FRONT;
+                
+        //         }
+        //         //   double distanceFromMiddleSubwoofer = PhotonUtils.getDistanceToPose(estPose, middleSubwoofer);
+        //         //   double wristAngleToShoot = 15.619040489196777*(1- (distanceFromMiddleSubwoofer/Units.feetToMeters(1)));
+        // }
+        // }
         public ChassisSpeeds getRobotRelativeSpeeds() {
                 return ChassisSpeeds.fromRobotRelativeSpeeds(
                                 Constants.SwerveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getCurrentModuleStates()),
