@@ -50,17 +50,33 @@ public class MechanismScheme implements ControlScheme {
 
         public static void configureButtons(int port, Intake intake, Shooter shooter, Elevator elevator, Wrist wrist,
                         Indexer indexer) {
-                Command ampScore = sequence(
-                                parallel(sequence(
-                                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL)),
-                                                elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)),
+
+                Command ampScore = sequence
+                                (
+                                parallel(
+                                        wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_TRAVEL),
+                                        elevator.elevatorToSetpoint(Constants.MechanismPositions.ELEVATOR_AMP)
+                                        ),
                                 wrist.wristToSetpoint(Constants.MechanismPositions.WRIST_AMP),
-                                parallel(indexer.indexForTime(0.3, 0.3), shooter.shootForTime(0.3, 1)))
+                                parallel(
+                                indexer.indexForTime(0.3, 0.3),
+                                shooter.shootForTime(0.3, 1)
+                                        )
+                                )
                                 .withName("Amp Score");
 
-                Command autoShoot = sequence(parallel(shooter.shootForTime(-0.1, 0.1), indexer.indexForTime(-0.1, 0.2)),
+                Command autoShoot = sequence
+                                (
+                                parallel(
+                                        shooter.shootForTime(-0.1, 0.1),
+                                        indexer.indexForTime(-0.1, 0.2)
+                                        ),
                                 shooter.shootForTime(1, 1.5),
-                                parallel(shooter.shootForTime(1, 0.3), indexer.indexForTime(0.3, 0.3)))
+                                parallel(
+                                        shooter.shootForTime(1, 0.3),
+                                        indexer.indexForTime(0.3, 0.3)
+                                        )
+                                )
                                 .withName("Auto Shoot");
 
                 // Command targetSubWooferShoot =
