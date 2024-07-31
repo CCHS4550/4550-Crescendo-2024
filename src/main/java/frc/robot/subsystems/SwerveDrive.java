@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
+// import org.photonvision.EstimatedRobotPose;
+// import org.photonvision.PhotonPoseEstimator;
+// import org.photonvision.PhotonUtils;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 
@@ -173,7 +173,7 @@ public class SwerveDrive extends SubsystemBase {
 
         // SwerveDriveOdometry odometer;
         SwerveDrivePoseEstimator poseEstimator;
-        PhotonPoseEstimator photonPoseEstimator;
+        // PhotonPoseEstimator photonPoseEstimator;
         PIDController xPID, yPID;
         public PIDController turnPID;
         ProfiledPIDController turnPIDProfiled;
@@ -488,10 +488,10 @@ public class SwerveDrive extends SubsystemBase {
                 return poseEstimator.getEstimatedPosition();
         }
 
-        public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-                photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-                return photonPoseEstimator.update();
-        }
+        // public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+        //         photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
+        //         return photonPoseEstimator.update();
+        // }
 
         public void updateOdometer() {
                 updateModulePositions();
@@ -509,18 +509,18 @@ public class SwerveDrive extends SubsystemBase {
 
                 // Should do the same thing as above x
                 
-                Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
-                                .getEstimatedGlobalPose(getPose());
-                estimatedPoseOptional.ifPresent(est -> {
-                         var estPose = est.estimatedPose.toPose2d();
-                        // Change our trust in the measurement based on the tags we can see
-                        var estStdDevs = Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
-                                        estPose);
+                // Optional<EstimatedRobotPose> estimatedPoseOptional = Constants.cameraOne.FRONT_CAMERA
+                                // .getEstimatedGlobalPose(getPose());
+                // estimatedPoseOptional.ifPresent(est -> {
+                //          var estPose = est.estimatedPose.toPose2d();
+                //         // Change our trust in the measurement based on the tags we can see
+                //         var estStdDevs = Constants.cameraOne.FRONT_CAMERA.getEstimationStdDevs(
+                //                         estPose);
 
-                        poseEstimator.addVisionMeasurement(
-                                        estPose, est.timestampSeconds, estStdDevs);
+                //         poseEstimator.addVisionMeasurement(
+                //                         estPose, est.timestampSeconds, estStdDevs);
                
-                });
+                // });
 
 
                 Logger.recordOutput("Odometry/Pose2D", poseEstimator.getEstimatedPosition());
@@ -609,10 +609,10 @@ public class SwerveDrive extends SubsystemBase {
                 return path;
         }
 
-        public Rotation2d getAngleBetweenCurrentAndTargetPose(Pose2d targetPose) {
-                Rotation2d targetYaw = PhotonUtils.getYawToPose(getPose(), targetPose);
-                return targetYaw;
-        }
+        // public Rotation2d getAngleBetweenCurrentAndTargetPose(Pose2d targetPose) {
+        //         Rotation2d targetYaw = PhotonUtils.getYawToPose(getPose(), targetPose);
+        //         return targetYaw;
+        // }
 
         /**
          * Follows a single PathPlannerPath

@@ -346,7 +346,7 @@ public class Constants {
         public static final String CAMERA_ONE_NAME = "FrontCamera";
         public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(Inches.of(-50.989), Inches.of(0), Inches.of(14.6)),
                 new Rotation3d(0, Units.degreesToRadians(35.0), Units.degreesToRadians(180)));
-        public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME, ROBOT_TO_CAM);
+        // public static frc.helpers.Vision FRONT_CAMERA = new frc.helpers.Vision(CAMERA_ONE_NAME, ROBOT_TO_CAM);
     }
 
     /**

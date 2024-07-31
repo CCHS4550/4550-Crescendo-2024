@@ -10,9 +10,9 @@ import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
+// import org.photonvision.EstimatedRobotPose;
+// import org.photonvision.PhotonPoseEstimator;
+// import org.photonvision.PhotonUtils;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -114,19 +114,19 @@ public class Wrist extends SubsystemBase {
         return setWristDutyCycle(() -> -0.4);
     }
 
-    public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator) {
-        Pose2d robotPose = swerveDrive.getPose();
-        Pose2d speakerPose = new Pose2d();
-        double height = 78 - elevator.elevatorElevation();
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            speakerPose = RedFieldPositionConstants.SPEAKER_FRONT;
-        } else {
-            speakerPose = BlueFieldPositionConstants.SPEAKER_FRONT;
-        }
-        double distanceToSpeaker = PhotonUtils.getDistanceToPose(robotPose, speakerPose);
-        double wristAngle = Math.atan(height / distanceToSpeaker);
-        return wristAngle;
-    }
+    // public double autoWristAngle(SwerveDrive swerveDrive, Elevator elevator) {
+    //     Pose2d robotPose = swerveDrive.getPose();
+    //     Pose2d speakerPose = new Pose2d();
+    //     double height = 78 - elevator.elevatorElevation();
+    //     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+    //         speakerPose = RedFieldPositionConstants.SPEAKER_FRONT;
+    //     } else {
+    //         speakerPose = BlueFieldPositionConstants.SPEAKER_FRONT;
+    //     }
+    //     double distanceToSpeaker = PhotonUtils.getDistanceToPose(robotPose, speakerPose);
+    //     double wristAngle = Math.atan(height / distanceToSpeaker);
+    //     return wristAngle;
+    // }
 
     public void setWristVoltage(Measure<Voltage> volts) {
         wristMotor.setVoltage(volts.magnitude());
