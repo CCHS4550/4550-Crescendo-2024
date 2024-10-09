@@ -9,6 +9,10 @@ import java.util.HashMap;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -19,6 +23,7 @@ import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.MechanismScheme;
 // import frc.controlschemes.CharacterizingScheme;
 import frc.controlschemes.SwerveDriveScheme;
+import frc.helpers.Vision;
 import frc.maps.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Indexer;
@@ -34,6 +39,14 @@ public class RobotContainer {
         Intake intake = new Intake();
         Wrist wrist = new Wrist();
         Indexer indexer = new Indexer();
+
+        Vision camera = new Vision(
+         "Limelight",
+         new Transform3d(
+                Units.inchesToMeters(10.25),
+                Units.inchesToMeters(9), 
+                Units.inchesToMeters(15), 
+                new Rotation3d(0,Units.degreesToRadians(55) , 0)));
 
         /** Event map for path planner */
         public static HashMap<String, Command> eventMap = new HashMap<>();

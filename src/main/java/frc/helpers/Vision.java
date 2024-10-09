@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.maps.Constants;
 import frc.robot.Robot;
 
@@ -29,6 +30,7 @@ public class Vision {
     // Simulation
     // private PhotonCameraSim cameraSim;
 
+    // +X: 10.25 +Y 9 (inches)
     public Vision(String cameraName, Transform3d robotToCam) {
         camera = new PhotonCamera(cameraName);
 
@@ -40,6 +42,13 @@ public class Vision {
 
     public PhotonPipelineResult getLatestResult() {
         return camera.getLatestResult();
+    }
+
+    public double getXYaw() {
+        if (camera.getLatestResult().hasTargets()) {
+        return camera.getLatestResult().getBestTarget().getYaw();    
+        }
+        return 0; 
     }
 
     /**
