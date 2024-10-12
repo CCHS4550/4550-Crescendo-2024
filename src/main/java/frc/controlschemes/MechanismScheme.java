@@ -1,17 +1,13 @@
 package frc.controlschemes;
 
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
-import static edu.wpi.first.wpilibj2.command.Commands.either;
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.helpers.ControlScheme;
 import frc.maps.Constants;
@@ -133,26 +129,41 @@ public class MechanismScheme implements ControlScheme {
 
 
                 // this is the good stuff
+                /* Intake */
                 buttonBoard.button(1)
-                                .whileTrue(((parallel(intake.intake(() -> -1), indexer.index(() -> 0.3),
-                                                shooter.shoot(() -> -.1)))));
+                                .whileTrue(((parallel(
+                                        intake.intake(() -> -1), 
+                                        indexer.index(() -> 0.3),
+                                        shooter.shoot(() -> -.1), 
+                                        wrist.wristToSetpoint(0.0), 
+                                        elevator.elevatorToSetpoint(0)))));
+                /* Home */
                 buttonBoard.button(2).onTrue(parallel(sequence(elevator.home(), wrist.home()), setInAmpPosition(false)));
+                /* Shoot Position */
                 buttonBoard.button(3).onTrue(targetShoot);
+                /* Stop! */
                 buttonBoard.button(4).whileTrue(parallel(shooter.shoot(() -> -0.1), indexer.index(() -> -0.1),
                                 intake.intake(() -> 0.8)));
                 // buttonBoard.button(5).onTrue(ampScoreFull);
+                /* Amp position */
                 buttonBoard.button(5).onTrue(targetAmp);
                 // buttonBoard.button(6).onTrue(autoShoot);
                 // Climbing
                 buttonBoard.button(6).onTrue(parallel(elevator.elevatorToSetpoint(45),
                                 wrist.wristToSetpoint(34.54),
                                 setInAmpPosition(false)));
+                /* Elevator Manual Up */
                 buttonBoard.button(7).whileTrue(parallel(elevator.setElevatorDutyCycle(() -> 0.3), setInAmpPosition(false)));
+                /* Elevator Manual Down */
                 buttonBoard.button(8).whileTrue(parallel(elevator.setElevatorDutyCycle(() -> -0.3), setInAmpPosition(false)));
+                /* Wrist Manual Up */
                 buttonBoard.button(9).whileTrue(parallel(wrist.setWristDutyCycle(() -> 0.3), setInAmpPosition(false)));
+                /* Wrist Manual Down */
                 buttonBoard.button(10).whileTrue(parallel(wrist.setWristDutyCycle(() -> -0.3), setInAmpPosition(false)));
+                /* Rev */
                 buttonBoard.button(11).whileTrue(sequence(indexer.indexForTime(-0.2, 0.1), shooter.shoot(() -> 0.7)));
                 // buttonBoard.button(12).onTrue(indexer.indexForTime(0.3, 0.5));
+                /* Shoot! */
                 buttonBoard.button(12).onTrue(runOnce(() -> runAmpShoot()));
                 // buttonBoard.button(12).onTrue(autoShoot);
                 // buttonBoard.button(12).onTrue(finishAmpSequence);
