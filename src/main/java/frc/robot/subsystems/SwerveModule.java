@@ -30,7 +30,7 @@ import org.littletonrobotics.junction.Logger;
  * format of Rotation2d.
  */
 public class SwerveModule extends SubsystemBase {
-    private CCSparkMax driveMotor;
+    private CCSparkMax driveMotor; //ich habe code geschriebt. Ich schreibe das Code nicht. Ich bin nicht klug. Ich bin am doofsten. Ich habe superlativ und komparativ heute gelernt. Deutsch ist am bestem, und alles Sprachen ohne Deustsch ist schlecht. Hee Hee Ha Ha. Ich liebe Herr Squiggles. Hat deine Sprachenklasse eine Schlange? Ich denke nicht.
     private CCSparkMax turnMotor;
 
     private PIDController turningPIDController, drivingPidController;
